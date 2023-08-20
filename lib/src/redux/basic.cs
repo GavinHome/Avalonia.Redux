@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-
 namespace Redux;
 
 public class Action
@@ -19,8 +16,8 @@ public class Action
         _type = type;
     }
 
-    public object Type { get { return _type; } }
-    public dynamic? Payload { get { return _payload; } }
+    public object Type => _type;
+    public dynamic? Payload => _payload;
 
     public override bool Equals(object? obj) => obj != null && Equals(other: obj as Action);
 

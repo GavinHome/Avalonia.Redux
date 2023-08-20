@@ -1,3 +1,4 @@
+// ReSharper disable CheckNamespace
 namespace Redux.Component;
 
 public abstract class ComponentBase<T> { }
@@ -14,8 +15,8 @@ public delegate dynamic ViewBuilder<T>(T state, Dispatch dispatch, ComponentCont
 
 /// Interrupt if not null not false
 /// bool for sync-functions, interrupted if true
-/// Future<void> for async-functions, should always be interrupted.
-public delegate dynamic Effect<T>(Action action, ComponentContext<T> ctx);
+/// Future for async-functions, should always be interrupted.
+public delegate dynamic? Effect<T>(Action action, ComponentContext<T> ctx);
 
 public delegate Task SubEffect<T>(Action action, ComponentContext<T> ctx);
 
@@ -24,12 +25,12 @@ public static class EffectConvert
     static readonly object SubEffectReturnNull = new object();
 
     public static Effect<T>? CombineEffects<T>(Dictionary<object, SubEffect<T>>? map) => map == null || !map.Any()
-        ? null : (Action action, ComponentContext<T> ctx) =>
+        ? null : (action, ctx) =>
         {
             SubEffect<T> subEffect = map.FirstOrDefault(entry => action.Type.Equals(entry.Key)).Value;
             if (subEffect != null)
             {
-                return subEffect.Invoke(action, ctx) ?? SubEffectReturnNull;
+                return (subEffect.Invoke(action, ctx) ?? SubEffectReturnNull) == null;
             }
             
             ////no subEffect

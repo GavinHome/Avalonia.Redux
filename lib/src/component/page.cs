@@ -1,4 +1,5 @@
-﻿namespace Redux.Component;
+﻿// ReSharper disable CheckNamespace
+namespace Redux.Component;
 
 /// init store's state by route-params
 public delegate T InitState<T, P>(P? param);
