@@ -35,7 +35,7 @@ public class Store<T>
 {
     private T _state;
     private IList<System.Action> _listeners;
-    private Reducer<T> _reducer;
+    private Reducer<T>? _reducer;
 
     public Get<T> GetState => () => _state;
     public Dispatch Dispatch { get; set; }
@@ -97,7 +97,7 @@ public class Unsubscribe
     }
 }
 
-/////// Definition of the standard observable flow.
+//// Definition of the standard observable flow.
 //public delegate Stream Observable<T>();
 
 /// Definition of ReplaceReducer
@@ -119,7 +119,7 @@ public delegate T Reducer<T>(T state, Action action);
 /// Ensure that a T will be cloned at most once during the entire process.
 public delegate T SubReducer<T>(T state, Action action, bool isStateCopied);
 
-/// Create a store definition
+//// Create a store definition
 // public delegate Store<T> StoreCreator<T>(
 //     T preloadedState,
 //     Reducer<T> reducer
@@ -127,7 +127,6 @@ public delegate T SubReducer<T>(T state, Action action, bool isStateCopied);
 
 /// Definition of Enhanced creating a store
 // public delegate StoreCreator<T> StoreEnhancer<T>(StoreCreator<T> creator);
-
 
 // /// Definition of Connector which connects Reducer<S> with Reducer<P>.
 // /// 1. How to get an instance of type P from an instance of type S.

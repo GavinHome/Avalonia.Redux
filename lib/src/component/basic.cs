@@ -1,8 +1,6 @@
 namespace Redux.Component;
 
-public abstract class ComponentBase<T>
-{
-}
+public abstract class ComponentBase<T> { }
 
 public abstract class ComponentContext<T>
 {
@@ -41,4 +39,14 @@ public static class EffectConvert
 
 public abstract class AbstractComponent<T> : ComponentBase<T>
 {
+    private Reducer<T> _reducer;
+    private Effect<T>? _effect;
+    private ViewBuilder<T>? _view;
+    
+    protected AbstractComponent(ViewBuilder<T> view, Effect<T> effect, Reducer<T> reducer)
+    {
+        _reducer = reducer;
+        _effect = effect;
+        _view = view;
+    }
 }
