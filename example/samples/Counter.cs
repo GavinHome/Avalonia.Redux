@@ -1,38 +1,27 @@
-﻿namespace samples;
+﻿using System.Runtime.InteropServices.JavaScript;
+using Redux;
+using Redux.Component;
 
-public class CounterPage //:<CounterState, Dictionary<String, dynamic>>
+namespace samples;
+
+public class CounterPage : Page<CounterState, Dictionary<String, dynamic>>
 {
-    // CounterPage() : base(
-    //     initState: () => { },
-    //     effect: () => { },
-    //     reducer: () => { },
-    //     view: (CounterState state, Dispatch dispatch, Context ctx) =>
-    //     {
-    //x
-    //     }
-    // );
-}
-//
-// /// init store's state by route-params
-// public delegate T InitState<T, P>(P param);
-// /// Component's view part
-// /// 1.State is used to decide how to render
-// /// 2.Dispatch is used to send actions
-// /// 3.ViewService is used to build sub-components or adapter.
-// public delegate dynamic ViewBuilder<T>(T state, Dispatch dispatch); //ViewService viewService
-//
-// public abstract class Page<T, P>
-// {
-//     private InitState<T, P> _initState;
-//
-//     protected Page(InitState<T, P> initState, ViewBuilder<T> view, Effect<T>? effect, Reducer<T>? reducer)
-//     {
-//         _initState = initState;
-//     }
-//
-// }
+    public CounterPage() : base(
+        initState: param => new CounterState(),
+        effect: BuildEffect(),
+        reducer: BuildReducer(),
+        view: (CounterState state, Dispatch dispatch, ComponentContext<CounterState> ctx) =>
+        {
+            return new Object();
+        })
+    {}
+    
+    private static Effect<CounterState>? BuildEffect() => EffectConvert.CombineEffects<CounterState>(null);
 
-// public class CounterState
-// {
-//    public int Count => 0;
-// }
+    private static Reducer<CounterState> BuildReducer() => ReducerConverter.AsReducers<CounterState>(null);
+}
+
+public class CounterState
+{
+   public int Count => 0;
+}
