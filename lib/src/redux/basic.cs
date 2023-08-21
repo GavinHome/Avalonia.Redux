@@ -1,19 +1,16 @@
 namespace Redux;
 
+/// [Action]
+/// Effect or Reducer message action
 public class Action
 {
     private readonly object _type;
     private readonly dynamic? _payload;
 
-    public Action(object type, dynamic? payload)
+    public Action(object type, dynamic? payload = null)
     {
         _type = type;
         _payload = payload;
-    }
-
-    public Action(object type)
-    {
-        _type = type;
     }
 
     public object Type => _type;
@@ -28,81 +25,32 @@ public class Action
 
 /// [Store]
 /// Definition of the standard Store.
-public class Store<T>
+public abstract class Store<T>
 {
-    private T _state;
-    private IList<System.Action> _listeners;
-    private Reducer<T>? _reducer;
-
-    public Get<T> GetState => () => _state;
-    public Dispatch Dispatch { get; set; }
-
-    public Subscribe Subscribe { get; set; }
-    ////public Observable<T> Observable { get; set; }
-    public ReplaceReducer<T> ReplaceReducer { get; private set; }
-
-    private Reducer<T> _noop<T>() => (T state, Action action) => state;
-
-    bool isDispatching = false;
-    bool isDisposed = false;
-
-    public Store(T initState, Reducer<T>? reducer)
-    {
-        _state = initState;
-        _listeners = new List<System.Action>();
-        _reducer = reducer ?? _noop<T>();
-
-        Dispatch = (action) =>
-        {
-            if (isDisposed)
-            {
-                return false;
-            }
-
-            try
-            {
-                isDispatching = true;
-                if (this._reducer != null)
-                {
-                    _state = reducer!(_state, action);
-                }
-            }
-            finally
-            {
-                isDispatching = false;
-            }
-
-            foreach (var listener in _listeners)
-            {
-                listener();
-            };
-
-            return true;
-        };
-
-        Subscribe = (listener) =>
-        {
-            _listeners.Add(listener);
-            return new Unsubscribe(() => _listeners.Remove(listener));
-        };
-
-        ReplaceReducer = (nextReducer) => reducer = nextReducer ?? _noop<T>();
-    }
+    public Get<T>? GetState;
+    public Dispatch? Dispatch;
+    public Subscribe? Subscribe;
+    ////public Observable<T> observable;
+    public ReplaceReducer<T>? ReplaceReducer;
 }
 
+/// [Get]
 /// Definition of the function type that returns type R.
 public delegate R Get<R>();
 
+/// [Dispatch] patch action function
 /// Definition of the standard Dispatch.
 /// Send an "intention".
-public delegate dynamic Dispatch(Action action);
+public delegate dynamic? Dispatch(Action action);
 
+/// [Subscribe]
 /// Definition of a standard subscription function.
-/// input a subscriber and output an anti-subscription function.
+/// input a subscriber and output an unsubscription function.
 public delegate Unsubscribe Subscribe(System.Action callback);
 
-///// Definition of a standard un-subscription function.
-//public delegate void Unsubscribe();
+/// [Unsubscribe]
+/// Definition of a standard un-subscription function.
+////public delegate void Unsubscribe();
 public class Unsubscribe
 {
     public Func<bool> Cancel { get; private set; }
@@ -113,10 +61,12 @@ public class Unsubscribe
     }
 }
 
-//// Definition of the standard observable flow.
+/// [Observable]
+/// Definition of the standard observable flow.
 //public delegate Stream Observable<T>();
 
-/// Definition of ReplaceReducer
+/// [ReplaceReducer]
+/// Definition of a standard ReplaceReducer function.
 public delegate void ReplaceReducer<T>(Reducer<T>? reducer);
 
 /// Definition of the standard Middleware.
@@ -137,6 +87,9 @@ public delegate T SubReducer<T>(T state, Action action, bool isStateCopied);
 
 public static class ReducerConverter
 {
+    /// [asReducer]
+    /// combine & as
+    /// for action.type which override it's == operator
     public static Reducer<T> AsReducers<T>(Dictionary<object, Reducer<T>>? map)
     {
         if (map == null || !map.Any())
@@ -158,6 +111,8 @@ public static class ReducerConverter
         }
     }
 
+    /// [CombineReducers]
+    /// Combine an iterable of SubReducer<T> into one Reducer<T>
     public static Reducer<T>? CombineReducers<T>(IList<Reducer<T>>? reducers)
     {
         var notNullReducers = reducers?.ToArray();
@@ -183,6 +138,7 @@ public static class ReducerConverter
         };
     }
 
+    /// [CombineSubReducers]
     /// Combine an iterable of SubReducer<T> into one Reducer<T>
     public static Reducer<T>? CombineSubReducers<T>(IList<SubReducer<T>> subReducers)
     {
