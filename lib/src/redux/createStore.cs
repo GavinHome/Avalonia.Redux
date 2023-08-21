@@ -37,3 +37,9 @@ public class StoreCreator
     //         : createStore(preloadedState, reducer);
     // }
 }
+
+//// Create a store definition
+// public delegate Store<T> StoreCreator<T>(
+//     T preloadedState,
+//     Reducer<T> reducer
+// );

@@ -14,7 +14,7 @@ public class Page : Page<CounterState, Dictionary<String, dynamic>>
 
     private static CounterState initState(Dictionary<string, dynamic>? param) => new CounterState() { Count = 1 };
 
-    private static Effect<CounterState>? buildEffect() => EffectConvert.CombineEffects<CounterState>(null);
+    private static Effect<CounterState>? buildEffect() => EffectConverter.CombineEffects<CounterState>(null);
 
     private static Reducer<CounterState> buildReducer() => ReducerConverter.AsReducers<CounterState>(null);
 }

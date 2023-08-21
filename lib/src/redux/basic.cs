@@ -41,23 +41,43 @@ public class Store<T>
     ////public Observable<T> Observable { get; set; }
     public ReplaceReducer<T> ReplaceReducer { get; private set; }
 
-    public Store(T initState, Reducer<T> reducer)
+    private Reducer<T> _noop<T>() => (T state, Action action) => state;
+
+    bool isDispatching = false;
+    bool isDisposed = false;
+
+    public Store(T initState, Reducer<T>? reducer)
     {
         _state = initState;
         _listeners = new List<System.Action>();
-        _reducer = reducer;
+        _reducer = reducer ?? _noop<T>();
 
         Dispatch = (action) =>
         {
-            if (this._reducer != null)
+            if (isDisposed)
             {
-                _state = reducer(_state, action);
-
-                foreach (var listener in _listeners)
-                {
-                    listener();
-                };
+                return false;
             }
+
+            try
+            {
+                isDispatching = true;
+                if (this._reducer != null)
+                {
+                    _state = reducer!(_state, action);
+                }
+            }
+            finally
+            {
+                isDispatching = false;
+            }
+
+            foreach (var listener in _listeners)
+            {
+                listener();
+            };
+
+            return true;
         };
 
         Subscribe = (listener) =>
@@ -66,17 +86,16 @@ public class Store<T>
             return new Unsubscribe(() => _listeners.Remove(listener));
         };
 
-        ReplaceReducer = (nextReducer) => reducer = nextReducer;
+        ReplaceReducer = (nextReducer) => reducer = nextReducer ?? _noop<T>();
     }
 }
-
 
 /// Definition of the function type that returns type R.
 public delegate R Get<R>();
 
 /// Definition of the standard Dispatch.
 /// Send an "intention".
-public delegate void Dispatch(Action action);
+public delegate dynamic Dispatch(Action action);
 
 /// Definition of a standard subscription function.
 /// input a subscriber and output an anti-subscription function.
@@ -98,7 +117,7 @@ public class Unsubscribe
 //public delegate Stream Observable<T>();
 
 /// Definition of ReplaceReducer
-public delegate void ReplaceReducer<T>(Reducer<T> reducer);
+public delegate void ReplaceReducer<T>(Reducer<T>? reducer);
 
 /// Definition of the standard Middleware.
 public delegate Composable<Dispatch> Middleware<T>(Dispatch dispatch, Get<T> getState);
@@ -115,36 +134,6 @@ public delegate T Reducer<T>(T state, Action action);
 /// [isStateCopied] is Used to optimize execution performance.
 /// Ensure that a T will be cloned at most once during the entire process.
 public delegate T SubReducer<T>(T state, Action action, bool isStateCopied);
-
-//// Create a store definition
-// public delegate Store<T> StoreCreator<T>(
-//     T preloadedState,
-//     Reducer<T> reducer
-// );
-
-/// Definition of Enhanced creating a store
-// public delegate StoreCreator<T> StoreEnhancer<T>(StoreCreator<T> creator);
-
-// /// Definition of Connector which connects Reducer<S> with Reducer<P>.
-// /// 1. How to get an instance of type P from an instance of type S.
-// /// 2. How to synchronize changes of an instance of type P to an instance of type S.
-// /// 3. How to clone a new S.
-// public abstract class AbstractConnector<S, P>
-// {
-//     public abstract P Get(S state);
-//
-//     /// For mutable state, there are three abilities needed to be met.
-//     ///     1. get: (S) => P
-//     ///     2. set: (S, P) => void
-//     ///     3. shallow copy: s.clone()
-//     ///
-//     /// For immutable state, there are two abilities needed to be met.
-//     ///     1. get: (S) => P
-//     ///     2. set: (S, P) => S
-//     ///
-//     /// See in [connector].
-//     public abstract SubReducer<S> subReducer(Reducer<P> reducer);
-// }
 
 public static class ReducerConverter
 {
@@ -163,6 +152,7 @@ public static class ReducerConverter
                 {
                     return fn(state, action);
                 }
+
                 else return state;
             };
         }
@@ -181,7 +171,7 @@ public static class ReducerConverter
             return notNullReducers.Single();
         }
 
-        return (T state, Redux.Action action) =>
+        return (T state, Action action) =>
         {
             T nextState = state;
             foreach (Reducer<T> reducer in notNullReducers)
@@ -205,10 +195,10 @@ public static class ReducerConverter
         if (notNullReducers.Length == 1)
         {
             SubReducer<T> single = notNullReducers.Single();
-            return (T state, Redux.Action action) => single(state, action, false);
+            return (T state, Action action) => single(state, action, false);
         }
 
-        return (T state, Redux.Action action) =>
+        return (T state, Action action) =>
         {
             T copy = state;
             bool hasChanged = false;

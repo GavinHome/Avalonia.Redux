@@ -8,7 +8,12 @@ public abstract class Page<T, P> : Component<T>
 {
     private InitState<T, P> _initState;
 
-    protected Page(InitState<T, P> initState, ViewBuilder<T> view, Effect<T>? effect, Reducer<T>? reducer) : base(view, effect, reducer)
+    protected Page(InitState<T, P> initState, ViewBuilder<T> view, Effect<T>? effect = null, Reducer<T>? reducer = null, Dependencies<T>? dependencies = null, ShouldUpdate<T>? shouldUpdate = null) : base(
+        effect: effect,
+        dependencies: dependencies,
+        reducer: reducer,
+        view: view,
+        shouldUpdate: shouldUpdate)
     {
         _initState = initState;
     }
