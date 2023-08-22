@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CS0693: 类型参数与外部类型中的类型参数同名
+dotnet_diagnostic.CS0693.severity = suggestion
