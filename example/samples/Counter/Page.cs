@@ -6,15 +6,13 @@ namespace samples.Counter;
 public class Page : Page<CounterState, Dictionary<String, dynamic>>
 {
     public Page() : base(
-        initState: initState,
-        effect: buildEffect(),
-        reducer: buildReducer(),
+        initState: CounterState.initState,
+        effect: Effect.buildEffect(),
+        reducer: Reducer.buildReducer(),
+        middlewares: new Middleware<CounterState>[]
+        {
+            Redux.Middlewares.logMiddleware<CounterState>(monitor: (state) => state.ToString(), tag: "CounterApp")
+        },
         view: (state, dispatch, ctx) => new Object())
-    {}
-
-    private static CounterState initState(Dictionary<string, dynamic>? param) => new CounterState() { Count = 1 };
-
-    private static Effect<CounterState>? buildEffect() => EffectConverter.CombineEffects<CounterState>(null);
-
-    private static Reducer<CounterState> buildReducer() => ReducerConverter.AsReducers<CounterState>(null);
+    { }
 }

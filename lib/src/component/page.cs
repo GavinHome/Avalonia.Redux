@@ -7,10 +7,10 @@ public delegate T InitState<T, P>(P? param);
 public abstract class Page<T, P> : Component<T>
 {
     private InitState<T, P> _initState;
-    private List<Middleware<T>>? _middlewares;
+    private Middleware<T>[]? _middlewares;
 
     protected Page(InitState<T, P> initState, ViewBuilder<T> view, Effect<T>? effect = null, Reducer<T>? reducer = null,
-                    Dependencies<T>? dependencies = null, List<Middleware<T>>? middlewares = null,
+                    Dependencies<T>? dependencies = null, Middleware<T>[]? middlewares = null,
                     ShouldUpdate<T>? shouldUpdate = null) : base(
         effect: effect,
         dependencies: dependencies,
@@ -23,7 +23,7 @@ public abstract class Page<T, P> : Component<T>
     }
 
     public InitState<T, P> InitState => _initState;
-    public List<Middleware<T>>? Middlewares => _middlewares;
+    public List<Middleware<T>>? Middlewares => _middlewares?.ToList();
 
     ///  build page
     public Widget buildPage(P? param) => new _PageWidget<T, P>(param: param, page: this);

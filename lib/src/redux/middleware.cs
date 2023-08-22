@@ -2,7 +2,7 @@
 
 /// Middleware for print action dispatch.
 /// It works on debug mode.
-public class Middlewares
+public static class Middlewares
 {
     public static Middleware<T> logMiddleware<T>(System.Func<T, String> monitor, String tag = "done-redux")
     {
