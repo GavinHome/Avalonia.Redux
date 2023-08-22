@@ -67,6 +67,9 @@ public abstract class Dependent<T>
     public abstract List<Widget> buildComponents(Store<object> store, Get<T> getter);
 
     public abstract SubReducer<T> createSubReducer();
+
+    /// component getter
+    public abstract ComponentBase<object> Component { get; }
 }
 
 /// [Dependencies]

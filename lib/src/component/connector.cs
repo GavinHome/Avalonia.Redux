@@ -1,4 +1,7 @@
-﻿namespace Redux.Component;
+﻿using System.ComponentModel;
+using System;
+
+namespace Redux.Component;
 
 /// Definition of Connector which connects Reducer<S> with Reducer<P>.
 /// 1. How to get an instance of type P from an instance of type S.
@@ -58,6 +61,13 @@ public abstract class MutableConn<T, P> : AbstractConnector<T, P>
         }
     }
 
+    /// [ConnOp]
+    /// Mixin of Connector for Component
+    public static Dependent<T> operator +(MutableConn<T, P> connector, BasicComponent<P> component)
+    {
+        return DependentCreator.createDependent<T, P>(connector, component);
+    }
+
     /// how to clone an object
     T _clone(T state)
     {
@@ -105,7 +115,50 @@ public class ConnOp<T, P> : MutableConn<T, P>
     public override P Get(T state) => _getter!(state);
 
     public override void Set(T state, P subState) => _setter!(state, subState);
+}
 
-    //public Dependent<T> add(AbstractLogic<P> logic) =>
-    //   Redux.DependentCreator.createDependent(this, logic);
+/// [_Dependent]
+/// Implementation of Dependent
+public class _Dependent<T, P> : Dependent<T>
+{
+    MutableConn<T, P> _connector;
+    SubReducer<T>? _subReducer;
+    Reducer<P> _reducer;
+    BasicComponent<P> _component;
+
+    public _Dependent(BasicComponent<P> component, MutableConn<T, P> connector)
+    {
+        _connector = connector;
+        _component = component;
+        _reducer = component.createReducer();
+        _subReducer = _conn<T, P>((P state, Action action) => _reducer(state, action), connector);
+    }
+
+    SubReducer<T>? _conn<T, P>(Reducer<P>? reducer, MutableConn<T, P> connector)
+    {
+        return reducer == null
+            ? null
+            : connector.subReducer(
+                (P state, Action action) => reducer(state, action));
+    }
+
+    public override Widget buildComponent(Store<object> store, Get<T> getter)
+    {
+        return _component.buildComponent(store, () => _connector.Get(getter()));
+    }
+
+    public override List<Widget> buildComponents(Store<object> store, Get<T> getter)
+    {
+        return _component.buildComponents(store, () => _connector.Get(getter()));
+    }
+
+    public override SubReducer<T> createSubReducer() => _subReducer ?? ((T state, Action _, bool __) => state);
+
+    public override ComponentBase<object> Component => (_component as BasicComponent<object>)!;
+}
+
+static class DependentCreator
+{
+    public static Dependent<K> createDependent<K, T>(MutableConn<K, T> connector, BasicComponent<T> component) =>
+        new _Dependent<K, T>(connector: connector, component: component);
 }

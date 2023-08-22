@@ -45,8 +45,6 @@ public class _ComponentWidget<T> : StatefulWidget
     public BasicComponent<T> Component => component;
     public Store<object> Store => store;
     public Get<T> GetGetter => getter;
-
-    ////public override _ComponentState<T> createState() => new _ComponentState<T>();
 }
 
 public class _ComponentState<T> : State<_ComponentWidget<T>>
@@ -63,11 +61,12 @@ public class _ComponentState<T> : State<_ComponentWidget<T>>
             widget.GetGetter,
             markNeedsBuild: () =>
             {
-                // todo:      if (mounted)
-                //       {
-                //           setState(() { });
-                //       }
-                //       Log.doPrint('${component.runtimeType} do reload');
+                // todo:
+                // if (mounted)
+                // {
+                //     setState(() { });
+                // }
+                Log.doPrint($"{component.GetType()} do reload");
             }
         );
         _ctx.onLifecycle(LifecycleCreator.initState());
