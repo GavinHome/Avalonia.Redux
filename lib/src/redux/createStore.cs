@@ -32,19 +32,21 @@ public class InternalStore<T> : Store<T>
     //public Observable<T> Observable { get; set; }
     public new ReplaceReducer<T> ReplaceReducer { get; private set; }
 
-    private Reducer<T> _noop<T>() => (T state, Action action) => state;
-
     bool isDispatching = false;
     bool isDisposed = false;
 
     public InternalStore(T initState, Reducer<T>? reducer, List<Middleware<T>>? middleware)
     {
+        _throwIfNot(initState != null, "Expected the preloadedState to be non-null value.");
+
         _state = initState;
         _listeners = new List<System.Action>();
-        _reducer = reducer ?? _noop<T>();
+        _reducer = reducer ?? ((T state, Action action) => state);
 
         Dispatch = (action) =>
         {
+            _throwIfNot(!isDispatching, "Reducers may not dispatch actions.");
+
             if (isDisposed)
             {
                 return null;
@@ -79,12 +81,27 @@ public class InternalStore<T> : Store<T>
             .Aggregate(Dispatch, (Dispatch previousValue, Composable<Dispatch> element) => element(previousValue))
           : Dispatch;
 
-        ReplaceReducer = (nextReducer) => reducer = nextReducer ?? _noop<T>();
+        ReplaceReducer = (nextReducer) => reducer = nextReducer ?? ((T state, Action action) => state);
 
         Subscribe = (listener) =>
         {
+            _throwIfNot(!isDispatching, "You may not call store.subscribe() while the reducer is executing.");
+
             _listeners.Add(listener);
-            return new Unsubscribe(() => _listeners.Remove(listener));
+            return new Unsubscribe(() =>
+            {
+                _throwIfNot(!isDispatching, "You may not unsubscribe from a store listener while the reducer is executing.");
+                _listeners.Remove(listener);
+                return true;
+            });
         };
+    }
+
+    void _throwIfNot(bool condition, string? message = null)
+    {
+        if (!condition)
+        {
+            throw new ArgumentException(message);
+        }
     }
 }

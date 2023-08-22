@@ -7,7 +7,7 @@ namespace example;
 
 public class ViewLocator : IDataTemplate
 {
-    public Control Build(object data)
+    public Control? Build(object? data)
     {
         if (data is null)
             return null;

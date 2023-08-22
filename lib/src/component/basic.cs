@@ -1,20 +1,38 @@
-using static System.Runtime.InteropServices.JavaScript.JSType;
 // ReSharper disable CheckNamespace
 namespace Redux.Component;
 
 public abstract class Widget
 {
+    //public abstract Widget buildWidget();
 }
 
 public abstract class StatefulWidget : Widget
 {
-    //public abstract State<StatefulWidget> createState();
+    public abstract State<StatefulWidget> createState();
     //public abstract State createState();
 
 }
 
-public abstract class State<T> where T: StatefulWidget {
-    protected abstract void initState();
+public abstract class State<T> where T : StatefulWidget
+{
+    public T widget => _widget!;
+    protected T? _widget;
+
+    protected virtual void initState() { }
+
+    public abstract Widget build(dynamic context);
+
+    public virtual void didChangeDependencies() { }
+
+    public virtual void deactivate() { }
+
+    public virtual void reassemble() { }
+
+    public virtual void didUpdateWidget(T oldWidget) { }
+
+    public virtual void disposeCtx() { }
+
+    public virtual void dispose() { }
 }
 
 /// Log
@@ -49,9 +67,6 @@ public abstract class Dependent<T>
     public abstract List<Widget> buildComponents(Store<object> store, Get<T> getter);
 
     public abstract SubReducer<T> createSubReducer();
-
-    /// component getter
-    ComponentBase<object> Component { get; }
 }
 
 /// [Dependencies]
@@ -96,9 +111,8 @@ public class Dependencies<T>
             subs.Add(adapter.createSubReducer());
         }
 
-        Reducer<T> _noop<T>() => (T state, Action action) => state;
         var subReduces = ReducerConverter.CombineSubReducers(subs);
-        return ReducerConverter.CombineReducers(new List<Reducer<T>> { subReduces ?? _noop<T>() }) ?? _noop<T>();
+        return ReducerConverter.CombineReducers(new List<Reducer<T>> { subReduces ?? ((T state, Action action) => state) }) ?? ((T state, Action action) => state);
     }
 
     public Dependent<T>? slot(string type) => slots?[type];
@@ -141,22 +155,21 @@ class LifecycleCreator
 
     public static Action build(string name) => new Action(Lifecycle.build, payload: name);
 
-    static Action reassemble() => new Action(Lifecycle.reassemble);
+    public static Action reassemble() => new Action(Lifecycle.reassemble);
 
-    static Action dispose() => new Action(Lifecycle.dispose);
+    public static Action dispose() => new Action(Lifecycle.dispose);
 
     // static Action didDisposed() => const Action(Lifecycle.didDisposed);
 
-    static Action didUpdateWidget() => new Action(Lifecycle.didUpdateWidget);
+    public static Action didUpdateWidget() => new Action(Lifecycle.didUpdateWidget);
 
-    static Action didChangeDependencies() =>
-      new Action(Lifecycle.didChangeDependencies);
+    public static Action didChangeDependencies() => new Action(Lifecycle.didChangeDependencies);
 
-    static Action deactivate() => new Action(Lifecycle.deactivate);
+    public static Action deactivate() => new Action(Lifecycle.deactivate);
 
-    static Action appear(int index) => new Action(Lifecycle.appear, payload: index);
+    public static Action appear(int index) => new Action(Lifecycle.appear, payload: index);
 
-    static Action disappear(int index) =>
+    public static Action disappear(int index) =>
         new Action(Lifecycle.disappear, payload: index);
 }
 
@@ -192,7 +205,7 @@ public class ComponentContext<T>
 
     //  BuildContext get context => buildContext!;
 
-    Widget buildView()
+    public Widget buildView()
     {
         Widget? result = _widgetCache;
         if (result == null)
@@ -242,13 +255,13 @@ public class ComponentContext<T>
         _latestState = getState();
     }
 
-    void dispose()
+    public void dispose()
     {
         //_dispatchDispose?.call();
         //_dispatchDispose = null;
     }
 
-    void onNotify()
+    public void onNotify()
     {
         T now = state;
         if (_shouldUpdate(_latestState, now))
@@ -259,7 +272,7 @@ public class ComponentContext<T>
         }
     }
 
-    void didUpdateWidget()
+    public void didUpdateWidget()
     {
         T now = state;
         if (_shouldUpdate(_latestState, now))
@@ -274,7 +287,7 @@ public class ComponentContext<T>
         effect?.Invoke(action, this);
     }
 
-    void clearCache()
+    public void clearCache()
     {
         _widgetCache = null;
     }
@@ -312,7 +325,7 @@ public class ComponentContext<T>
         };
 
     private ShouldUpdate<K> _updateByDefault<K>() =>
-                (K _, K __) => !EqualityComparer<K>.Default.Equals(_, __);//!identical(_, __);
+                (K? _, K? __) => !EqualityComparer<K>.Default.Equals(_, __);//!identical(_, __);
 }
 
 /// [ViewBuilder]
@@ -376,7 +389,7 @@ public abstract class BasicComponent<T> : ComponentBase<T>
             ?? ((T state, Action action) => state);
     }
 
-    protected ComponentContext<T> createContext(Store<object> store, Get<T> getter, MarkNeedsBuild? markNeedsBuild = null)
+    public ComponentContext<T> createContext(Store<object> store, Get<T> getter, MarkNeedsBuild? markNeedsBuild = null)
     {
         return new ComponentContext<T>(
             store: store,
@@ -451,7 +464,7 @@ public class BasicAdapter<T> : ComposedComponent<T>
     {
         return ReducerConverter.CombineReducers<T>(new List<Reducer<T>>
         {
-            base.createReducer(), _createAdapterReducer() 
+            base.createReducer(), _createAdapterReducer()
         }) ?? ((T state, Action action) => state);
     }
 
@@ -477,5 +490,32 @@ public class BasicAdapter<T> : ComposedComponent<T>
         }
         _ctx!.onLifecycle(LifecycleCreator.initState());
         return widgets;
+    }
+}
+
+public static class ObjectCopier
+{
+    /// <summary>
+    /// Perform a deep Copy of the object.
+    /// </summary>
+    /// <typeparam name="T">The type of object being copied.</typeparam>
+    /// <param name="source">The object instance to copy.</param>
+    /// <returns>The copied object.</returns>
+    /// <exception cref="ArgumentException"></exception>
+    public static T? Clone<T>(this T source)
+    {
+        if (!typeof(T).IsSerializable)
+        {
+            throw new ArgumentException("The type must be serializable.", nameof(source));
+        }
+
+        // Don't serialize a null object, simply return the default for that object
+        if (Object.ReferenceEquals(source, null))
+        {
+            return default;
+        }
+
+        var stream = System.Text.Json.JsonSerializer.Serialize<T>(source);
+        return System.Text.Json.JsonSerializer.Deserialize<T>(stream);
     }
 }

@@ -1,5 +1,4 @@
 // ReSharper disable CheckNamespace
-
 namespace Redux.Component;
 
 public abstract class Component<T> : BasicComponent<T>
@@ -38,86 +37,81 @@ public class _ComponentWidget<T> : StatefulWidget
         this.dependencies = dependencies;
     }
 
-    //public override _ComponentState<T> createState() => new _ComponentState<T>();
+    public override State<StatefulWidget> createState()
+    {
+        return (new _ComponentState<_ComponentWidget<T>>() as State<StatefulWidget>)!;
+    }
+
+    public BasicComponent<T> Component => component;
+    public Store<object> Store => store;
+    public Get<T> GetGetter => getter;
+
+    ////public override _ComponentState<T> createState() => new _ComponentState<T>();
 }
 
 public class _ComponentState<T> : State<_ComponentWidget<T>>
 {
-    ComponentContext<T> _ctx;
-    //BasicComponent<T> component => widget.component;
+    ComponentContext<T>? _ctx;
+    BasicComponent<T> component => widget.Component;
+    Unsubscribe? subscribe;
 
     protected override void initState()
     {
-        throw new NotImplementedException();
+        base.initState();
+        _ctx = component.createContext(
+            widget.Store,
+            widget.GetGetter,
+            markNeedsBuild: () =>
+            {
+                // todo:      if (mounted)
+                //       {
+                //           setState(() { });
+                //       }
+                //       Log.doPrint('${component.runtimeType} do reload');
+            }
+        );
+        _ctx.onLifecycle(LifecycleCreator.initState());
+        subscribe = _ctx.store.Subscribe?.Invoke(_ctx.onNotify);
     }
 
-    //    late Function() subscribe;
+    public override Widget build(dynamic context) => _ctx!.buildView();
 
-    //    @override
-    //  void initState()
-    //    {
-    //        super.initState();
-    //        _ctx = component.createContext(
-    //        widget.store,
-    //          widget.getter,
-    //          buildContext: context,
-    //          bus: widget.bus,
-    //          markNeedsBuild: () {
-    //            if (mounted)
-    //            {
-    //                setState(() { });
-    //}
-    //Log.doPrint('${component.runtimeType} do reload');
-    //      },
-    //    );
-    //_ctx.onLifecycle(LifecycleCreator.initState());
-    //subscribe = _ctx.store.subscribe(_ctx.onNotify);
-    //  }
+    public override void didChangeDependencies()
+    {
+        base.didChangeDependencies();
+        _ctx!.onLifecycle(LifecycleCreator.didChangeDependencies());
+    }
 
-    //  @override
-    //  Widget build(BuildContext context) => _ctx.buildView();
+    public override void deactivate()
+    {
+        base.deactivate();
+        _ctx!.onLifecycle(LifecycleCreator.deactivate());
+    }
 
-    //@mustCallSuper
-    //@override
-    //  void didChangeDependencies() {
-    //    super.didChangeDependencies();
-    //    _ctx.onLifecycle(LifecycleCreator.didChangeDependencies());
-    //}
+    public override void reassemble()
+    {
+        base.reassemble();
+        _ctx!.clearCache();
+        _ctx.onLifecycle(LifecycleCreator.reassemble());
+    }
 
-    //@mustCallSuper
-    //@override
-    //  void deactivate() {
-    //    super.deactivate();
-    //    _ctx.onLifecycle(LifecycleCreator.deactivate());
-    //}
+    public override void didUpdateWidget(_ComponentWidget<T> oldWidget)
+    {
+        base.didUpdateWidget(oldWidget);
+        _ctx!.didUpdateWidget();
+        _ctx.onLifecycle(LifecycleCreator.didUpdateWidget());
+    }
 
-    //@override
-    //@protected
-    //  @mustCallSuper
-    //  void reassemble() {
-    //    super.reassemble();
-    //    _ctx.clearCache();
-    //    _ctx.onLifecycle(LifecycleCreator.reassemble());
-    //}
+    public override void disposeCtx()
+    {
+        base.disposeCtx();
+        _ctx!.onLifecycle(LifecycleCreator.dispose());
+        _ctx!.dispose();
+    }
 
-    //@mustCallSuper
-    //@override
-    //  void didUpdateWidget(_ComponentWidget<T> oldWidget) {
-    //    super.didUpdateWidget(oldWidget);
-    //    _ctx.didUpdateWidget();
-    //    _ctx.onLifecycle(LifecycleCreator.didUpdateWidget());
-    //}
-
-    //@mustCallSuper
-    //  void disposeCtx() {
-    //    _ctx..onLifecycle(LifecycleCreator.dispose())..dispose();
-    //}
-
-    //@mustCallSuper
-    //@override
-    //  void dispose() {
-    //    disposeCtx();
-    //    subscribe();
-    //    super.dispose();
-    //}
+    public override void dispose()
+    {
+        subscribe?.Cancel();
+        base.dispose();
+    }
 }
