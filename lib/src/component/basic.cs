@@ -445,7 +445,7 @@ public class BasicAdapter<T> : ComposedComponent<T>
           )
     { }
 
-    Reducer<T> _createAdapterReducer() => (T state, Action action) =>
+    Reducer<T> _createAdapterReducer() => (state, action) =>
     {
         T copy = state;
         bool hasChanged = false;
