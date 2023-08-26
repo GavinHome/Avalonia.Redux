@@ -36,11 +36,11 @@ public abstract class State<T> where T : StatefulWidget
 }
 
 /// Log
-class Log
+static class Log
 {
     public static void doPrint(object message)
     {
-        System.Action<object> print = (object obj) => Console.WriteLine(obj);
+        System.Action<object> print = Console.WriteLine;
         if (Aop.isDebug())
         {
             print(message);
@@ -106,7 +106,7 @@ public class Dependencies<T>
         List<SubReducer<T>> subs = new List<SubReducer<T>>();
         if (slots != null && slots.Any())
         {
-            subs.AddRange(slots.Values.Select((Dependent<T> entry) => entry.createSubReducer()).ToList());
+            subs.AddRange(slots.Values.Select(entry => entry.createSubReducer()).ToList());
         }
 
         if (adapter != null)
@@ -115,7 +115,7 @@ public class Dependencies<T>
         }
 
         var subReduces = ReducerConverter.CombineSubReducers(subs);
-        return ReducerConverter.CombineReducers(new List<Reducer<T>> { subReduces ?? ((T state, Action action) => state) }) ?? ((T state, Action action) => state);
+        return ReducerConverter.CombineReducers(new List<Reducer<T>> { subReduces ?? ((T state, Action _) => state) }) ?? ((T state, Action _) => state);
     }
 
     public Dependent<T>? slot(string type) => slots?[type];
@@ -152,7 +152,7 @@ enum Lifecycle
     didChangeAppLifecycleState,
 }
 
-class LifecycleCreator
+static class LifecycleCreator
 {
     public static Action initState() => new Action(Lifecycle.initState);
 
@@ -243,7 +243,7 @@ public class ComponentContext<T>
 
     //    Function()? _dispatchDispose;
 
-    Dispatch _createNextDispatch(ComponentContext<T> ctx) => (Redux.Action action) =>
+    Dispatch _createNextDispatch(ComponentContext<T> ctx) => action =>
     {
         ctx.store.Dispatch?.Invoke(action);
         return null;
@@ -299,12 +299,12 @@ public class ComponentContext<T>
     Dispatch _createEffectDispatch(
         Effect<T>? userEffect, ComponentContext<T> ctx)
     {
-        return (Action action) =>
+        return action =>
         {
             object? result = userEffect?.Invoke(action, ctx);
 
             //skip-lifecycle-actions
-            if (action.Type is Lifecycle && (result is null or (object)false))
+            if (action.Type is Lifecycle && (result is null || !(result as bool?).GetValueOrDefault()))
             {
                 return new object();
             }
@@ -315,10 +315,10 @@ public class ComponentContext<T>
 
     Dispatch _createDispatch(
             Dispatch onEffect, Dispatch next, ComponentContext<T> ctx) =>
-        (Action action) =>
+        action =>
         {
             object? result = onEffect.Invoke(action);
-            if (result is null or (object)false)
+            if (result is null || !(result as bool?).GetValueOrDefault())
             {
                 next(action);
             }
@@ -388,8 +388,8 @@ public abstract class BasicComponent<T> : ComponentBase<T>
 
     public virtual Reducer<T> createReducer()
     {
-        return ReducerConverter.CombineReducers<T>(new List<Reducer<T>> { _reducer, _dependencies?.createReducer() ?? ((T state, Action action) => state) })
-            ?? ((T state, Action action) => state);
+        return ReducerConverter.CombineReducers<T>(new List<Reducer<T>> { _reducer, _dependencies?.createReducer() ?? ((T state, Action _) => state) })
+            ?? ((T state, Action _) => state);
     }
 
     public ComponentContext<T> createContext(Store<object> store, Get<T> getter, MarkNeedsBuild? markNeedsBuild = null)
@@ -420,7 +420,7 @@ public abstract class ComposedComponent<T> : BasicComponent<T>
 
     public override Widget buildComponent(Store<object> store, Get<T> getter)
     {
-        throw new NotImplementedException("omposedComponent could not build single component");
+        throw new NotImplementedException("ComposedComponent could not build single component");
     }
 }
 
@@ -450,9 +450,8 @@ public class BasicAdapter<T> : ComposedComponent<T>
         T copy = state;
         bool hasChanged = false;
         List<Dependent<T>> list = builder.Invoke(state);
-        for (int i = 0; i < list.Count; i++)
+        foreach (var dep in list)
         {
-            Dependent<T> dep = list[i];
             SubReducer<T>? subReducer = dep?.createSubReducer();
             if (subReducer != null)
             {
@@ -468,7 +467,7 @@ public class BasicAdapter<T> : ComposedComponent<T>
         return ReducerConverter.CombineReducers<T>(new List<Reducer<T>>
         {
             base.createReducer(), _createAdapterReducer()
-        }) ?? ((T state, Action action) => state);
+        }) ?? ((T state, Action _) => state);
     }
 
     public override List<Widget> buildComponents(Store<object> store, Get<T> getter)
@@ -482,13 +481,12 @@ public class BasicAdapter<T> : ComposedComponent<T>
           });
         List<Dependent<T>> dependentArray = builder(getter());
         List<Widget> widgets = new List<Widget>();
-        for (int i = 0; i < dependentArray.Count; i++)
+        foreach (var dependent in dependentArray)
         {
-            Dependent<T> dependent = dependentArray[i];
             widgets.AddRange(
-              dependent.buildComponents(
-                store,
-                getter)
+                dependent.buildComponents(
+                    store,
+                    getter)
             );
         }
         _ctx!.onLifecycle(LifecycleCreator.initState());
@@ -512,7 +510,7 @@ public static class ObjectCopier
             throw new ArgumentException("The type must be serializable.", nameof(source));
         }
 
-#pragma warning disable CS8603 // ¿ÉÄÜ·µ»Ø null ÒýÓÃ¡£
+#pragma warning disable CS8603 // ï¿½ï¿½ï¿½Ü·ï¿½ï¿½ï¿½ null ï¿½ï¿½ï¿½Ã¡ï¿½
         // Don't serialize a null object, simply return the default for that object
         if (Object.ReferenceEquals(source, null))
         {
@@ -521,6 +519,6 @@ public static class ObjectCopier
 
         var stream = System.Text.Json.JsonSerializer.Serialize<T>(source);
         return System.Text.Json.JsonSerializer.Deserialize<T>(stream);
-#pragma warning restore CS8603 // ¿ÉÄÜ·µ»Ø null ÒýÓÃ¡£
+#pragma warning restore CS8603 // ï¿½ï¿½ï¿½Ü·ï¿½ï¿½ï¿½ null ï¿½ï¿½ï¿½Ã¡ï¿½
     }
 }
