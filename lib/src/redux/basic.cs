@@ -25,13 +25,98 @@ public class Action
 
 /// [Store]
 /// Definition of the standard Store.
-public abstract class Store<T>
+public class Store<T> where T : class
 {
-    public Get<T>? GetState;
-    public Dispatch? Dispatch;
-    public Subscribe? Subscribe;
-    ////public Observable<T> observable;
-    public ReplaceReducer<T>? ReplaceReducer;
+    //public Get<T> GetState;
+    //public Dispatch Dispatch;
+    //public Subscribe Subscribe;
+    //////public Observable<T> observable;
+    //public ReplaceReducer<T> ReplaceReducer;
+
+    private T? _state;
+    private IList<System.Action> _listeners;
+    private Reducer<T>? _reducer;
+
+    public Get<T> GetState => () => _state!;
+    public Reducer<T>? GetReducer => _reducer;
+    public Dispatch Dispatch { get; set; }
+
+    public Subscribe Subscribe { get; set; }
+    //public Observable<T> Observable { get; set; }
+    public ReplaceReducer<T> ReplaceReducer { get; private set; }
+
+    bool isDispatching = false;
+    bool isDisposed = false;
+
+    public Store(T initState, Reducer<T>? reducer, List<Middleware<T>>? middleware)
+    {
+        _throwIfNot(initState != null, "Expected the preloadedState to be non-null value.");
+
+        _state = initState;
+        _listeners = new List<System.Action>();
+        _reducer = reducer ?? ((T state, Action action) => state);
+
+        Dispatch = (action) =>
+        {
+            _throwIfNot(!isDispatching, "Reducers may not dispatch actions.");
+
+            if (isDisposed)
+            {
+                return null;
+            }
+
+            try
+            {
+                isDispatching = true;
+                if (this._reducer != null)
+                {
+                    _state = reducer!(_state, action);
+                }
+            }
+            finally
+            {
+                isDispatching = false;
+            }
+
+            foreach (var listener in _listeners)
+            {
+                listener();
+            };
+
+            return null;
+        };
+
+        Dispatch = (middleware != null && middleware.Any())
+            ? middleware!.Select((Middleware<T> middleware) => middleware(
+                dispatch: (Action action) => Dispatch(action),
+                getState: GetState
+            ))
+            .Aggregate(Dispatch, (Dispatch previousValue, Composable<Dispatch> element) => element(previousValue))
+          : Dispatch;
+
+        ReplaceReducer = (nextReducer) => reducer = nextReducer ?? ((T state, Action action) => state);
+
+        Subscribe = (listener) =>
+        {
+            _throwIfNot(!isDispatching, "You may not call store.subscribe() while the reducer is executing.");
+
+            _listeners.Add(listener);
+            return new Unsubscribe(() =>
+            {
+                _throwIfNot(!isDispatching, "You may not unsubscribe from a store listener while the reducer is executing.");
+                _listeners.Remove(listener);
+                return true;
+            });
+        };
+    }
+
+    void _throwIfNot(bool condition, string? message = null)
+    {
+        if (!condition)
+        {
+            throw new ArgumentException(message);
+        }
+    }
 }
 
 /// [Get]

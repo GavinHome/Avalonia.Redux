@@ -13,7 +13,7 @@ public abstract class Component<T> : BasicComponent<T>
 
     public override Widget buildComponent(Store<object> store, Get<T> getter)
     {
-        return new _ComponentWidget<T>(component: this, store: store, getter: getter, dependencies: _dependencies);
+        return new _ComponentWidget<T>(component: this, store: store, getter: getter, dependencies: _dependencies).create().build();
     }
 
     public override List<Widget> buildComponents(Store<object> store, Get<T> getter)
@@ -37,23 +37,27 @@ public class _ComponentWidget<T> : StatefulWidget
         this.dependencies = dependencies;
     }
 
-    public override State<StatefulWidget> createState()
-    {
-        return (new _ComponentState<_ComponentWidget<T>>() as State<StatefulWidget>)!;
-    }
+    ////public override State<StatefulWidget> createState()
+    ////{
+    ////    return (new _ComponentState<_ComponentWidget<T>>() as State<StatefulWidget>)!;
+    ////}
+
+    public override State createState() => new _ComponentState<T>();
 
     public BasicComponent<T> Component => component;
     public Store<object> Store => store;
     public Get<T> GetGetter => getter;
 }
 
-public class _ComponentState<T> : State<_ComponentWidget<T>>
+public class _ComponentState<T> : State //: State<_ComponentWidget<T>>
 {
     ComponentContext<T>? _ctx;
     BasicComponent<T> component => widget.Component;
     Unsubscribe? subscribe;
 
-    protected override void initState()
+    new _ComponentWidget<T> widget => (_widget as _ComponentWidget<T>)!;
+
+    public override void initState()
     {
         base.initState();
         _ctx = component.createContext(
@@ -61,11 +65,11 @@ public class _ComponentState<T> : State<_ComponentWidget<T>>
             widget.GetGetter,
             markNeedsBuild: () =>
             {
-                // todo:
-                // if (mounted)
-                // {
-                //     setState(() { });
-                // }
+                if (mounted)
+                {
+                    setState(() => null);
+                }
+
                 Log.doPrint($"{component.GetType()} do reload");
             }
         );
@@ -94,7 +98,7 @@ public class _ComponentState<T> : State<_ComponentWidget<T>>
         _ctx.onLifecycle(LifecycleCreator.reassemble());
     }
 
-    public override void didUpdateWidget(_ComponentWidget<T> oldWidget)
+    public override void didUpdateWidget(StatefulWidget oldWidget)
     {
         base.didUpdateWidget(oldWidget);
         _ctx!.didUpdateWidget();

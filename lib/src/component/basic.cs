@@ -1,24 +1,89 @@
 // ReSharper disable CheckNamespace
+using Avalonia.Controls;
+using HarfBuzzSharp;
+
 namespace Redux.Component;
+
+public abstract class ComponentElement : ContentControl
+{
+    public abstract Widget build();
+}
+
+public class StatefulElement : ComponentElement
+{
+    public StatefulElement(StatefulWidget widget)
+    {
+        _state = widget.createState();
+        state._element = this;
+        state._widget = widget;
+        _state.initState();
+    }
+
+    public override Widget build() => state.build(this);
+
+    State<StatefulWidget> state => _state!;
+    State<StatefulWidget>? _state;
+    private bool _dirty;
+    private bool dirty => _dirty;
+
+    internal void markNeedsBuild()
+    {
+        if (dirty)
+        {
+            return;
+        }
+
+        _dirty = true;
+        ////state.build(this);
+        rebuild();
+    }
+
+    void rebuild(bool force = false) {
+        if ((!_dirty && !force))
+        {
+            return;
+        }
+
+        _dirty = false;
+    }
+}
 
 public abstract class Widget
 {
-    //public abstract Widget buildWidget();
+    //public abstract Widget create();
+    public abstract StatefulElement create();
+}
+
+public class WidgetWrapper : Widget
+{
+    public object? Content { get; set; }
+
+    public override StatefulElement create() =>  null;
 }
 
 public abstract class StatefulWidget : Widget
 {
-    public abstract State<StatefulWidget> createState();
-    //public abstract State createState();
-
+    //public abstract State<StatefulWidget> createState();
+    public abstract State createState();
+    public override StatefulElement create() => new StatefulElement(this);
 }
+
+public abstract class State : State<StatefulWidget>
+{
+}
+
+public delegate dynamic? VoidCallback();
 
 public abstract class State<T> where T : StatefulWidget
 {
     public T widget => _widget!;
-    protected T? _widget;
+    public T? _widget;
 
-    protected virtual void initState() { }
+    public StatefulElement? _element;
+
+    public bool mounted => _element != null;
+
+    public virtual void initState() { }
 
     public abstract Widget build(dynamic context);
 
@@ -33,6 +98,12 @@ public abstract class State<T> where T : StatefulWidget
     public virtual void disposeCtx() { }
 
     public virtual void dispose() { }
+
+    public void setState(VoidCallback fn)
+    {    
+        object? result = fn();
+        _element!.markNeedsBuild();
+    }
 }
 
 /// Log
@@ -199,6 +270,8 @@ public class ComponentContext<T>
         this.view = view;
         this.effect = effect;
         this._shouldUpdate = shouldUpdate ?? _updateByDefault<T>();
+
+        _init();
     }
 
     T state => getState();
@@ -219,7 +292,7 @@ public class ComponentContext<T>
         return result;
     }
 
-    Dispatch? dispatch(Action action) => _dispatch?.Invoke(action);
+    dynamic? dispatch(Action action) => _dispatch?.Invoke(action);
     //void broadcastEffect(Action action, bool? excluded) => _bus
     //    ?.dispatch(action, excluded: excluded == true ? _effectDispatch : null);
 
@@ -255,7 +328,7 @@ public class ComponentContext<T>
         _dispatch =
             _createDispatch(_effectDispatch, _createNextDispatch(this), this);
         //_dispatchDispose = _bus!.registerReceiver(_effectDispatch);
-        _latestState = getState();
+        _latestState = getState!();
     }
 
     public void dispose()
@@ -510,7 +583,7 @@ public static class ObjectCopier
             throw new ArgumentException("The type must be serializable.", nameof(source));
         }
 
-#pragma warning disable CS8603 // ���ܷ��� null ���á�
+#pragma warning disable CS8603 // 可能返回 null 引用。
         // Don't serialize a null object, simply return the default for that object
         if (Object.ReferenceEquals(source, null))
         {
@@ -519,6 +592,6 @@ public static class ObjectCopier
 
         var stream = System.Text.Json.JsonSerializer.Serialize<T>(source);
         return System.Text.Json.JsonSerializer.Deserialize<T>(stream);
-#pragma warning restore CS8603 // ���ܷ��� null ���á�
+#pragma warning restore CS8603 // 可能返回 null 引用。
     }
 }

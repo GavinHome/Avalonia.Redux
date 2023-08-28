@@ -6,4 +6,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="Avalonia" Version="11.0.4" />
+      <PackageReference Include="Avalonia.Browser" Version="11.0.4" />
+    </ItemGroup>
+
 </Project>

@@ -4,7 +4,7 @@ namespace Redux.Component;
 /// init store's state by route-params
 public delegate T InitState<T, P>(P? param);
 
-public abstract class Page<T, P> : Component<T>
+public abstract class Page<T, P> : Component<T> where T : class, new()
 {
     private InitState<T, P> _initState;
     private Middleware<T>[]? _middlewares;
@@ -26,10 +26,10 @@ public abstract class Page<T, P> : Component<T>
     public List<Middleware<T>>? Middlewares => _middlewares?.ToList();
 
     ///  build page
-    public Widget buildPage(P? param) => new _PageWidget<T, P>(param: param, page: this);
+    public Widget buildPage(P? param) => new _PageWidget<T, P>(param: param, page: this).create().build();
 }
 
-class _PageWidget<T, P> : StatefulWidget
+class _PageWidget<T, P> : StatefulWidget where T : class, new()
 {
     P? param;
     Page<T, P> page;
@@ -43,15 +43,19 @@ class _PageWidget<T, P> : StatefulWidget
     public Page<T, P> Page => page;
     public P? Param => param;
 
-    public override State<StatefulWidget> createState() => (new _PageState<T, P>() as State<StatefulWidget>)!;
+    public override State createState() => new _PageState<T, P>();
+
+    ////public override State<StatefulWidget> createState() => (new _PageState<T, P>() as State<StatefulWidget>)!;
 }
 
-class _PageState<T, P> : State<_PageWidget<T, P>>
+class _PageState<T, P> : State where T : class, new() //: State<_PageWidget<T, P>>
 {
     Store<T>? _store;
     T? state;
 
-    protected override void initState()
+    new _PageWidget<T, P> widget => (_widget as _PageWidget<T, P>)!;
+
+    public override void initState()
     {
         base.initState();
         state = widget.Page.InitState(widget.Param);
@@ -65,7 +69,7 @@ class _PageState<T, P> : State<_PageWidget<T, P>>
 
     public override Widget build(dynamic context)
     {
-        return widget.Page.buildComponent((_store as Store<object>)!, _store!.GetState!);
+        return widget.Page.buildComponent(_store?.ObjectClone()!, _store!.GetState!);
     }
 
     public override void dispose()

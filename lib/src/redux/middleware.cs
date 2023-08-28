@@ -4,7 +4,7 @@
 /// It works on debug mode.
 public static class Middlewares
 {
-    public static Middleware<T> logMiddleware<T>(System.Func<T, String> monitor, String tag = "done-redux")
+    public static Middleware<T> logMiddleware<T>(System.Func<T, String> monitor, String tag = "avalonia-redux")
     {
         return (Dispatch Dispatch, Get<T> getState) =>
             (Dispatch next) =>

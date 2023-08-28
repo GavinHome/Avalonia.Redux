@@ -65,7 +65,7 @@ public abstract class MutableConn<T, P> : AbstractConnector<T, P>
     /// Mixin of Connector for Component
     public static Dependent<T> operator +(MutableConn<T, P> connector, BasicComponent<P> component)
     {
-        return DependentCreator.createDependent<T, P>(connector, component);
+        return connector.createDependent<T, P>(component);
     }
 
     /// how to clone an object
@@ -131,10 +131,10 @@ public class _Dependent<T, P> : Dependent<T>
         _connector = connector;
         _component = component;
         _reducer = component.createReducer();
-        _subReducer = _conn<T, P>((P state, Action action) => _reducer(state, action), connector);
+        _subReducer = _conn((P state, Action action) => _reducer(state, action), connector);
     }
 
-    SubReducer<T>? _conn<T, P>(Reducer<P>? reducer, MutableConn<T, P> connector)
+    SubReducer<T>? _conn(Reducer<P>? reducer, MutableConn<T, P> connector)
     {
         return reducer == null
             ? null
@@ -157,8 +157,8 @@ public class _Dependent<T, P> : Dependent<T>
     public override ComponentBase<object> Component => (_component as BasicComponent<object>)!;
 }
 
-static class DependentCreator
+static class DependentExtends
 {
-    public static Dependent<K> createDependent<K, T>(MutableConn<K, T> connector, BasicComponent<T> component) =>
+    public static Dependent<K> createDependent<K, T>(this MutableConn<K, T> connector, BasicComponent<T> component) =>
         new _Dependent<K, T>(connector: connector, component: component);
 }
