@@ -1,4 +1,4 @@
-namespace avalonia_redux_test
+namespace Avalonia.Redux.Test
 {
     public class Tests
     {
