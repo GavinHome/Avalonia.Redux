@@ -9,12 +9,12 @@ public static class Middlewares
         return (Dispatch Dispatch, Get<T> getState) =>
             (Dispatch next) =>
             {
-                System.Action<Object> print = (Object obj) => Console.WriteLine(obj);
+                System.Action<Object> print = (Object obj) => Console.WriteLine($"[AvaloniaRedux]: {obj}");
 
                 Dispatch log = (Action action) =>
                 {
                     print($"---------- [{tag}] ----------");
-                    print($"[{tag}] {action.Type} {action.Payload}");
+                    print($"[{tag}] {action.Type.GetType().Name}.{action.Type} {action.Payload as object}");
 
                     T prevState = getState();
                     if (monitor != null)

@@ -70,7 +70,7 @@ public class _ComponentState<T> : State //: State<_ComponentWidget<T>>
                 ////    setState(() => null);
                 ////}
 
-                Log.doPrint($"{component.GetType()} do reload");
+                Log.doPrint($"{component.GetType().Name} do reload");
             }
         );
         _ctx.onLifecycle(LifecycleCreator.initState());

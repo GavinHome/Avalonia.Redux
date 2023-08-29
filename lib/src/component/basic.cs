@@ -109,7 +109,7 @@ static class Log
 {
     public static void doPrint(object message)
     {
-        System.Action<object> print = Console.WriteLine;
+        System.Action<Object> print = (Object obj) => Console.WriteLine($"[AvaloniaRedux]: {obj}");
         if (Aop.isDebug())
         {
             print(message);
@@ -338,6 +338,7 @@ public class ComponentContext<T>
     public void onNotify()
     {
         T now = state;
+        markNeedsBuild?.Invoke();
         if (_shouldUpdate(_latestState, now))
         {
             _widgetCache = null;

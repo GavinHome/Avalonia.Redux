@@ -13,7 +13,7 @@ public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic
         reducer: buildReducer(),
         middlewares: new Middleware<CounterState>[]
         {
-            Redux.Middlewares.logMiddleware<CounterState>(monitor: (state) => state.ToString(), tag: "CounterTag")
+            Redux.Middlewares.logMiddleware<CounterState>(monitor: (state) => state.ToString(), tag: "CounterPage")
         },
         view: (state, dispatch, ctx) =>
         {

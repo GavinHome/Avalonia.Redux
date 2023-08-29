@@ -94,7 +94,7 @@ public class Store<T> where T : class
             .Aggregate(Dispatch, (Dispatch previousValue, Composable<Dispatch> element) => element(previousValue))
           : Dispatch;
 
-        ReplaceReducer = (nextReducer) => reducer = nextReducer ?? ((T state, Action action) => state);
+        ReplaceReducer = (nextReducer) => reducer = (nextReducer ?? ((T state, Action action) => state));
 
         Subscribe = (listener) =>
         {
