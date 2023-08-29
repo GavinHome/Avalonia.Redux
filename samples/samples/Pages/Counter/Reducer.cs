@@ -11,8 +11,7 @@ public partial class CounterPage
 
     private static CounterState _add(CounterState state, Redux.Action action)
     {
-        CounterState newState = state.Clone(); //clone
-        newState.Count += action.Payload;
-        return newState;
+        state.Count += action.Payload;
+        return state;
     }
 }

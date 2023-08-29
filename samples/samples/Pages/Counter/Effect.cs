@@ -11,6 +11,9 @@ public partial class CounterPage
 
     private static async Task _onAdd(Redux.Action action, ComponentContext<CounterState> ctx)
     {
-        await ctx.Dispatch(CounterActionCreator.addAction(1));
+        ctx.Dispatch(CounterActionCreator.addAction(1));
+        ////await Task.Delay(TimeSpan.FromSeconds(5));
+        ////ctx.Dispatch(CounterActionCreator.addAction(2));
+        await Task.CompletedTask;
     }
 }
