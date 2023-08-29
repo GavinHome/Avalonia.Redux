@@ -1,11 +1,12 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Data;
-using Avalonia.Media.Imaging;
-using Avalonia.Platform;
+using Avalonia.Layout;
+using Avalonia.Media;
 using ReactiveUI;
 
-namespace samples.Counter;
+namespace samples.Pages.Counter;
 
 public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic>>
 {
@@ -13,52 +14,77 @@ public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic
         initState: initState,
         effect: buildEffect(),
         reducer: buildReducer(),
-        middlewares: new Middleware<CounterState>[]
+        middlewares: new[]
         {
             Redux.Middlewares.logMiddleware<CounterState>(monitor: (state) => state.ToString(), tag: "CounterPage")
         },
-        view: (state, dispatch, ctx) =>
+        view: (state, dispatch, _) =>
         {
             return new WidgetWrapper
             {
-                Content = new Border
+                Content = new Grid
                 {
-                    Child = new StackPanel
+                    Margin = Thickness.Parse("10"),
+                    RowDefinitions = new RowDefinitions
                     {
-                        Orientation = Avalonia.Layout.Orientation.Vertical,
-                        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                        Children =
+                        new() { Height = GridLength.Star },
+                        new() { Height = GridLength.Auto }
+                    },
+                    Children =
+                    {
+                        new StackPanel
                         {
-                            new TextBlock
+                            [Grid.RowProperty] = 0,
+                            Orientation = Orientation.Vertical,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            HorizontalAlignment = HorizontalAlignment.Center,
+                            Children =
                             {
-                                Text = "You have pushed the button this many times:"
-                            },
-                            new TextBlock
-                            {
-                                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                                [!TextBlock.TextProperty] = new Binding { Source = state, Path = nameof(state.Count) }
-                            },
-                            new Button
-                            {
-                                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                                Content = new Panel
+                                new TextBlock
                                 {
-                                     Children =
-                                    {
-                                        new Image
-                                        {
-                                            Source =  new Bitmap(AssetLoader.Open(new Uri("avares://samples/Assets/avalonia-logo.ico"))),
-                                            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                                            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                                            Width = 100,
-                                        }
-                                    }
+                                    HorizontalAlignment = HorizontalAlignment.Center,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                    Text = "You have pushed the button this many times:"
                                 },
-                                Command = ReactiveCommand.Create(() => dispatch(CounterActionCreator.onAddAction()))
+                                new TextBlock
+                                {
+                                    HorizontalAlignment = HorizontalAlignment.Center,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                    [!TextBlock.TextProperty] = new Binding
+                                        { Source = state, Path = nameof(state.Count) }
+                                }
                             }
+                        },
+                        new Button()
+                        {
+                            [Grid.RowProperty] = 1,
+                            HorizontalAlignment = HorizontalAlignment.Right,
+                            VerticalAlignment = VerticalAlignment.Center,
+                            Content = new Panel
+                            {
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                Height = 48,
+                                Width = 48,
+                                Children =
+                                {
+                                    // new Image
+                                    // {
+                                    //     Source =  new Bitmap(AssetLoader.Open(new Uri("avares://samples/Assets/avalonia-logo.ico"))),
+                                    //     HorizontalAlignment = HorizontalAlignment.Stretch,
+                                    //     VerticalAlignment = VerticalAlignment.Bottom,
+                                    //     Width = 70,
+                                    // }
+                                    new Path
+                                    {
+                                        Data = Geometry.Parse("M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
+                                        Fill = new SolidColorBrush(Colors.Pink),
+                                        HorizontalAlignment = HorizontalAlignment.Center,
+                                        VerticalAlignment = VerticalAlignment.Center,
+                                    }
+                                }
+                            },
+                            Command = ReactiveCommand.Create(() => dispatch(CounterActionCreator.onAddAction()))
                         }
                     }
                 }
@@ -66,5 +92,5 @@ public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic
         })
     { }
 
-    internal static CounterState initState(Dictionary<string, dynamic>? param) => new CounterState() { Count = 0 };
+    private static CounterState initState(Dictionary<string, dynamic>? param) => new CounterState() { Count = 0 };
 }

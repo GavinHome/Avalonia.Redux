@@ -1,8 +1,8 @@
-﻿namespace samples.Counter;
+﻿namespace samples.Pages.Counter;
 
 public partial class CounterPage
 {
-    internal static Reducer<CounterState> buildReducer() => ReducerConverter.asReducers(new Dictionary<object, Reducer<CounterState>>
+    private static Reducer<CounterState> buildReducer() => ReducerConverter.asReducers(new Dictionary<object, Reducer<CounterState>>
     {
         {
             CounterAction.add, _add

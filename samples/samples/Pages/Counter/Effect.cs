@@ -1,8 +1,8 @@
-﻿namespace samples.Counter;
+﻿namespace samples.Pages.Counter;
 
 public partial class CounterPage
 {
-    internal static Effect<CounterState>? buildEffect() => EffectConverter.CombineEffects(new Dictionary<object, SubEffect<CounterState>>
+    private static Effect<CounterState>? buildEffect() => EffectConverter.CombineEffects(new Dictionary<object, SubEffect<CounterState>>
     {
         {
             CounterAction.onAdd, _onAdd

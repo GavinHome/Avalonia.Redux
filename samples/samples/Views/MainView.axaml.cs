@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using samples.Pages.Counter;
 
 namespace samples.Views
 {
@@ -8,18 +9,8 @@ namespace samples.Views
         {
             InitializeComponent();
 
-            WidgetWrapper? content = new Counter.CounterPage().buildPage(null) as dynamic;
+            WidgetWrapper? content = new CounterPage().buildPage(null) as dynamic;
             this.Content = content!.Content;
-            //this.Content = new StackPanel
-            //{
-            //    Children =
-            //    {
-            //        new TextBlock
-            //        {
-            //            Text = "111"
-            //        }
-            //    }
-            //};
         }
     }
 }
