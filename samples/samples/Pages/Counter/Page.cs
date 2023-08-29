@@ -1,6 +1,8 @@
 ﻿using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Data;
+using Avalonia.Media.Imaging;
+using Avalonia.Platform;
 using ReactiveUI;
 
 namespace samples.Counter;
@@ -19,25 +21,44 @@ public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic
         {
             return new WidgetWrapper
             {
-                Content = new StackPanel
+                Content = new Border
                 {
-                    Orientation = Avalonia.Layout.Orientation.Vertical,
-                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
-                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                    Children =
+                    Child = new StackPanel
                     {
-                        new TextBlock
+                        Orientation = Avalonia.Layout.Orientation.Vertical,
+                        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                        Children =
                         {
-                            Text = "You have pushed the button this many times:"
-                        },
-                        new TextBlock
-                        {
-                            [!TextBlock.TextProperty] = new Binding { Source = state, Path = nameof(state.Count) }
-                        },
-                        new Button
-                        {
-                            Content = "Increment",
-                            Command = ReactiveCommand.Create(() => dispatch(CounterActionCreator.onAddAction()))
+                            new TextBlock
+                            {
+                                Text = "You have pushed the button this many times:"
+                            },
+                            new TextBlock
+                            {
+                                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                                [!TextBlock.TextProperty] = new Binding { Source = state, Path = nameof(state.Count) }
+                            },
+                            new Button
+                            {
+                                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                                Content = new Panel
+                                {
+                                     Children =
+                                    {
+                                        new Image
+                                        {
+                                            Source =  new Bitmap(AssetLoader.Open(new Uri("avares://samples/Assets/avalonia-logo.ico"))),
+                                            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                                            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                                            Width = 100,
+                                        }
+                                    }
+                                },
+                                Command = ReactiveCommand.Create(() => dispatch(CounterActionCreator.onAddAction()))
+                            }
                         }
                     }
                 }
