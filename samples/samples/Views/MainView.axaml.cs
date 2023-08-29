@@ -8,8 +8,8 @@ namespace samples.Views
         {
             InitializeComponent();
 
-            WidgetWrapper content = new Counter.CounterPage().buildPage(null) as WidgetWrapper; //.create().build().create().build();
-            this.Content = content.Content;
+            WidgetWrapper? content = new Counter.CounterPage().buildPage(null) as dynamic;
+            this.Content = content!.Content;
             //this.Content = new StackPanel
             //{
             //    Children =

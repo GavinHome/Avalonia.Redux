@@ -6,8 +6,7 @@ namespace samples.Counter;
 [Serializable]
 public class CounterState : ViewModelBase
 {
-
-    public int _count = 0;
+    public int _count;
 
     public int Count
     {

@@ -1,8 +1,9 @@
 // ReSharper disable CheckNamespace
-using Avalonia.Controls;
-using HarfBuzzSharp;
-
 namespace Redux.Component;
+
+using Avalonia.Controls;
+
+public delegate void UpdateState<T>(T state);
 
 public abstract class ComponentElement : ContentControl
 {
@@ -50,7 +51,6 @@ public class StatefulElement : ComponentElement
 
 public abstract class Widget
 {
-    //public abstract Widget create();
     public abstract StatefulElement create();
 }
 
@@ -58,7 +58,7 @@ public class WidgetWrapper : Widget
 {
     public object? Content { get; set; }
 
-    public override StatefulElement create() =>  null;
+    public override StatefulElement create() => throw new NotImplementedException();
 }
 
 public abstract class StatefulWidget : Widget
@@ -258,10 +258,11 @@ public class ComponentContext<T>
     private Get<T> getState;
     private MarkNeedsBuild? markNeedsBuild;
     private ShouldUpdate<T> _shouldUpdate;
+    private UpdateState<T>? _updateState;
     Dispatch? _dispatch;
     Dispatch? _effectDispatch;
 
-    public ComponentContext(Store<object> store, Get<T> getState, Dependencies<T>? dependencies = null, MarkNeedsBuild? markNeedsBuild = null, ViewBuilder<T>? view = null, Effect<T>? effect = null, ShouldUpdate<T>? shouldUpdate = null)
+    public ComponentContext(Store<object> store, Get<T> getState, Dependencies<T>? dependencies = null, MarkNeedsBuild? markNeedsBuild = null, ViewBuilder<T>? view = null, Effect<T>? effect = null, UpdateState<T>? updateState = null, ShouldUpdate<T>? shouldUpdate = null)
     {
         this.store = store;
         this.getState = getState;
@@ -270,6 +271,7 @@ public class ComponentContext<T>
         this.view = view;
         this.effect = effect;
         this._shouldUpdate = shouldUpdate ?? _updateByDefault<T>();
+        this._updateState = updateState;
 
         _init();
     }
@@ -344,6 +346,7 @@ public class ComponentContext<T>
         {
             _widgetCache = null;
             markNeedsBuild?.Invoke();
+            _updateState?.Invoke(now);
             _latestState = now;
         }
     }
@@ -449,14 +452,16 @@ public abstract class BasicComponent<T> : ComponentBase<T>
     private Effect<T>? _effect;
     private ViewBuilder<T>? _view;
     private ShouldUpdate<T>? _shouldUpdate;
+    private UpdateState<T>? _updateState;
 
-    protected BasicComponent(Reducer<T> reducer, ViewBuilder<T>? view = null, Effect<T>? effect = null, Dependencies<T>? dependencies = null, ShouldUpdate<T>? shouldUpdate = null)
+    protected BasicComponent(Reducer<T> reducer, ViewBuilder<T>? view = null, Effect<T>? effect = null, Dependencies<T>? dependencies = null, UpdateState<T>? updateState = null, ShouldUpdate<T>? shouldUpdate = null)
     {
         _reducer = reducer;
         _effect = effect;
         _view = view;
         _dependencies = dependencies;
         _shouldUpdate = shouldUpdate;
+        _updateState = updateState;
     }
 
     public virtual Reducer<T> createReducer()
@@ -474,6 +479,7 @@ public abstract class BasicComponent<T> : ComponentBase<T>
             dependencies: _dependencies,
             view: _view,
             effect: _effect,
+            updateState: _updateState,
             shouldUpdate: _shouldUpdate
         );
     }

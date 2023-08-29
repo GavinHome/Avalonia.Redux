@@ -3,11 +3,12 @@ namespace Redux.Component;
 
 public abstract class Component<T> : BasicComponent<T>
 {
-    protected Component(ViewBuilder<T>? view, Effect<T>? effect = null, Reducer<T>? reducer = null, Dependencies<T>? dependencies = null, ShouldUpdate<T>? shouldUpdate = null)
+    protected Component(ViewBuilder<T>? view, Effect<T>? effect = null, Reducer<T>? reducer = null, Dependencies<T>? dependencies = null, UpdateState<T>? updateState = null, ShouldUpdate<T>? shouldUpdate = null)
         : base(view: view,
                effect: effect,
                reducer: reducer ?? ((T state, Action action) => state),
                dependencies: dependencies,
+               updateState: updateState,
                shouldUpdate: shouldUpdate)
     { }
 
@@ -65,10 +66,10 @@ public class _ComponentState<T> : State //: State<_ComponentWidget<T>>
             widget.GetGetter,
             markNeedsBuild: () =>
             {
-                if (mounted)
-                {
-                    setState(() => null);
-                }
+                ////if (mounted)
+                ////{
+                ////    setState(() => null);
+                ////}
 
                 Log.doPrint($"{component.GetType()} do reload");
             }

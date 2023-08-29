@@ -10,12 +10,13 @@ public abstract class Page<T, P> : Component<T> where T : class, new()
     private Middleware<T>[]? _middlewares;
 
     protected Page(InitState<T, P> initState, ViewBuilder<T> view, Effect<T>? effect = null, Reducer<T>? reducer = null,
-                    Dependencies<T>? dependencies = null, Middleware<T>[]? middlewares = null,
+                    Dependencies<T>? dependencies = null, Middleware<T>[]? middlewares = null, UpdateState<T>? updateState = null, 
                     ShouldUpdate<T>? shouldUpdate = null) : base(
         effect: effect,
         dependencies: dependencies,
         reducer: reducer,
         view: view,
+        updateState: updateState,
         shouldUpdate: shouldUpdate)
     {
         _initState = initState;

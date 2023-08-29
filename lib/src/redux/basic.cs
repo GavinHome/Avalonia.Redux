@@ -70,7 +70,7 @@ public class Store<T> where T : class
                 isDispatching = true;
                 if (this._reducer != null)
                 {
-                    _state = reducer!(_state, action);
+                    _state = reducer!(_state!, action);
                 }
             }
             finally
