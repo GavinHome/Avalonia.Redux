@@ -45,5 +45,5 @@ public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic
         })
     { }
 
-    internal static CounterState initState(Dictionary<string, dynamic>? param) => new CounterState() { Count = 1 };
+    internal static CounterState initState(Dictionary<string, dynamic>? param) => new CounterState() { Count = 0 };
 }
