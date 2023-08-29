@@ -51,8 +51,8 @@ public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic
                                         new Image
                                         {
                                             Source =  new Bitmap(AssetLoader.Open(new Uri("avares://samples/Assets/avalonia-logo.ico"))),
-                                            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
-                                            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                                            HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Stretch,
+                                            VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom,
                                             Width = 100,
                                         }
                                     }
