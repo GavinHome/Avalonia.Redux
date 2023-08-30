@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Layout;
+using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Media;
 using ReactiveUI;
 
@@ -55,36 +56,36 @@ public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic
                                 }
                             }
                         },
-                        new Button()
+                        new Border
                         {
                             [Grid.RowProperty] = 1,
                             HorizontalAlignment = HorizontalAlignment.Right,
                             VerticalAlignment = VerticalAlignment.Center,
-                            Content = new Panel
+                            Background = SolidColorBrush.Parse("#bbe9d3ff"),
+                            Padding = new Thickness(0),
+                            CornerRadius = new CornerRadius(15),
+                            BoxShadow = new BoxShadows(new BoxShadow(){ OffsetX = 1, OffsetY = 5, Spread = 1, Blur = 8, Color = Colors.LightGray }),
+                            Child = new Button()
                             {
-                                HorizontalAlignment = HorizontalAlignment.Center,
-                                VerticalAlignment = VerticalAlignment.Center,
-                                Height = 48,
-                                Width = 48,
-                                Children =
+                                Background = new SolidColorBrush(Colors.Transparent),
+                                CornerRadius = new CornerRadius(15),
+                                Padding = new Thickness(0),
+                                Height = 50, Width = 50,
+                                BorderThickness = new Thickness(0),
+                                Content = new Border
                                 {
-                                    // new Image
-                                    // {
-                                    //     Source =  new Bitmap(AssetLoader.Open(new Uri("avares://samples/Assets/avalonia-logo.ico"))),
-                                    //     HorizontalAlignment = HorizontalAlignment.Stretch,
-                                    //     VerticalAlignment = VerticalAlignment.Bottom,
-                                    //     Width = 70,
-                                    // }
-                                    new Path
+                                    Background = new SolidColorBrush(Colors.Transparent),
+                                    Padding = new Thickness(8,5,12,8),
+                                    Child = new Path
                                     {
                                         Data = Geometry.Parse("M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
-                                        Fill = new SolidColorBrush(Colors.Pink),
+                                        Fill = new SolidColorBrush(Colors.Black),
                                         HorizontalAlignment = HorizontalAlignment.Center,
                                         VerticalAlignment = VerticalAlignment.Center,
-                                    }
-                                }
-                            },
-                            Command = ReactiveCommand.Create(() => dispatch(CounterActionCreator.onAddAction()))
+                                    },
+                                },
+                                Command = ReactiveCommand.Create(() => dispatch(CounterActionCreator.onAddAction()))
+                            }
                         }
                     }
                 }
@@ -92,5 +93,5 @@ public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic
         })
     { }
 
-    private static CounterState initState(Dictionary<string, dynamic>? param) => new CounterState() { Count = 0 };
+    private static CounterState initState(Dictionary<string, dynamic>? param) => new CounterState() { Count = 99 };
 }

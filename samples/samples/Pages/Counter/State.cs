@@ -12,4 +12,4 @@ public class CounterState : ReactiveObject
     {
         return $"Count: {Count}";
     }
-} 
+}
