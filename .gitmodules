@@ -1,0 +1,4 @@
+[submodule "lib/modules/Avalonia.Markup.Declarative"]
+	path = lib/modules/Avalonia.Markup.Declarative
+	url = https://github.com/GavinHome/Avalonia.Markup.Declarative
+	branch = master
