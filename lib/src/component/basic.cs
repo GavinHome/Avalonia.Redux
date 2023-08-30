@@ -193,7 +193,7 @@ public class Dependencies<T>
 }
 
 /// [Lifecycle]
-enum Lifecycle
+public enum Lifecycle
 {
     /// component(page) or adapter receives the following events
     initState,
@@ -272,7 +272,7 @@ public class ComponentContext<T>
         _init();
     }
 
-    T state => getState();
+    public T state => getState();
     Widget? _widgetCache;
     T? _latestState;
 
@@ -294,7 +294,7 @@ public class ComponentContext<T>
     //void broadcastEffect(Action action, bool? excluded) => _bus
     //    ?.dispatch(action, excluded: excluded == true ? _effectDispatch : null);
 
-    Widget buildComponent(string type)
+    public Widget buildComponent(string type)
     {
         Dependent<T>? dependent = _dependencies?.slot(type);
         return dependent!.buildComponent(
@@ -303,7 +303,7 @@ public class ComponentContext<T>
         );
     }
 
-    List<Widget> buildComponents()
+    public List<Widget> buildComponents()
     {
         Dependent<T> dependent = _dependencies!.adapter!;
         return dependent.buildComponents(
@@ -499,6 +499,7 @@ public abstract class ComposedComponent<T> : BasicComponent<T>
 /// [Dependents]
 /// Definition of Dependents type, a list of dependent.
 //typedef Dependents<T> = List<Dependent<T>>;
+public delegate List<Dependent<T>> Dependents<T>(T t);
 
 /// [BasicAdapter]
 /// Definition of basic adapter, it is composed component.
@@ -506,16 +507,18 @@ public abstract class ComposedComponent<T> : BasicComponent<T>
 public class BasicAdapter<T> : ComposedComponent<T>
 {
     ComponentContext<T>? _ctx;
-    Func<T, List<Dependent<T>>> builder = (_) => new List<Dependent<T>>();
+    //Func<T, List<Dependent<T>>> builder = (_) => new List<Dependent<T>>();
+    Dependents<T> builder = (_) => new List<Dependent<T>>();
     public BasicAdapter(
-        Reducer<T>? reducer,
-        Func<T, List<Dependent<T>>> builder,
-        ShouldUpdate<T>? shouldUpdate
+        //Func<T, List<Dependent<T>>> builder,
+        Dependents<T> builder,
+        Reducer<T>? reducer = null,
+        ShouldUpdate<T>? shouldUpdate = null
       ) : base(
             reducer: reducer ?? ((T state, Action _) => state),
             shouldUpdate: shouldUpdate
           )
-    { }
+    { this.builder = builder; }
 
     Reducer<T> _createAdapterReducer() => (state, action) =>
     {

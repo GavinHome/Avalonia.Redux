@@ -1,7 +1,7 @@
 // ReSharper disable CheckNamespace
 namespace Redux.Component;
 
-public abstract class Component<T> : BasicComponent<T>
+public abstract class Component<T> : BasicComponent<T> where T : class, new()
 {
     protected Component(ViewBuilder<T>? view, Effect<T>? effect = null, Reducer<T>? reducer = null, Dependencies<T>? dependencies = null, ShouldUpdate<T>? shouldUpdate = null)
         : base(view: view,

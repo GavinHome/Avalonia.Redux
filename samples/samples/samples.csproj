@@ -24,8 +24,4 @@
   <ItemGroup>
     <ProjectReference Include="..\..\lib\src\component\component.csproj" />
   </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Pages\Todos\" />
-  </ItemGroup>
 </Project>
