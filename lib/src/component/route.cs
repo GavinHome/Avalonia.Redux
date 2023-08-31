@@ -1,7 +1,8 @@
 ﻿namespace Redux.Component;
 
 using Widget = Avalonia.Controls.Control;
-using Map = Dictionary<string, Page<object, dynamic>>;
+//using Map = Dictionary<string, Page<object, dynamic>>;
+using Map = Dictionary<string, dynamic>;
 
 /// Define a basic behavior of routes.
 public interface AbstractRoutes

@@ -3,7 +3,7 @@ using ReactiveUI.Fody.Helpers;
 
 namespace samples.Pages.Todos.Todo;
 
-internal class ToDoState: ReactiveObject
+public class ToDoState: ReactiveObject
 {
     [Reactive]
     public string UniqueId { get; init; }

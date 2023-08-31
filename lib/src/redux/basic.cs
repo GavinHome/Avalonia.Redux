@@ -28,12 +28,6 @@ public class Action
 /// Definition of the standard Store.
 public class Store<T> 
 {
-    //public Get<T> GetState;
-    //public Dispatch Dispatch;
-    //public Subscribe Subscribe;
-    //////public Observable<T> observable;
-    //public ReplaceReducer<T> ReplaceReducer;
-
     private T? _state;
     private readonly IList<System.Action> _listeners;
     private readonly Reducer<T>? _reducer;

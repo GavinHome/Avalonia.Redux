@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 namespace samples.Pages.Todos.Page;
 using Action = Redux.Action;
 
-internal partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
+public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
 {
     public ToDoListPage() : base(
         initState: initState,

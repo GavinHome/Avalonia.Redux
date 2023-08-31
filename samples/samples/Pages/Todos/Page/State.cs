@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace samples.Pages.Todos.Page;
 
-internal class PageState : ReactiveObject
+public class PageState : ReactiveObject
 {
     [Reactive]
     public ObservableCollection<ToDoState>? ToDos { get; set; }
