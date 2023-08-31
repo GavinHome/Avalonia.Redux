@@ -2,7 +2,13 @@
 using samples.Pages.Todos.Report;
 using samples.Pages.Todos.Todo;
 using System.Linq;
+using Avalonia;
+using Avalonia.Controls.Shapes;
 using Avalonia.Layout;
+using Avalonia.Media;
+using ReactiveUI;
+using samples.Pages.Counter;
+using EffectConverter = Redux.Component.EffectConverter;
 
 namespace samples.Pages.Todos.Page;
 using Action = Redux.Action;
@@ -19,8 +25,8 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
         reducer: ReducerConverter.asReducers(new Dictionary<object, Reducer<PageState>>
         {
             { "initToDos", _init },
-            {  "add", _add },
-            {  ToDoAction.remove, _remove }
+            { "add", _add },
+            { ToDoAction.remove, _remove }
         }),
         middlewares: new[]
         {
@@ -39,20 +45,76 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
             var report = ctx.buildComponent("report");
             return new StackPanel
             {
-                HorizontalAlignment = HorizontalAlignment.Center,
                 Children =
+                {
+                    new Grid
                     {
-                        new ItemsControl
+                        Margin = Thickness.Parse("8"),
+                        RowDefinitions = new RowDefinitions
                         {
-                            // HorizontalAlignment = HorizontalAlignment.Left,
-                             //Items = todos,
-                             ItemsSource = todos
+                            new() { Height = GridLength.Star },
+                            new() { Height = GridLength.Auto }
                         },
-                        report,
+                        Children =
+                        {
+                            new ItemsControl
+                            {
+                                ItemsSource = todos,
+                            },
+                        }
+                    },
+                    new Border
+                    {
+                        Child = new StackPanel
+                        {
+                            Children =
+                            {
+                                new Border
+                                {
+                                    [Grid.RowProperty] = 1,
+                                    Child = report
+                                },
+                                new Border
+                                {
+                                    [Grid.RowProperty] = 1,
+                                    HorizontalAlignment = HorizontalAlignment.Right,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                    Background = SolidColorBrush.Parse("#bbe9d3ff"),
+                                    Padding = new Thickness(0),
+                                    CornerRadius = new CornerRadius(15),
+                                    BoxShadow = new BoxShadows(new BoxShadow()
+                                        { OffsetX = 1, OffsetY = 5, Spread = 1, Blur = 8, Color = Colors.LightGray }),
+                                    Child = new Button()
+                                    {
+                                        Background = new SolidColorBrush(Colors.Transparent),
+                                        CornerRadius = new CornerRadius(15),
+                                        Padding = new Thickness(0),
+                                        Height = 50, Width = 50,
+                                        BorderThickness = new Thickness(0),
+                                        Content = new Border
+                                        {
+                                            Background = new SolidColorBrush(Colors.Transparent),
+                                            Padding = new Thickness(8, 5, 12, 8),
+                                            Child = new Path
+                                            {
+                                                Data = Geometry.Parse("M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
+                                                Fill = new SolidColorBrush(Colors.Black),
+                                                HorizontalAlignment = HorizontalAlignment.Center,
+                                                VerticalAlignment = VerticalAlignment.Center,
+                                            },
+                                        },
+                                        Command = ReactiveCommand.Create(() =>
+                                            dispatch(CounterActionCreator.onAddAction()))
+                                    }
+                                }
+                            }
+                        }
                     }
+                }
             };
         })
-    { }
+    {
+    }
 
     private static PageState initState(Dictionary<string, dynamic>? param) => new PageState() { ToDos = new() };
 
@@ -61,8 +123,17 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
         List<ToDoState> initToDos = new List<ToDoState>()
         {
             new ToDoState(uniqueId: "0", title: "Hello world", desc: "Learn how to program.", isDone: true),
-            new ToDoState(uniqueId: "1", title: "Hello Avalonia", desc: "Learn how to build an avalonia app.", isDone: true),
-            new ToDoState(uniqueId: "2", title: "Hello Avalonia Redux", desc: "Learn how to use Avalonia Redux in an avalonia app.")
+            new ToDoState(uniqueId: "1", title: "Hello Avalonia", desc: "Learn how to build an avalonia app.",
+                isDone: true),
+            new ToDoState(uniqueId: "2", title: "Hello Avalonia Redux",
+                desc: "Learn how to use Avalonia Redux in an avalonia app."),
+            // new ToDoState(uniqueId: "3", title: "Hello world", desc: "Learn how to program.", isDone: true),
+            // new ToDoState(uniqueId: "4", title: "Hello Avalonia", desc: "Learn how to build an avalonia app.",
+            //     isDone: true),
+            // new ToDoState(uniqueId: "5", title: "Hello Avalonia Redux",
+            //     desc: "Learn how to use Avalonia Redux in an avalonia app."),
+            // new ToDoState(uniqueId: "6", title: "Hello Avalonia Redux",
+            //     desc: "Learn how to use Avalonia Redux in an avalonia app.")
         };
 
         ctx.Dispatch(new Action("initToDos", payload: initToDos));
@@ -101,7 +172,7 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
     {
         string? unique = action.Payload;
         var item = state.ToDos?.SingleOrDefault(todo => todo.UniqueId == unique);
-        if(item != null) state.ToDos?.Remove(item);
+        if (item != null) state.ToDos?.Remove(item);
         return state;
     }
 }
