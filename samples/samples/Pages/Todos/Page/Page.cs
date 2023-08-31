@@ -1,7 +1,8 @@
 ﻿using Avalonia.Controls;
 using samples.Pages.Todos.Report;
 using samples.Pages.Todos.Todo;
-using System.Collections.ObjectModel;
+using System.Linq;
+using Avalonia.Layout;
 
 namespace samples.Pages.Todos.Page;
 using Action = Redux.Action;
@@ -38,12 +39,15 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
             var report = ctx.buildComponent("report");
             return new StackPanel
             {
+                HorizontalAlignment = HorizontalAlignment.Center,
                 Children =
                     {
-                        // new ItemsControl
-                        // {
-                        //      //Items = todos,
-                        // },
+                        new ItemsControl
+                        {
+                            // HorizontalAlignment = HorizontalAlignment.Left,
+                             //Items = todos,
+                             ItemsSource = todos
+                        },
                         report,
                     }
             };
@@ -77,7 +81,7 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
 
     private static PageState _init(PageState state, Action action)
     {
-        ObservableCollection<ToDoState> toDos = action.Payload ?? new ObservableCollection<ToDoState>();
+        List<ToDoState> toDos = action.Payload ?? new List<ToDoState>();
         state.ToDos = toDos;
         return state;
     }
@@ -96,7 +100,8 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
     private static PageState _remove(PageState state, Action action)
     {
         string? unique = action.Payload;
-        //state.ToDos!.RemoveAll((ToDoState state) => state.UniqueId == unique);
+        var item = state.ToDos?.SingleOrDefault(todo => todo.UniqueId == unique);
+        if(item != null) state.ToDos?.Remove(item);
         return state;
     }
 }

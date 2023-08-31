@@ -19,10 +19,10 @@ internal class PageAdapter : BasicAdapter<PageState>
 
 internal class TodoConnector : ConnOp<PageState, ToDoState>
 {
-    readonly ObservableCollection<ToDoState> toDos;
+    readonly List<ToDoState> toDos;
     readonly int index;
 
-    internal TodoConnector(ObservableCollection<ToDoState> toDos, int index) 
+    internal TodoConnector(List<ToDoState> toDos, int index) 
     {
         this.toDos = toDos;
         this.index = index;

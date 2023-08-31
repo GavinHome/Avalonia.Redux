@@ -9,7 +9,7 @@ namespace samples.Pages.Todos.Page;
 public class PageState : ReactiveObject
 {
     [Reactive]
-    public ObservableCollection<ToDoState>? ToDos { get; set; }
+    public List<ToDoState>? ToDos { get; set; }
 
     public override string ToString()
     {
