@@ -8,12 +8,9 @@ internal partial class TodoComponent : Component<ToDoState>
     public TodoComponent() : base(
         effect: buildEffect(),
         reducer: buildReducer(),
-        view: (state, dispatch, _) => new WidgetWrapper
+        view: (state, dispatch, _) => new TextBlock
         {
-            Content = new TextBlock
-            {
-                Text = "TodoComponent"
-            }
+            Text = "TodoComponent"
         })
     { }
 }

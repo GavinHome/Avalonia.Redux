@@ -13,11 +13,9 @@ internal class ReportComponent : Component<ReportState>
     public ReportComponent() : base(
         view: (state, dispatch, _) =>
         {
-            return new WidgetWrapper
+            return new StackPanel
             {
-                Content = new StackPanel
-                {
-                    Children =
+                Children =
                     {
                         new TextBlock
                         {
@@ -25,7 +23,6 @@ internal class ReportComponent : Component<ReportState>
                                 Select(x => $"Total {state.Total} tasks, {state.Done} done.").ToBinding<string>()
                         }
                     }
-                }
             };
 
         })

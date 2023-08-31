@@ -1,7 +1,5 @@
-﻿using System.ComponentModel;
-using System;
-
-namespace Redux.Component;
+﻿namespace Redux.Component;
+using Widget = Avalonia.Controls.Control;
 
 /// Definition of Connector which connects Reducer<S> with Reducer<P>.
 /// 1. How to get an instance of type P from an instance of type S.

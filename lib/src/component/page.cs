@@ -1,6 +1,8 @@
 ﻿// ReSharper disable CheckNamespace
 namespace Redux.Component;
 
+using Widget = Avalonia.Controls.Control;
+
 /// init store's state by route-params
 public delegate T InitState<T, P>(P? param);
 
@@ -10,7 +12,7 @@ public abstract class Page<T, P> : Component<T> where T : class, new()
     private Middleware<T>[]? _middlewares;
 
     protected Page(InitState<T, P> initState, ViewBuilder<T> view, Effect<T>? effect = null, Reducer<T>? reducer = null,
-                    Dependencies<T>? dependencies = null, Middleware<T>[]? middlewares = null, 
+                    Dependencies<T>? dependencies = null, Middleware<T>[]? middlewares = null,
                     ShouldUpdate<T>? shouldUpdate = null) : base(
         effect: effect,
         dependencies: dependencies,
@@ -26,7 +28,7 @@ public abstract class Page<T, P> : Component<T> where T : class, new()
     public List<Middleware<T>>? Middlewares => _middlewares?.ToList();
 
     ///  build page
-    public Widget buildPage(P? param) => new _PageWidget<T, P>(param: param, page: this).create().build();
+    public Widget buildPage(P? param) => new _PageWidget<T, P>(param: param, page: this).create();
 }
 
 class _PageWidget<T, P> : StatefulWidget where T : class, new()

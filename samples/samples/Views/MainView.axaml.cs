@@ -10,9 +10,9 @@ namespace samples.Views
         {
             InitializeComponent();
 
-            //WidgetWrapper? content = new CounterPage().buildPage(null) as dynamic;           
-            WidgetWrapper? content = new ToDoListPage().buildPage(null) as dynamic;
-            this.Content = content!.Content;
+            //WidgetWrapper? content = new CounterPage().buildPage(null) as dynamic;
+            //this.Content = new ToDoListPage().buildPage(null);
+            this.Content = new CounterPage().buildPage(null);
         }
 
         ////AbstractRoutes routes = new PageRoutes(

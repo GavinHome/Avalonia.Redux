@@ -43,11 +43,9 @@ internal partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic
         {
             //List<Widget> todos = ctx.buildComponents();
             //var report = ctx.buildComponent("report");
-            return new WidgetWrapper
+            return new StackPanel
             {
-                Content = new StackPanel
-                {
-                    Children =
+                Children =
                     {
                         //new ItemsControl()
                         //{
@@ -64,7 +62,6 @@ internal partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic
                                 Select(x => $"Total {state.ToDos!.Count} tasks, {state.ToDos!.Count} done.").ToBinding()
                         }
                     }
-                }
             };
         })
     { }

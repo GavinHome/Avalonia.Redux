@@ -1,6 +1,8 @@
 // ReSharper disable CheckNamespace
 namespace Redux.Component;
 
+using Widget = Avalonia.Controls.Control;
+
 public abstract class Component<T> : BasicComponent<T> where T : class, new()
 {
     protected Component(ViewBuilder<T>? view, Effect<T>? effect = null, Reducer<T>? reducer = null, Dependencies<T>? dependencies = null, ShouldUpdate<T>? shouldUpdate = null)
@@ -13,7 +15,7 @@ public abstract class Component<T> : BasicComponent<T> where T : class, new()
 
     public override Widget buildComponent(Store<object> store, Get<T> getter)
     {
-        return new _ComponentWidget<T>(component: this, store: store, getter: getter, dependencies: _dependencies).create().build();
+        return new _ComponentWidget<T>(component: this, store: store, getter: getter, dependencies: _dependencies).create();
     }
 
     public override List<Widget> buildComponents(Store<object> store, Get<T> getter)

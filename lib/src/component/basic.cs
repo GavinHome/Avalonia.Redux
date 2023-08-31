@@ -1,9 +1,9 @@
 // ReSharper disable CheckNamespace
 namespace Redux.Component;
 
-using Avalonia.Controls;
+using Widget = Avalonia.Controls.Control;
 
-public abstract class ComponentElement : ContentControl
+public abstract class ComponentElement : Avalonia.Controls.Control
 {
     public abstract Widget build();
 }
@@ -13,7 +13,7 @@ public class StatefulElement : ComponentElement
     public StatefulElement(StatefulWidget widget)
     {
         _state = widget.createState();
-        state._element = this;
+        //state._element = this;
         state._widget = widget;
         _state.initState();
     }
@@ -37,7 +37,8 @@ public class StatefulElement : ComponentElement
         rebuild();
     }
 
-    void rebuild(bool force = false) {
+    void rebuild(bool force = false)
+    {
         if ((!_dirty && !force))
         {
             return;
@@ -47,23 +48,16 @@ public class StatefulElement : ComponentElement
     }
 }
 
-public abstract class Widget
+public interface WidgetBuilder
 {
-    public abstract StatefulElement create();
+    public Widget create();
 }
 
-public class WidgetWrapper : Widget
+public abstract class StatefulWidget : Widget, WidgetBuilder
 {
-    public object? Content { get; set; }
-
-    public override StatefulElement create() => throw new NotImplementedException();
-}
-
-public abstract class StatefulWidget : Widget
-{
-    //public abstract State<StatefulWidget> createState();
+    ////public abstract State<StatefulWidget> createState();
     public abstract State createState();
-    public override StatefulElement create() => new StatefulElement(this);
+    public Widget create() => new StatefulElement(this).build();
 }
 
 public abstract class State : State<StatefulWidget>
@@ -77,7 +71,7 @@ public abstract class State<T> where T : StatefulWidget
     public T widget => _widget!;
     public T? _widget;
 
-    public StatefulElement? _element;
+    public Widget? _element;
 
     public bool mounted => _element != null;
 
@@ -100,7 +94,7 @@ public abstract class State<T> where T : StatefulWidget
     public void setState(VoidCallback fn)
     {    
         object? result = fn();
-        _element!.markNeedsBuild();
+        //_element!.markNeedsBuild();
     }
 }
 
@@ -498,7 +492,6 @@ public abstract class ComposedComponent<T> : BasicComponent<T>
 
 /// [Dependents]
 /// Definition of Dependents type, a list of dependent.
-//typedef Dependents<T> = List<Dependent<T>>;
 public delegate List<Dependent<T>> Dependents<T>(T t);
 
 /// [BasicAdapter]
@@ -507,10 +500,8 @@ public delegate List<Dependent<T>> Dependents<T>(T t);
 public class BasicAdapter<T> : ComposedComponent<T>
 {
     ComponentContext<T>? _ctx;
-    //Func<T, List<Dependent<T>>> builder = (_) => new List<Dependent<T>>();
     Dependents<T> builder = (_) => new List<Dependent<T>>();
     public BasicAdapter(
-        //Func<T, List<Dependent<T>>> builder,
         Dependents<T> builder,
         Reducer<T>? reducer = null,
         ShouldUpdate<T>? shouldUpdate = null
