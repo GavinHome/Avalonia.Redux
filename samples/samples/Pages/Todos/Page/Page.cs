@@ -5,6 +5,7 @@ using System.Linq;
 using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
+using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using ReactiveUI;
@@ -110,19 +111,15 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                             new Grid
                             {
                                 Margin = Thickness.Parse("8"),
-                                RowDefinitions = new RowDefinitions
-                                {
-                                    new() { Height = GridLength.Star },
-                                    new() { Height = GridLength.Auto }
-                                },
                                 Children =
                                 {
                                     new ScrollViewer
                                     {
-                                        VerticalScrollBarVisibility = ScrollBarVisibility.Visible,
+                                        //[ScrollViewer.HeightProperty] = new Binding("ActualHeight"),
+                                        //Height = 300,
+                                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                                         Content = new ItemsControl
                                         {
-                                            
                                             ItemsSource = todos,
                                         },
                                     }
