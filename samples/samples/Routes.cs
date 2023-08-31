@@ -1,5 +1,7 @@
-﻿using samples.Pages.Todos.Page;
-using samples.Pages.Counter;
+﻿using samples.Pages.Counter;
+using samples.Pages.Todos.Page;
+using samples.Pages.Todos.Edit;
+
 namespace samples;
 
 public static class Routes
@@ -11,10 +13,10 @@ public static class Routes
             //// Register TodoList main page
             { "todo_list", new ToDoListPage()},
 
-            //// Register Todo edit page
-            //// { "todo_edit", new TodoEditPage()},
+            //// Register TodoEdit page
+            { "todo_edit", new TodoEditPage()},
 
-            //// Register Count page
+            //// Register Counter page
             { "count", new CounterPage() },
         });
 }

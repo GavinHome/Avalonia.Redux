@@ -4,7 +4,7 @@
 /// It works on debug mode.
 public static class Middlewares
 {
-    public static Middleware<T> logMiddleware<T>(Func<T, String>? monitor, String tag = "avalonia-redux")
+    public static Middleware<T> logMiddleware<T>(Func<T, String>? monitor = null, String tag = "avalonia-redux")
     {
         return (_, getState) =>
             (next) =>
