@@ -4,12 +4,12 @@
 /// It works on debug mode.
 public static class Middlewares
 {
-    public static Middleware<T> logMiddleware<T>(System.Func<T, String> monitor, String tag = "avalonia-redux")
+    public static Middleware<T> logMiddleware<T>(Func<T, String>? monitor, String tag = "avalonia-redux")
     {
-        return (Dispatch Dispatch, Get<T> getState) =>
-            (Dispatch next) =>
+        return (_, getState) =>
+            (next) =>
             {
-                System.Action<Object> print = (Object obj) => Console.WriteLine($"[AvaloniaRedux]: {obj}");
+                Action<Object> print = (obj) => Console.WriteLine($"[AvaloniaRedux]: {obj}");
 
                 Dispatch log = (Action action) =>
                 {
@@ -41,7 +41,7 @@ public static class Middlewares
 
 public static class Aop
 {
-    public static bool isTest { get; private set; }
+    private static bool isTest { get; set; }
 
     /// Is app run a debug mode.
     public static bool isDebug()
@@ -51,6 +51,6 @@ public static class Aop
 
     public static void setTest()
     {
-        Aop.isTest = true;
+        isTest = true;
     }
 }

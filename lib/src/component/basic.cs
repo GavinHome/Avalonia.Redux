@@ -1,9 +1,15 @@
 // ReSharper disable CheckNamespace
+// ReSharper disable UnusedTypeParameter
+// ReSharper disable TypeParameterCanBeVariant
+
+using System.Text.Json;
+using Avalonia.Controls;
+
 namespace Redux.Component;
 
-using Widget = Avalonia.Controls.Control;
+using Widget = Control;
 
-public abstract class ComponentElement : Avalonia.Controls.Control
+public abstract class ComponentElement : Control
 {
     public abstract Widget build();
 }
@@ -21,7 +27,7 @@ public class StatefulElement : ComponentElement
     public override Widget build() => state.build(this);
 
     State<StatefulWidget> state => _state!;
-    State<StatefulWidget>? _state;
+    readonly State<StatefulWidget>? _state;
     private bool _dirty;
     private bool dirty => _dirty;
 
@@ -71,25 +77,25 @@ public abstract class State<T> where T : StatefulWidget
     public T widget => _widget!;
     public T? _widget;
 
-    public Widget? _element;
-
-    public bool mounted => _element != null;
+    // public Widget? _element;
+    //
+    // public bool mounted => _element != null;
 
     public virtual void initState() { }
 
     public abstract Widget build(dynamic context);
 
-    public virtual void didChangeDependencies() { }
+    protected virtual void didChangeDependencies() { }
 
-    public virtual void deactivate() { }
+    protected virtual void deactivate() { }
 
-    public virtual void reassemble() { }
+    protected virtual void reassemble() { }
 
-    public virtual void didUpdateWidget(T oldWidget) { }
+    protected virtual void didUpdateWidget(T oldWidget) { }
 
-    public virtual void disposeCtx() { }
+    protected virtual void disposeCtx() { }
 
-    public virtual void dispose() { }
+    protected virtual void dispose() { }
 
     public void setState(VoidCallback fn)
     {    
@@ -103,7 +109,7 @@ static class Log
 {
     public static void doPrint(object message)
     {
-        System.Action<Object> print = (Object obj) => Console.WriteLine($"[AvaloniaRedux]: {obj}");
+        Action<Object> print = obj => Console.WriteLine($"[AvaloniaRedux]: {obj}");
         if (Aop.isDebug())
         {
             print(message);
@@ -140,14 +146,14 @@ public abstract class Dependent<T>
 /// Include adapter and slots.
 public class Dependencies<T>
 {
-    IDictionary<string, Dependent<T>>? slots;
-    public Dependent<T>? adapter;
+    private readonly IDictionary<string, Dependent<T>>? slots;
+    public readonly Dependent<T>? adapter;
 
-    /// Use [adapter: NoneConn<T>() + Adapter<T>(),
-    ///       slots: <String, Dependent<P>> {
-    ///         ConnOp<T, P>() + Component<T>()}
-    ///     ],
-    /// Which is better reusability and consistency.
+    //// Use [adapter: NoneConn<T>() + Adapter<T>(),
+    ////       slots: <String, Dependent<P>> {
+    ////         ConnOp<T, P>() + Component<T>()}
+    ////     ],
+    //// Which is better reusability and consistency.
     public Dependencies(IDictionary<string, Dependent<T>>? slots, Dependent<T> adapter)
     {
         this.slots = slots;
@@ -199,19 +205,19 @@ public enum Lifecycle
     dispose,
     // didDisposed,
 
-    /// Only a adapter mixin VisibleChangeMixin will receive appear & disappear events.
-    /// class MyAdapter extends Adapter<T> with VisibleChangeMixin<T> {
-    ///   MyAdapter():super(
-    ///   );
-    /// }
+    //// Only a adapter mixin VisibleChangeMixin will receive appear & disappear events.
+    //// class MyAdapter extends Adapter<T> with VisibleChangeMixin<T> {
+    ////   MyAdapter():super(
+    ////   );
+    //// }
     appear,
     disappear,
 
-    /// Only a component(page) or adapter mixin WidgetsBindingObserverMixin will receive didChangeAppLifecycleState event.
-    /// class MyComponent extends Component<T> with WidgetsBindingObserverMixin<T> {
-    ///   MyComponent():super(
-    ///   );
-    /// }
+    //// Only a component(page) or adapter mixin WidgetsBindingObserverMixin will receive didChangeAppLifecycleState event.
+    //// class MyComponent extends Component<T> with WidgetsBindingObserverMixin<T> {
+    ////   MyComponent():super(
+    ////   );
+    //// }
     didChangeAppLifecycleState,
 }
 
@@ -243,13 +249,13 @@ static class LifecycleCreator
 /// Definition context of component or page.
 public class ComponentContext<T>
 {
-    private ViewBuilder<T>? view;
-    private Dependencies<T>? _dependencies;
-    private Effect<T>? effect;
-    public Store<object> store;
-    private Get<T> getState;
-    private MarkNeedsBuild? markNeedsBuild;
-    private ShouldUpdate<T> _shouldUpdate;
+    private readonly ViewBuilder<T>? view;
+    private readonly Dependencies<T>? _dependencies;
+    private readonly Effect<T>? effect;
+    public readonly Store<object> store;
+    private readonly Get<T> getState;
+    private readonly MarkNeedsBuild? markNeedsBuild;
+    private readonly ShouldUpdate<T> _shouldUpdate;
     Dispatch? _dispatch;
     Dispatch? _effectDispatch;
 
@@ -258,10 +264,10 @@ public class ComponentContext<T>
         this.store = store;
         this.getState = getState;
         this.markNeedsBuild = markNeedsBuild;
-        this._dependencies = dependencies;
+        _dependencies = dependencies;
         this.view = view;
         this.effect = effect;
-        this._shouldUpdate = shouldUpdate ?? _updateByDefault<T>();
+        _shouldUpdate = shouldUpdate ?? _updateByDefault<T>();
 
         _init();
     }
@@ -310,7 +316,7 @@ public class ComponentContext<T>
 
     Dispatch _createNextDispatch(ComponentContext<T> ctx) => action =>
     {
-        ctx.store.Dispatch?.Invoke(action);
+        ctx.store.Dispatch.Invoke(action);
         return null;
     };
 
@@ -320,7 +326,7 @@ public class ComponentContext<T>
         _dispatch =
             _createDispatch(_effectDispatch, _createNextDispatch(this), this);
         //_dispatchDispose = _bus!.registerReceiver(_effectDispatch);
-        _latestState = getState!();
+        _latestState = getState();
     }
 
     public void dispose()
@@ -394,7 +400,7 @@ public class ComponentContext<T>
         };
 
     private ShouldUpdate<K> _updateByDefault<K>() =>
-                (K? _, K? __) => !EqualityComparer<K>.Default.Equals(_, __);//!identical(_, __);
+                (k, x) => !EqualityComparer<K>.Default.Equals(k, x);//!identical(_, __);
 }
 
 /// [ViewBuilder]
@@ -420,9 +426,10 @@ public static class EffectConverter
     public static Effect<T>? CombineEffects<T>(Dictionary<object, SubEffect<T>>? map) => map == null || !map.Any()
         ? null : (action, ctx) =>
         {
-            SubEffect<T> subEffect = map.FirstOrDefault(entry => action.Type.Equals(entry.Key)).Value;
+            SubEffect<T>? subEffect = map.FirstOrDefault(entry => action.Type.Equals(entry.Key)).Value;
             if (subEffect != null)
             {
+                // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
                 return (subEffect.Invoke(action, ctx) ?? SubEffectReturnNull) == null;
             }
 
@@ -437,11 +444,11 @@ public delegate void MarkNeedsBuild();
 /// Definition of basic component.
 public abstract class BasicComponent<T> : ComponentBase<T>
 {
-    public Dependencies<T>? _dependencies;
-    private Reducer<T> _reducer;
-    private Effect<T>? _effect;
-    private ViewBuilder<T>? _view;
-    private ShouldUpdate<T>? _shouldUpdate;
+    protected readonly Dependencies<T>? _dependencies;
+    private readonly Reducer<T> _reducer;
+    private readonly Effect<T>? _effect;
+    private readonly ViewBuilder<T>? _view;
+    private readonly ShouldUpdate<T>? _shouldUpdate;
 
     protected BasicComponent(Reducer<T> reducer, ViewBuilder<T>? view = null, Effect<T>? effect = null, Dependencies<T>? dependencies = null, ShouldUpdate<T>? shouldUpdate = null)
     {
@@ -454,7 +461,7 @@ public abstract class BasicComponent<T> : ComponentBase<T>
 
     public virtual Reducer<T> createReducer()
     {
-        return ReducerConverter.CombineReducers<T>(new List<Reducer<T>> { _reducer, _dependencies?.createReducer() ?? ((T state, Action _) => state) })
+        return ReducerConverter.CombineReducers(new List<Reducer<T>> { _reducer, _dependencies?.createReducer() ?? ((T state, Action _) => state) })
             ?? ((T state, Action _) => state);
     }
 
@@ -480,7 +487,7 @@ public abstract class BasicComponent<T> : ComponentBase<T>
 /// Definition of composed component, only building a list widgets.
 public abstract class ComposedComponent<T> : BasicComponent<T>
 {
-    public ComposedComponent(
+    protected ComposedComponent(
        Reducer<T> reducer, ShouldUpdate<T>? shouldUpdate = null)
       : base(reducer: reducer, view: null, shouldUpdate: shouldUpdate) { }
 
@@ -500,8 +507,9 @@ public delegate List<Dependent<T>> Dependents<T>(T t);
 public class BasicAdapter<T> : ComposedComponent<T>
 {
     ComponentContext<T>? _ctx;
-    Dependents<T> builder = (_) => new List<Dependent<T>>();
-    public BasicAdapter(
+    readonly Dependents<T> builder;
+
+    protected BasicAdapter(
         Dependents<T> builder,
         Reducer<T>? reducer = null,
         ShouldUpdate<T>? shouldUpdate = null
@@ -518,6 +526,7 @@ public class BasicAdapter<T> : ComposedComponent<T>
         List<Dependent<T>> list = builder.Invoke(state);
         foreach (var dep in list)
         {
+            // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
             SubReducer<T>? subReducer = dep?.createSubReducer();
             if (subReducer != null)
             {
@@ -530,7 +539,7 @@ public class BasicAdapter<T> : ComposedComponent<T>
 
     public override Reducer<T> createReducer()
     {
-        return ReducerConverter.CombineReducers<T>(new List<Reducer<T>>
+        return ReducerConverter.CombineReducers(new List<Reducer<T>>
         {
             base.createReducer(), _createAdapterReducer()
         }) ?? ((T state, Action _) => state);
@@ -555,7 +564,7 @@ public class BasicAdapter<T> : ComposedComponent<T>
                     getter)
             );
         }
-        _ctx!.onLifecycle(LifecycleCreator.initState());
+        _ctx.onLifecycle(LifecycleCreator.initState());
         return widgets;
     }
 }
@@ -578,13 +587,13 @@ public static class ObjectCopier
 
 #pragma warning disable CS8603 // 可能返回 null 引用。
         // Don't serialize a null object, simply return the default for that object
-        if (Object.ReferenceEquals(source, null))
+        if (ReferenceEquals(source, null))
         {
             return default;
         }
 
-        var stream = System.Text.Json.JsonSerializer.Serialize<T>(source);
-        return System.Text.Json.JsonSerializer.Deserialize<T>(stream);
+        var stream = JsonSerializer.Serialize<T>(source);
+        return JsonSerializer.Deserialize<T>(stream);
 #pragma warning restore CS8603 // 可能返回 null 引用。
     }
 }

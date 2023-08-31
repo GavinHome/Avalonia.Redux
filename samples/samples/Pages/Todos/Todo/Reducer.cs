@@ -1,8 +1,5 @@
 ﻿namespace samples.Pages.Todos.Todo;
 
-using Redux.Component;
-using System.Runtime.CompilerServices;
-using System.Xml;
 using Action = Redux.Action;
 
 internal partial class TodoComponent

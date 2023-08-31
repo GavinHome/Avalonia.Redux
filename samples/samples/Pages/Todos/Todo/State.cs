@@ -6,7 +6,7 @@ namespace samples.Pages.Todos.Todo;
 internal class ToDoState: ReactiveObject
 {
     [Reactive]
-    public string UniqueId { get; set; }
+    public string UniqueId { get; init; }
 
     [Reactive]
     public string? Title { get; set; }

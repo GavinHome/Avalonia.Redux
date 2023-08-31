@@ -1,6 +1,4 @@
 ﻿namespace samples.Pages.Todos.Todo;
-
-using samples.Pages.Counter;
 using Action = Redux.Action;
 
 internal partial class TodoComponent

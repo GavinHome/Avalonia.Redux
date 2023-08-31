@@ -3,12 +3,12 @@ namespace Redux.Component;
 
 using Widget = Avalonia.Controls.Control;
 
-public abstract class Component<T> : BasicComponent<T> where T : class, new()
+public abstract class Component<T> : BasicComponent<T> //where T : class, new()
 {
     protected Component(ViewBuilder<T>? view, Effect<T>? effect = null, Reducer<T>? reducer = null, Dependencies<T>? dependencies = null, ShouldUpdate<T>? shouldUpdate = null)
         : base(view: view,
                effect: effect,
-               reducer: reducer ?? ((T state, Action action) => state),
+               reducer: reducer ?? ((T state, Action _) => state),
                dependencies: dependencies,
                shouldUpdate: shouldUpdate)
     { }
@@ -26,10 +26,10 @@ public abstract class Component<T> : BasicComponent<T> where T : class, new()
 
 public class _ComponentWidget<T> : StatefulWidget
 {
-    BasicComponent<T> component;
-    Store<object> store;
-    Get<T> getter;
-    Dependencies<T>? dependencies;
+    private readonly BasicComponent<T> component;
+    private readonly Store<object> store;
+    private readonly Get<T> getter;
+    private readonly Dependencies<T>? dependencies;
 
     public _ComponentWidget(BasicComponent<T> component, Store<object> store, Get<T> getter, Dependencies<T>? dependencies)
     {
@@ -76,45 +76,45 @@ public class _ComponentState<T> : State //: State<_ComponentWidget<T>>
             }
         );
         _ctx.onLifecycle(LifecycleCreator.initState());
-        subscribe = _ctx.store.Subscribe?.Invoke(_ctx.onNotify);
+        subscribe = _ctx.store.Subscribe.Invoke(_ctx.onNotify);
     }
 
     public override Widget build(dynamic context) => _ctx!.buildView();
 
-    public override void didChangeDependencies()
+    protected override void didChangeDependencies()
     {
         base.didChangeDependencies();
         _ctx!.onLifecycle(LifecycleCreator.didChangeDependencies());
     }
 
-    public override void deactivate()
+    protected override void deactivate()
     {
         base.deactivate();
         _ctx!.onLifecycle(LifecycleCreator.deactivate());
     }
 
-    public override void reassemble()
+    protected override void reassemble()
     {
         base.reassemble();
         _ctx!.clearCache();
         _ctx.onLifecycle(LifecycleCreator.reassemble());
     }
 
-    public override void didUpdateWidget(StatefulWidget oldWidget)
+    protected override void didUpdateWidget(StatefulWidget oldWidget)
     {
         base.didUpdateWidget(oldWidget);
         _ctx!.didUpdateWidget();
         _ctx.onLifecycle(LifecycleCreator.didUpdateWidget());
     }
 
-    public override void disposeCtx()
+    protected override void disposeCtx()
     {
         base.disposeCtx();
         _ctx!.onLifecycle(LifecycleCreator.dispose());
         _ctx!.dispose();
     }
 
-    public override void dispose()
+    protected override void dispose()
     {
         subscribe?.Cancel();
         base.dispose();

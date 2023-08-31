@@ -6,10 +6,10 @@ namespace samples.Pages.Todos.Report;
 internal class ReportState : ReactiveObject
 {
     [Reactive]
-    public int Total { get; set; }
+    public int Total { get; init; }
 
     [Reactive]
-    public int Done { get; set; }
+    public int Done { get; init; }
 
     public ReportState(int total, int done)
     {
@@ -21,6 +21,6 @@ internal class ReportState : ReactiveObject
 
     public override string ToString()
     {
-        return $"ReportStatetotal: {Total}, done: {Done}";
+        return $"ReportState: total: {Total}, done: {Done}";
     }
 }

@@ -1,20 +1,13 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using DynamicData;
-using Redux.Component;
+﻿using Avalonia.Controls;
 using samples.Pages.Todos.Report;
 using samples.Pages.Todos.Todo;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reactive.Linq;
-using System.Reactive.Subjects;
 
 namespace samples.Pages.Todos.Page;
 using Action = Redux.Action;
 
 internal partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
 {
-    private static Subject<string> source = new Subject<string>();
     public ToDoListPage() : base(
         initState: initState,
         effect: EffectConverter.CombineEffects(new Dictionary<object, SubEffect<PageState>>
@@ -24,7 +17,7 @@ internal partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic
         }),
         reducer: ReducerConverter.asReducers(new Dictionary<object, Reducer<PageState>>
         {
-            { "initToDos",_init },
+            { "initToDos", _init },
             {  "add", _add },
             {  ToDoAction.remove, _remove }
         }),
@@ -41,26 +34,17 @@ internal partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic
         ),
         view: (state, dispatch, ctx) =>
         {
-            //List<Widget> todos = ctx.buildComponents();
-            //var report = ctx.buildComponent("report");
+            var todos = ctx.buildComponents();
+            var report = ctx.buildComponent("report");
             return new StackPanel
             {
                 Children =
                     {
-                        //new ItemsControl()
-                        //{
-                        //     [ListBox.ItemsSourceProperty] = todos.Select(x=> (report as WidgetWrapper)!.Content!),
-                        //},
-                       
-                       new ContentControl
-                       {
-                           //Content = (report as WidgetWrapper)!.Content!
-                       },
-                        new TextBlock
-                        {
-                             [!TextBlock.TextProperty] = source.
-                                Select(x => $"Total {state.ToDos!.Count} tasks, {state.ToDos!.Count} done.").ToBinding()
-                        }
+                        // new ItemsControl
+                        // {
+                        //      //Items = todos,
+                        // },
+                        report,
                     }
             };
         })

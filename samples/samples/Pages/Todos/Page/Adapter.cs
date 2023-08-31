@@ -19,10 +19,10 @@ internal class PageAdapter : BasicAdapter<PageState>
 
 internal class TodoConnector : ConnOp<PageState, ToDoState>
 {
-    ObservableCollection<ToDoState> toDos;
-    int index;
+    readonly ObservableCollection<ToDoState> toDos;
+    readonly int index;
 
-    internal TodoConnector(ObservableCollection<ToDoState> toDos, int index) : base()
+    internal TodoConnector(ObservableCollection<ToDoState> toDos, int index) 
     {
         this.toDos = toDos;
         this.index = index;
@@ -33,7 +33,7 @@ internal class TodoConnector : ConnOp<PageState, ToDoState>
         return toDos[index];
     }
 
-    public override void Set(PageState state, ToDoState subState)
+    protected override void Set(PageState state, ToDoState subState)
     {
         base.Set(state, subState);
         state.ToDos![index] = subState;
@@ -47,6 +47,6 @@ internal class ReportConnector : ConnOp<PageState, ReportState>
         return new ReportState(state.ToDos!.Count, state.ToDos!.Count((e) => e.IsDone));
     }
 
-    public override void Set(PageState state, ReportState subState) { }
+    protected override void Set(PageState state, ReportState subState) { }
 }
 

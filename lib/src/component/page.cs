@@ -1,4 +1,6 @@
 ﻿// ReSharper disable CheckNamespace
+// ReSharper disable InconsistentNaming
+// ReSharper disable TypeParameterCanBeVariant
 namespace Redux.Component;
 
 using Widget = Avalonia.Controls.Control;
@@ -6,10 +8,10 @@ using Widget = Avalonia.Controls.Control;
 /// init store's state by route-params
 public delegate T InitState<T, P>(P? param);
 
-public abstract class Page<T, P> : Component<T> where T : class, new()
+public abstract class Page<T, P> : Component<T> 
 {
-    private InitState<T, P> _initState;
-    private Middleware<T>[]? _middlewares;
+    private readonly InitState<T, P> _initState;
+    private readonly Middleware<T>[]? _middlewares;
 
     protected Page(InitState<T, P> initState, ViewBuilder<T> view, Effect<T>? effect = null, Reducer<T>? reducer = null,
                     Dependencies<T>? dependencies = null, Middleware<T>[]? middlewares = null,
@@ -31,10 +33,10 @@ public abstract class Page<T, P> : Component<T> where T : class, new()
     public Widget buildPage(P? param) => new _PageWidget<T, P>(param: param, page: this).create();
 }
 
-class _PageWidget<T, P> : StatefulWidget where T : class, new()
+class _PageWidget<T, P> : StatefulWidget //where T : class, new()
 {
-    P? param;
-    Page<T, P> page;
+    readonly P? param;
+    readonly Page<T, P> page;
 
     public _PageWidget(P? param, Page<T, P> page)
     {
@@ -50,7 +52,7 @@ class _PageWidget<T, P> : StatefulWidget where T : class, new()
     ////public override State<StatefulWidget> createState() => (new _PageState<T, P>() as State<StatefulWidget>)!;
 }
 
-class _PageState<T, P> : State where T : class, new() //: State<_PageWidget<T, P>>
+class _PageState<T, P> : State //where T : class, new() //: State<_PageWidget<T, P>>
 {
     Store<T>? _store;
     T? state;
@@ -64,17 +66,17 @@ class _PageState<T, P> : State where T : class, new() //: State<_PageWidget<T, P
         _store = StoreCreator.CreateStore(state, widget.Page.createReducer(), middleware: widget.Page.Middlewares);
     }
 
-    public override void didChangeDependencies()
+    protected override void didChangeDependencies()
     {
         base.didChangeDependencies();
     }
 
     public override Widget build(dynamic context)
     {
-        return widget.Page.buildComponent(_store?.ObjectClone()!, _store!.GetState!);
+        return widget.Page.buildComponent(_store?.ObjectClone()!, _store!.GetState);
     }
 
-    public override void dispose()
+    protected override void dispose()
     {
         base.dispose();
     }

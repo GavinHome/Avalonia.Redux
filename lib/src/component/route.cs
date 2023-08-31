@@ -7,25 +7,25 @@ using Map = Dictionary<string, Page<object, dynamic>>;
 public interface AbstractRoutes
 {
     Widget home { get; }
-    public abstract Widget buildPage(string? path, dynamic arguments);
+    public Widget buildPage(string? path, dynamic arguments);
 }
 
 /// Each page has a unique store.
 public class PageRoutes : AbstractRoutes
 {
-    Map pages;
-    string? initialRoute;
+    readonly Map pages;
+    readonly string? initialRoute;
 
-    public PageRoutes(Map pages, string? initialRoute = null)
+    public PageRoutes(Map? pages, string? initialRoute = null)
     {
         this.pages = pages ?? new Map();
         this.initialRoute = initialRoute;
     }
 
     string? initialRoutePath =>
-          initialRoute ?? pages.Keys.FirstOrDefault<string>();
+          initialRoute ?? pages.Keys.FirstOrDefault();
 
     public Widget home => buildPage(initialRoutePath, new Map());
 
-    public Widget buildPage(string? path, dynamic arguments) => pages[path!]!.buildPage(arguments);
+    public Widget buildPage(string? path, dynamic arguments) => pages[path!].buildPage(arguments);
 }

@@ -1,7 +1,8 @@
-﻿namespace Redux.Component;
+﻿// ReSharper disable ConvertClosureToMethodGroup
+namespace Redux.Component;
 using Widget = Avalonia.Controls.Control;
 
-/// Definition of Connector which connects Reducer<S> with Reducer<P>.
+//// Definition of Connector which connects Reducer<S> with Reducer<P>.
 /// 1. How to get an instance of type P from an instance of type S.
 /// 2. How to synchronize changes of an instance of type P to an instance of type S.
 /// 3. How to clone a new S.
@@ -19,18 +20,16 @@ public abstract class AbstractConnector<S, P>
     ///     2. set: (S, P) => S
     ///
     /// See in [connector].
-    public abstract SubReducer<S>? subReducer(Reducer<P> reducer);
+    public abstract SubReducer<S>? subReducer(Reducer<P>? reducer);
 }
 
 /// [MutableConn]
 /// Definition of MutableConn for page and component(s).
 public abstract class MutableConn<T, P> : AbstractConnector<T, P>
 {
-    public MutableConn() { }
+    protected abstract void Set(T state, P subState);
 
-    public abstract void Set(T state, P subState);
-
-    public override SubReducer<T>? subReducer(Reducer<P> reducer)
+    public override SubReducer<T>? subReducer(Reducer<P>? reducer)
     {
         if (reducer == null)
         {
@@ -63,7 +62,7 @@ public abstract class MutableConn<T, P> : AbstractConnector<T, P>
     /// Mixin of Connector for Component
     public static Dependent<T> operator +(MutableConn<T, P> connector, BasicComponent<P> component)
     {
-        return connector.createDependent<T, P>(component);
+        return connector.createDependent(component);
     }
 
     /// how to clone an object
@@ -88,19 +87,17 @@ public abstract class MutableConn<T, P> : AbstractConnector<T, P>
 /// The implementation of connector.
 public class NoneConn<T> : ConnOp<T, T>
 {
-    public NoneConn() { }
-
     public override T Get(T state) => state;
 
-    public override void Set(T state, T subState) { }
+    protected override void Set(T state, T subState) { }
 }
 
 /// [ConnOp]
 /// DThe implementation of connector.
 public class ConnOp<T, P> : MutableConn<T, P>
 {
-    private Func<T, P>? _getter;
-    private Action<T, P>? _setter;
+    private readonly Func<T, P>? _getter;
+    private readonly Action<T, P>? _setter;
 
     public ConnOp(Func<T, P> getter, Action<T, P> setter)
     {
@@ -108,28 +105,28 @@ public class ConnOp<T, P> : MutableConn<T, P>
         _setter = setter;
     }
 
-    public ConnOp() { }
+    protected ConnOp() { }
 
     public override P Get(T state) => _getter!(state);
 
-    public override void Set(T state, P subState) => _setter!(state, subState);
+    protected override void Set(T state, P subState) => _setter!(state, subState);
 }
 
 /// [_Dependent]
 /// Implementation of Dependent
 public class _Dependent<T, P> : Dependent<T>
 {
-    MutableConn<T, P> _connector;
-    SubReducer<T>? _subReducer;
-    Reducer<P> _reducer;
-    BasicComponent<P> _component;
+    readonly MutableConn<T, P> _connector;
+    readonly SubReducer<T>? _subReducer;
+    readonly Reducer<P> _reducer;
+    readonly BasicComponent<P> _component;
 
     public _Dependent(BasicComponent<P> component, MutableConn<T, P> connector)
     {
         _connector = connector;
         _component = component;
         _reducer = component.createReducer();
-        _subReducer = _conn((P state, Action action) => _reducer(state, action), connector);
+        _subReducer = _conn((state, action) => _reducer(state, action), connector);
     }
 
     SubReducer<T>? _conn(Reducer<P>? reducer, MutableConn<T, P> connector)
@@ -137,7 +134,7 @@ public class _Dependent<T, P> : Dependent<T>
         return reducer == null
             ? null
             : connector.subReducer(
-                (P state, Action action) => reducer(state, action));
+                (state, action) => reducer(state, action));
     }
 
     public override Widget buildComponent(Store<object> store, Get<T> getter)
@@ -150,6 +147,7 @@ public class _Dependent<T, P> : Dependent<T>
         return _component.buildComponents(store, () => _connector.Get(getter()));
     }
 
+    // ReSharper disable once UnusedParameter.Local
     public override SubReducer<T> createSubReducer() => _subReducer ?? ((T state, Action _, bool __) => state);
 
     public override ComponentBase<object> Component => (_component as BasicComponent<object>)!;

@@ -1,3 +1,4 @@
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace Redux;
 
 /// [Action]
@@ -18,14 +19,14 @@ public class Action
 
     public override bool Equals(object? obj) => obj != null && Equals(other: obj as Action);
 
-    public bool Equals(Action? other) => other != null && _type == other.Type;
+    private bool Equals(Action? other) => other != null && _type == other.Type;
 
     public override int GetHashCode() => HashCode.Combine(_type);
 }
 
 /// [Store]
 /// Definition of the standard Store.
-public class Store<T> where T : class
+public class Store<T> 
 {
     //public Get<T> GetState;
     //public Dispatch Dispatch;
@@ -34,27 +35,28 @@ public class Store<T> where T : class
     //public ReplaceReducer<T> ReplaceReducer;
 
     private T? _state;
-    private IList<System.Action> _listeners;
-    private Reducer<T>? _reducer;
+    private readonly IList<System.Action> _listeners;
+    private readonly Reducer<T>? _reducer;
 
     public Get<T> GetState => () => _state!;
     public Reducer<T>? GetReducer => _reducer;
-    public Dispatch Dispatch { get; set; }
+    public Dispatch Dispatch { get; init; }
 
-    public Subscribe Subscribe { get; set; }
+    public Subscribe Subscribe { get; init; }
     //public Observable<T> Observable { get; set; }
     public ReplaceReducer<T> ReplaceReducer { get; private set; }
 
     bool isDispatching = false;
+    // ReSharper disable once FieldCanBeMadeReadOnly.Local
     bool isDisposed = false;
 
-    public Store(T initState, Reducer<T>? reducer, List<Middleware<T>>? middleware)
+    public Store(T? initState, Reducer<T>? reducer, List<Middleware<T>>? middleware)
     {
         _throwIfNot(initState != null, "Expected the preloadedState to be non-null value.");
 
         _state = initState;
         _listeners = new List<System.Action>();
-        _reducer = reducer ?? ((T state, Action action) => state);
+        _reducer = reducer ?? ((T state, Action _) => state);
 
         Dispatch = (action) =>
         {
@@ -81,20 +83,20 @@ public class Store<T> where T : class
             foreach (var listener in _listeners)
             {
                 listener();
-            };
+            }
 
             return null;
         };
 
         Dispatch = (middleware != null && middleware.Any())
-            ? middleware!.Select((Middleware<T> middleware) => middleware(
-                dispatch: (Action action) => Dispatch(action),
+            ? middleware.Select((_middleware) => _middleware(
+                dispatch: (action) => Dispatch(action),
                 getState: GetState
             ))
-            .Aggregate(Dispatch, (Dispatch previousValue, Composable<Dispatch> element) => element(previousValue))
+            .Aggregate(Dispatch, (previousValue, element) => element(previousValue))
           : Dispatch;
 
-        ReplaceReducer = (nextReducer) => reducer = (nextReducer ?? ((T state, Action action) => state));
+        ReplaceReducer = (nextReducer) => reducer = (nextReducer ?? ((T state, Action _) => state));
 
         Subscribe = (listener) =>
         {
@@ -121,7 +123,7 @@ public class Store<T> where T : class
 
 /// [Get]
 /// Definition of the function type that returns type R.
-public delegate R Get<R>();
+public delegate R Get<out R>();
 
 /// [Dispatch] patch action function
 /// Definition of the standard Dispatch.
@@ -146,16 +148,16 @@ public class Unsubscribe
     }
 }
 
-/// [Observable]
-/// Definition of the standard observable flow.
-//public delegate Stream Observable<T>();
+//// [Observable]
+//// Definition of the standard observable flow.
+////public delegate Stream Observable<T>();
 
 /// [ReplaceReducer]
 /// Definition of a standard ReplaceReducer function.
 public delegate void ReplaceReducer<T>(Reducer<T>? reducer);
 
 /// Definition of the standard Middleware.
-public delegate Composable<Dispatch> Middleware<T>(Dispatch dispatch, Get<T> getState);
+public delegate Composable<Dispatch> Middleware<in T>(Dispatch dispatch, Get<T> getState);
 
 /// Definition of synthesizable functions.
 //typedef Composable<T> = T Function(T next);
@@ -179,7 +181,7 @@ public static class ReducerConverter
     {
         if (map == null || !map.Any())
         {
-            return (state, action) => state;
+            return (state, _) => state;
         }
         else
         {
@@ -197,7 +199,7 @@ public static class ReducerConverter
     }
 
     /// [CombineReducers]
-    /// Combine an iterable of SubReducer<T> into one Reducer<T>
+    //// Combine an iterable of SubReducer<T> into one Reducer<T>
     public static Reducer<T>? CombineReducers<T>(IList<Reducer<T>>? reducers)
     {
         var notNullReducers = reducers?.ToArray();
@@ -211,7 +213,7 @@ public static class ReducerConverter
             return notNullReducers.Single();
         }
 
-        return (T state, Action action) =>
+        return (state, action) =>
         {
             T nextState = state;
             foreach (Reducer<T> reducer in notNullReducers)
@@ -224,8 +226,8 @@ public static class ReducerConverter
     }
 
     /// [CombineSubReducers]
-    /// Combine an iterable of SubReducer<T> into one Reducer<T>
-    public static Reducer<T>? CombineSubReducers<T>(IList<SubReducer<T>> subReducers)
+    //// Combine an iterable of SubReducer<T> into one Reducer<T>
+    public static Reducer<T>? CombineSubReducers<T>(IList<SubReducer<T>>? subReducers)
     {
         var notNullReducers = subReducers?.ToArray();
         if (notNullReducers == null || !notNullReducers.Any())
@@ -236,10 +238,10 @@ public static class ReducerConverter
         if (notNullReducers.Length == 1)
         {
             SubReducer<T> single = notNullReducers.Single();
-            return (T state, Action action) => single(state, action, false);
+            return (state, action) => single(state, action, false);
         }
 
-        return (T state, Action action) =>
+        return (state, action) =>
         {
             T copy = state;
             bool hasChanged = false;
