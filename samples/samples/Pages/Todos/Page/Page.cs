@@ -127,12 +127,7 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                                         Content = new ItemsControl
                                         {
-                                            // [!ItemsControl.ItemsSourceProperty] = new Binding()
-                                            // {
-                                            //     Source = state, Path = nameof(state.ToDos),
-                                            // },
-                                           
-                                            // ItemsSource = todos,
+                                            ItemsSource = todos,
                                             // [!ItemsControl.ItemsSourceProperty] = new Binding()
                                             // {
                                             //     Source = state, Path = nameof(state.ToDos),
@@ -216,9 +211,8 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
     private static PageState _remove(PageState state, Action action)
     {
         string? uniqueId = action.Payload;
-        //var item = state.ToDos?.SingleOrDefault(todo => todo.UniqueId == unique);
-        //if (item != null) state.ToDos.Remove(item);
-        state.ToDos?.ToList().RemoveAll(todo => todo.UniqueId == uniqueId);
+        var item = state.ToDos?.SingleOrDefault(todo => todo.UniqueId == uniqueId);
+        if (item != null) state.ToDos?.Remove(item);
         return state;
     }
 }
