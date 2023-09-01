@@ -10,6 +10,7 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using ReactiveUI;
 using samples.Pages.Counter;
+using samples.Views;
 using EffectConverter = Redux.Component.EffectConverter;
 
 namespace samples.Pages.Todos.Page;
@@ -53,7 +54,7 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                     new StackPanel
                     {
                         [DockPanel.DockProperty] = Dock.Bottom,
-                        [DockPanel.ZIndexProperty] = 99,
+                        [Visual.ZIndexProperty] = 99,
                         Children =
                         {
                             new Border
@@ -96,7 +97,7 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                                     },
                                                 },
                                                 Command = ReactiveCommand.Create(() =>
-                                                    dispatch(CounterActionCreator.onAddAction()))
+                                                    dispatch(new Action("onAdd")))
                                             }
                                         }
                                     }
@@ -115,8 +116,15 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                 {
                                     new ScrollViewer
                                     {
-                                        //[ScrollViewer.HeightProperty] = new Binding("ActualHeight"),
-                                        //Height = 300,
+                                        [!Layoutable.HeightProperty] = new Binding()
+                                        {
+                                            Path = "Height",
+                                            RelativeSource = new RelativeSource()
+                                            {
+                                                Mode = RelativeSourceMode.FindAncestor,
+                                                AncestorType = typeof(MainWindow)
+                                            }
+                                        },
                                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                                         Content = new ItemsControl
                                         {
@@ -144,13 +152,13 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                 isDone: true),
             new ToDoState(uniqueId: "2", title: "Hello Avalonia Redux",
                 desc: "Learn how to use Avalonia Redux in an avalonia app."),
-            new ToDoState(uniqueId: "3", title: "Hello world", desc: "Learn how to program.", isDone: true),
-            new ToDoState(uniqueId: "4", title: "Hello Avalonia", desc: "Learn how to build an avalonia app.",
-                isDone: true),
-            new ToDoState(uniqueId: "5", title: "Hello Avalonia Redux",
-                desc: "Learn how to use Avalonia Redux in an avalonia app."),
-            new ToDoState(uniqueId: "6", title: "Hello Avalonia Redux",
-                desc: "Learn how to use Avalonia Redux in an avalonia app.")
+            // new ToDoState(uniqueId: "3", title: "Hello world", desc: "Learn how to program.", isDone: true),
+            // new ToDoState(uniqueId: "4", title: "Hello Avalonia", desc: "Learn how to build an avalonia app.",
+            //     isDone: true),
+            // new ToDoState(uniqueId: "5", title: "Hello Avalonia Redux",
+            //     desc: "Learn how to use Avalonia Redux in an avalonia app."),
+            // new ToDoState(uniqueId: "6", title: "Hello Avalonia Redux",
+            //     desc: "Learn how to use Avalonia Redux in an avalonia app.")
         };
 
         ctx.Dispatch(new Action("initToDos", payload: initToDos));
