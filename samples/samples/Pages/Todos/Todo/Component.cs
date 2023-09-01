@@ -76,7 +76,7 @@ internal partial class TodoComponent : Component<ToDoState>
                                 {
                                     VerticalAlignment = VerticalAlignment.Center,
                                     [Grid.ColumnProperty] = 1,
-                                    [!CheckBox.IsCheckedProperty] = new Binding
+                                    [!ToggleButton.IsCheckedProperty] = new Binding
                                         { Source = state, Path = nameof(state.IsDone), Mode = BindingMode.OneWay },
                                     Command = ReactiveCommand.Create(() =>
                                         dispatch(ToDoActionCreator.doneAction(state.UniqueId)))

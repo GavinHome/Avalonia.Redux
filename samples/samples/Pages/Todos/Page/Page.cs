@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Avalonia.Controls;
+﻿using Avalonia.Controls;
 using samples.Pages.Todos.Report;
 using samples.Pages.Todos.Todo;
 using System.Linq;
@@ -7,7 +6,6 @@ using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
-using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Media;
 using ReactiveUI;
@@ -129,13 +127,28 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                                         Content = new ItemsControl
                                         {
+                                            // [!ItemsControl.ItemsSourceProperty] = new Binding()
+                                            // {
+                                            //     Source = state, Path = nameof(state.ToDos),
+                                            // },
+                                           
                                             // ItemsSource = todos,
-                                            [!ItemsControl.ItemsSourceProperty] = new Binding()
-                                            {
-                                                Source = state, Path = nameof(state.ToDos),
-                                                
-                                                //Converter = new FuncValueConverter<ObservableCollection<ToDoState>, ObservableCollection<Control>>(b => new (ctx.buildComponents()))
-                                            },
+                                            // [!ItemsControl.ItemsSourceProperty] = new Binding()
+                                            // {
+                                            //     Source = state, Path = nameof(state.ToDos),
+                                            //     Converter = new FuncValueConverter<ObservableCollection<ToDoState>, ObservableCollection<Control>>(b => new (ctx.buildComponents()))
+                                            // },
+                                            // [!ItemsControl.ItemsSourceProperty] = new MultiBinding()
+                                            // {
+                                            //     Converter = new FuncMultiValueConverter<string, IEnumerable<Control>>( s=> new List<TextBlock>()),
+                                            //     Bindings = new List<IBinding>
+                                            //     {
+                                            //         new Binding()
+                                            //         {
+                                            //             Source = state, Path = nameof(state.ToDos.Count)
+                                            //         }
+                                            //     }
+                                            // }
                                         },
                                     }
                                 }
