@@ -1,13 +1,9 @@
-﻿using System.Collections;
-using System.Globalization;
-using Avalonia;
-using Avalonia.Controls.Converters;
+﻿using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Data.Converters;
 using Avalonia.Layout;
-using Avalonia.Markup.Xaml.Converters;
 using Avalonia.Media;
 using ReactiveUI;
 
@@ -91,7 +87,7 @@ internal partial class TodoComponent : Component<ToDoState>
                     new ContentControl
                     {
                         Background = new SolidColorBrush(Colors.LightGray),
-                        Padding = Thickness.Parse("15 10"),
+                        Padding = Thickness.Parse("15 15"),
                         Content = new Grid
                         {
                             ColumnDefinitions = new ColumnDefinitions
@@ -107,7 +103,8 @@ internal partial class TodoComponent : Component<ToDoState>
                                     Foreground = new SolidColorBrush(Colors.Black),
                                     VerticalAlignment = VerticalAlignment.Center,
                                     [!TextBlock.TextProperty] = new Binding
-                                        { Source = state, Path = nameof(state.Desc) }
+                                        { Source = state, Path = nameof(state.Desc) },
+                                    TextWrapping = TextWrapping.WrapWithOverflow,
                                 },
                                 new Button()
                                 {

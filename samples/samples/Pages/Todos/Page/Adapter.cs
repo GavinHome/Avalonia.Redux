@@ -1,5 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Linq;
 using samples.Pages.Todos.Report;
 using samples.Pages.Todos.Todo;
 
@@ -13,7 +12,7 @@ internal class PageAdapter : BasicAdapter<PageState>
 
     static Dependents<PageState> dependentBuilder => (state) => state.ToDos!
         .Select((todo, index) =>
-            new TodoConnector(toDos: state.ToDos!, index: index) + new TodoComponent())
+            new TodoConnector(toDos: state.ToDos?.ToList()!, index: index) + new TodoComponent())
         .ToList();
 }
 

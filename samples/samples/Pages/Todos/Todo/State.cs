@@ -29,12 +29,12 @@ public class ToDoState: ReactiveObject
 
     public ToDoState()
     {
-        UniqueId = string.IsNullOrEmpty(UniqueId) ? "${_seed++}" : UniqueId;
+        UniqueId = string.IsNullOrEmpty(UniqueId) ? $"{_seed++}" : UniqueId;
         IsDone = false;
     }
 
     public override string ToString()
     {
-        return $"ToDoState UniqueId: {UniqueId}, Title: {Title}, Desc: {Desc}, IsDone: {IsDone}";
+        return $"ToDoState = UniqueId: {UniqueId}, Title: {Title}, Desc: {Desc}, IsDone: {IsDone} | ";
     }
 }

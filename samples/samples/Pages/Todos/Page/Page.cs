@@ -1,4 +1,5 @@
-﻿using Avalonia.Controls;
+﻿using System.Collections.ObjectModel;
+using Avalonia.Controls;
 using samples.Pages.Todos.Report;
 using samples.Pages.Todos.Todo;
 using System.Linq;
@@ -6,10 +7,10 @@ using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
+using Avalonia.Data.Converters;
 using Avalonia.Layout;
 using Avalonia.Media;
 using ReactiveUI;
-using samples.Pages.Counter;
 using samples.Views;
 using EffectConverter = Redux.Component.EffectConverter;
 
@@ -128,7 +129,13 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                                         Content = new ItemsControl
                                         {
-                                            ItemsSource = todos,
+                                            // ItemsSource = todos,
+                                            [!ItemsControl.ItemsSourceProperty] = new Binding()
+                                            {
+                                                Source = state, Path = nameof(state.ToDos),
+                                                
+                                                //Converter = new FuncValueConverter<ObservableCollection<ToDoState>, ObservableCollection<Control>>(b => new (ctx.buildComponents()))
+                                            },
                                         },
                                     }
                                 }
@@ -178,7 +185,7 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
     private static PageState _init(PageState state, Action action)
     {
         List<ToDoState> toDos = action.Payload ?? new List<ToDoState>();
-        state.ToDos = toDos;
+        state.ToDos = new (toDos);
         return state;
     }
 
@@ -195,9 +202,10 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
 
     private static PageState _remove(PageState state, Action action)
     {
-        string? unique = action.Payload;
-        var item = state.ToDos?.SingleOrDefault(todo => todo.UniqueId == unique);
-        if (item != null) state.ToDos?.Remove(item);
+        string? uniqueId = action.Payload;
+        //var item = state.ToDos?.SingleOrDefault(todo => todo.UniqueId == unique);
+        //if (item != null) state.ToDos.Remove(item);
+        state.ToDos?.ToList().RemoveAll(todo => todo.UniqueId == uniqueId);
         return state;
     }
 }
