@@ -48,8 +48,6 @@ internal class ReportComponent : Component<ReportState>
                                 },
                                 new TextBlock
                                 {
-                                    // [!TextBlock.TextProperty] = new Subject<ReportState>().
-                                    //    Select(x => $"Total {state.Total} tasks, {state.Done} done.").ToBinding<string>(),
                                     [!TextBlock.TextProperty] = new Binding
                                         { Source = state, Path = nameof(state.Total) }
                                 },

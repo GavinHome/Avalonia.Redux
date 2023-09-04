@@ -45,6 +45,8 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
         {
             var todos = ctx.buildComponents();
             var report = ctx.buildComponent("report");
+            // state.TodoList = Task.FromResult(ctx.buildComponents());
+            // state.Report = Task.FromResult(ctx.buildComponent("report"));
             return new DockPanel
             {
                 [Grid.IsSharedSizeScopeProperty] = true,
@@ -65,7 +67,13 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                     {
                                         new Border
                                         {
-                                            Child = report
+                                            Child = report,
+                                            // [!Decorator.ChildProperty] = new Binding()
+                                            // {
+                                            //     Source = state, 
+                                            //     Path = "Report^",
+                                            //     FallbackValue = "wait a monment"
+                                            // }
                                         },
                                         new Border
                                         {
@@ -130,20 +138,10 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                             ItemsSource = todos,
                                             // [!ItemsControl.ItemsSourceProperty] = new Binding()
                                             // {
-                                            //     Source = state, Path = nameof(state.ToDos),
-                                            //     Converter = new FuncValueConverter<ObservableCollection<ToDoState>, ObservableCollection<Control>>(b => new (ctx.buildComponents()))
+                                            //     Source = state, 
+                                            //     Path = "TodoList^",
+                                            //     FallbackValue = "wait a moment"
                                             // },
-                                            // [!ItemsControl.ItemsSourceProperty] = new MultiBinding()
-                                            // {
-                                            //     Converter = new FuncMultiValueConverter<string, IEnumerable<Control>>( s=> new List<TextBlock>()),
-                                            //     Bindings = new List<IBinding>
-                                            //     {
-                                            //         new Binding()
-                                            //         {
-                                            //             Source = state, Path = nameof(state.ToDos.Count)
-                                            //         }
-                                            //     }
-                                            // }
                                         },
                                     }
                                 }
