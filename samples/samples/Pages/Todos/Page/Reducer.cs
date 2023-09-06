@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using DynamicData;
 using samples.Pages.Todos.Todo;
 
 namespace samples.Pages.Todos.Page;
@@ -16,7 +17,7 @@ public partial class ToDoListPage
     private static PageState _init(PageState state, Action action)
     {
         List<ToDoState> toDos = action.Payload ?? new List<ToDoState>();
-        state.ToDos = new (toDos);
+        state.ToDos?.AddRange(toDos);
         return state;
     }
 
