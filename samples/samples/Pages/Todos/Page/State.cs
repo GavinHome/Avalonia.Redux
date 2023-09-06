@@ -4,6 +4,7 @@ using samples.Pages.Todos.Todo;
 using System.Collections.ObjectModel;
 using System.Linq;
 using Avalonia.Controls;
+using DynamicData.Binding;
 
 namespace samples.Pages.Todos.Page;
 
