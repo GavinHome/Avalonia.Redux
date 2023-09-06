@@ -73,7 +73,6 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                                 BorderThickness = new Thickness(0),
                                                 Content = new Border
                                                 {
-                                                    //Background = SolidColorBrush.Parse("#bbe9d3ff"),
                                                     Padding = new Thickness(8, 5, 12, 8),
                                                     Child = new Path
                                                     {

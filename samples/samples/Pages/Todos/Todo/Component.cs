@@ -27,7 +27,6 @@ internal partial class TodoComponent : Component<ToDoState>
                     new ContentControl
                     {
                         Padding = Thickness.Parse("5"),
-                        // Background = new SolidColorBrush(state.IsDone ? Colors.Green : Colors.Red),
                         [!TemplatedControl.BackgroundProperty] = new Binding()
                         {
                             Source = state, Path = nameof(state.IsDone),
