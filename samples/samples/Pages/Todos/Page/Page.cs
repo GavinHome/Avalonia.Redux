@@ -6,6 +6,7 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
+using DynamicData.Binding;
 using ReactiveUI;
 using samples.Views;
 
@@ -31,15 +32,9 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
         ),
         view: (state, dispatch, ctx) =>
         {
-            // var obs = state.ToDos?.ToObservable();
-            // obs?.Subscribe(x =>
-            // {
-            //     
-            // });
             var todos = ctx.buildComponents();
             var report = ctx.buildComponent("report");
-            // state.TodoList = Task.FromResult(ctx.buildComponents());
-            // state.Report = Task.FromResult(ctx.buildComponent("report"));
+            
             return new DockPanel
             {
                 [Grid.IsSharedSizeScopeProperty] = true,
@@ -61,12 +56,6 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                         new Border
                                         {
                                             Child = report,
-                                            // [!Decorator.ChildProperty] = new Binding()
-                                            // {
-                                            //     Source = state, 
-                                            //     Path = "Report^",
-                                            //     FallbackValue = "wait a moment"
-                                            // }
                                         },
                                         new Border
                                         {

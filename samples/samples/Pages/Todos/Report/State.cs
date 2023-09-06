@@ -6,10 +6,10 @@ namespace samples.Pages.Todos.Report;
 internal class ReportState : ReactiveObject
 {
     [Reactive]
-    public int Total { get; init; }
+    public int Total { get; set; }
 
     [Reactive]
-    public int Done { get; init; }
+    public int Done { get; set; }
 
     public ReportState(int total, int done)
     {
