@@ -6,7 +6,6 @@ using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
-using DynamicData.Binding;
 using ReactiveUI;
 using samples.Views;
 

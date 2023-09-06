@@ -17,8 +17,6 @@ internal class ReportState : ReactiveObject
         Done = done;
     }
 
-    public ReportState() { }
-
     public override string ToString()
     {
         return $"ReportState: total: {Total}, done: {Done}";

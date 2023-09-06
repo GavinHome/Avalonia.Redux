@@ -12,6 +12,6 @@ public class PageState : ReactiveObject
     
     public override string ToString()
     {
-        return $"ToDos: {String.Join(String.Empty, ToDos?.Select(x => x.ToString()) ?? Array.Empty<String>())}";
+        return $"ToDos: {string.Join(String.Empty, ToDos?.Select(x => x.ToString()) ?? Array.Empty<String>())}";
     }
 }

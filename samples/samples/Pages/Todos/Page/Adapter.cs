@@ -41,14 +41,13 @@ internal class TodoConnector : ConnOp<PageState, ToDoState>
 
 internal class ReportConnector : ConnOp<PageState, ReportState>
 {
-    private readonly ReportState _report = new (0, 0);
+    private readonly ReportState report = new (0, 0);
     
     public override ReportState Get(PageState state)
     {
-        _report.Total = state.ToDos!.Count;
-        _report.Done = state.ToDos!.Count((e) => e.IsDone);
-        return _report;
-        ////return new ReportState(state.ToDos!.Count, state.ToDos!.Count((e) => e.IsDone));
+        report.Total = state.ToDos!.Count;
+        report.Done = state.ToDos!.Count((e) => e.IsDone);
+        return report;
     }
 
     protected override void Set(PageState state, ReportState subState) { }
