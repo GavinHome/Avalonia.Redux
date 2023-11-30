@@ -8,6 +8,9 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using ReactiveUI;
 using samples.Views;
+////using DynamicData.Binding;
+////using DynamicData;
+////using Avalonia.Threading;
 
 namespace samples.Pages.Todos.Page;
 using Action = Redux.Action;
@@ -31,9 +34,21 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
         ),
         view: (state, dispatch, ctx) =>
         {
-            var todos = ctx.buildComponents();
+            var toDos = ctx.buildComponents();
+            var getToDos = () => ctx.buildComponents();
             var report = ctx.buildComponent("report");
-            
+
+            ////TODO: It works, but not perfect
+            ////state.Items?.AddRange(getToDos());
+            ////state.ToDos!.CollectionChanged += (e, a) =>
+            ////{
+            ////    Dispatcher.UIThread.Post(() =>
+            ////    {
+            ////        state.Items?.Clear();
+            ////        state.Items?.AddRange(getToDos());
+            ////    });
+            ////};
+
             return new DockPanel
             {
                 [Grid.IsSharedSizeScopeProperty] = true,
@@ -115,13 +130,13 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                                         Content = new ItemsControl
                                         {
-                                            ItemsSource = todos,
-                                            // [!ItemsControl.ItemsSourceProperty] = new Binding()
-                                            // {
-                                            //     Source = state, 
-                                            //     Path = "TodoList^",
-                                            //     FallbackValue = "wait a moment"
-                                            // },
+                                            ItemsSource = toDos,
+                                            ////[!ItemsControl.ItemsSourceProperty] = new Binding()
+                                            ////{
+                                            ////    Source = state,
+                                            ////    Path = "Items",
+                                            ////    FallbackValue = "wait a moment"
+                                            ////},
                                         },
                                     }
                                 }
@@ -134,5 +149,5 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
     {
     }
 
-    private static PageState initState(Dictionary<string, dynamic>? param) => new PageState() { ToDos = new() };
+    private static PageState initState(Dictionary<string, dynamic>? param) => new PageState() { ToDos = new(), Items = new() };
 }

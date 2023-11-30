@@ -125,3 +125,7 @@ Version.cpp
 **/.DS_Store
 .DS_Store
 .idea
+/Avalonia.Markup.Declarative
+/global.json
+/.gitignore
+/.gitignore

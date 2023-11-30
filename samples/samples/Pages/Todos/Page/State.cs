@@ -8,6 +8,9 @@ namespace samples.Pages.Todos.Page;
 
 public class PageState : ReactiveObject
 {
+    ////TODO: It works, but not perfect
+    [Reactive] public ObservableCollection<object>? Items { get; set; }
+
     [Reactive] public ObservableCollection<ToDoState>? ToDos { get; init; }
     
     public override string ToString()
