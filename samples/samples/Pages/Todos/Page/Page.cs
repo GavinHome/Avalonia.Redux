@@ -8,9 +8,9 @@ using Avalonia.Layout;
 using Avalonia.Media;
 using ReactiveUI;
 using samples.Views;
-////using DynamicData.Binding;
-////using DynamicData;
-////using Avalonia.Threading;
+using DynamicData.Binding;
+using DynamicData;
+using Avalonia.Threading;
 
 namespace samples.Pages.Todos.Page;
 using Action = Redux.Action;
@@ -39,15 +39,15 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
             var report = ctx.buildComponent("report");
 
             ////TODO: It works, but not perfect
-            ////state.Items?.AddRange(getToDos());
-            ////state.ToDos!.CollectionChanged += (e, a) =>
-            ////{
-            ////    Dispatcher.UIThread.Post(() =>
-            ////    {
-            ////        state.Items?.Clear();
-            ////        state.Items?.AddRange(getToDos());
-            ////    });
-            ////};
+            state.Items?.AddRange(getToDos());
+            state.ToDos!.CollectionChanged += (e, a) =>
+            {
+                Dispatcher.UIThread.Post(() =>
+                {
+                    state.Items?.Clear();
+                    state.Items?.AddRange(getToDos());
+                });
+            };
 
             return new DockPanel
             {
@@ -130,13 +130,13 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                                         Content = new ItemsControl
                                         {
-                                            ItemsSource = toDos,
-                                            ////[!ItemsControl.ItemsSourceProperty] = new Binding()
-                                            ////{
-                                            ////    Source = state,
-                                            ////    Path = "Items",
-                                            ////    FallbackValue = "wait a moment"
-                                            ////},
+                                            ////ItemsSource = toDos,
+                                            [!ItemsControl.ItemsSourceProperty] = new Binding()
+                                            {
+                                                Source = state,
+                                                Path = "Items",
+                                                FallbackValue = "wait a moment"
+                                            },
                                         },
                                     }
                                 }

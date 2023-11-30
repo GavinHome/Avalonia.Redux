@@ -30,7 +30,7 @@ public static class StoreExtends
             Subscribe = src.Subscribe,
             Dispatch = src.Dispatch
         };
-        store.ReplaceReducer(reducer: (state, action) => (src.GetReducer ?? ((_state, _) => _state)).Invoke((T)state, action));
+        store.ReplaceReducer(reducer: (state, action) => (src.GetReducer ?? ((_state, _) => _state)).Invoke((T)state, action)!);
         return store;
     }
 }
