@@ -12,8 +12,12 @@ namespace samples.Views
             Navigator.onGenerateRoute = (RouteSettings settings) =>
             {
                 var page = Routes.routes.buildPage(settings.name, settings.arguments);
-                Content = page;
                 return page;
+            };
+
+            Navigator.onChange += () =>
+            {
+                Content = Navigator.of().current;
             };
         }
     }
