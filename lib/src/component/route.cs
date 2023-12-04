@@ -52,8 +52,8 @@ public record RouteSettings(string name = "", dynamic? arguments = null);
 
 public class Route<T> where T : class
 {
-    readonly RouteSettings _settings;
-    readonly dynamic _content;
+    RouteSettings _settings;
+    dynamic? _content;
 
     public dynamic Content => _content!;
 
@@ -88,8 +88,7 @@ class _RouteEntry
 
 public class Navigator : StatefulWidget
 {
-    public static Action? onChange;
-    private static readonly NavigatorState navigatorState = new();
+    private static NavigatorState navigatorState = new NavigatorState();
 
     public static RouteFactory? onGenerateRoute { get; set; }
 
@@ -146,8 +145,8 @@ public class NavigatorState : State
 
     Route<dynamic>? _routeNamed<T>(string routeName, dynamic? arguments)
     {
-        var widget = Navigator.onGenerateRoute?.Invoke(new RouteSettings(routeName, arguments));
-        Route<dynamic>? route = new(new RouteSettings(routeName, arguments), widget);
+        var widget = Navigator.onGenerateRoute(new RouteSettings(routeName, arguments));
+        Route<dynamic>? route = new Route<dynamic>(new RouteSettings(routeName, arguments), widget);
         return route;
     }
 }
