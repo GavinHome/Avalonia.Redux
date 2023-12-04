@@ -1,16 +1,19 @@
-﻿using Avalonia.Controls;
-using samples.Pages.Todos.Report;
-using Avalonia;
+﻿using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
-using ReactiveUI;
-using samples.Views;
-using DynamicData.Binding;
-using DynamicData;
 using Avalonia.Threading;
+using DynamicData.Binding;
+using ReactiveUI;
+using samples.Pages.Todos.Report;
+using samples.Pages.Todos.Todo;
+using samples.Views;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Reactive.Subjects;
 
 namespace samples.Pages.Todos.Page;
 using Action = Redux.Action;
@@ -34,20 +37,8 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
         ),
         view: (state, dispatch, ctx) =>
         {
-            var toDos = ctx.buildComponents();
-            var getToDos = () => ctx.buildComponents();
             var report = ctx.buildComponent("report");
-
-            ////TODO: It works, but not perfect
-            state.Items?.AddRange(getToDos());
-            state.ToDos!.CollectionChanged += (e, a) =>
-            {
-                Dispatcher.UIThread.Post(() =>
-                {
-                    state.Items?.Clear();
-                    state.Items?.AddRange(getToDos());
-                });
-            };
+            var bodyItemsView = buildItems(state.ToDos!, ctx);
 
             return new DockPanel
             {
@@ -128,16 +119,7 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                             }
                                         },
                                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                                        Content = new ItemsControl
-                                        {
-                                            ////ItemsSource = toDos,
-                                            [!ItemsControl.ItemsSourceProperty] = new Binding()
-                                            {
-                                                Source = state,
-                                                Path = "Items",
-                                                FallbackValue = "wait a moment"
-                                            },
-                                        },
+                                        Content = bodyItemsView
                                     }
                                 }
                             },
@@ -149,5 +131,56 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
     {
     }
 
-    private static PageState initState(Dictionary<string, dynamic>? param) => new PageState() { ToDos = new(), Items = new() };
+    private static PageState initState(Dictionary<string, dynamic>? param) => new PageState() { ToDos = new() };
+
+    private static ItemsControl buildItems<T>(ObservableCollection<T> obs, ComponentContext<PageState> ctx)
+    {
+        var source = new Subject<List<Control>>();
+        var items = new ItemsControl()
+        {
+            [!ItemsControl.ItemsSourceProperty] = source.ToBinding()
+        };
+
+        obs.ToObservableChangeSet().Subscribe(x =>
+        {
+            Dispatcher.UIThread.Post(() =>
+            {
+                var todos = ctx.buildComponents();
+                source.OnNext(todos);
+            });
+        });
+
+        return items;
+    }
+}
+
+public static class ItemControls
+{
+    //private static ItemsControl GetCollectionItems(this ObservableCollection<ToDoState>? list, Func<List<Control>> func)
+    //{
+    //    var source = new Subject<List<Control>>();
+    //    var items = new ItemsControl()
+    //    {
+    //        [!ItemsControl.ItemsSourceProperty] = source.ToBinding()
+    //    };
+
+    //    list!.ToObservableChangeSet().Subscribe(x =>
+    //    {
+    //        Dispatcher.UIThread.Post(() =>
+    //        {
+    //            var todos = func();
+    //            source.OnNext(todos);
+    //        });
+    //    });
+
+    //    //source.OnNext(func());
+    //    //list!.CollectionChanged += (e, a) =>
+    //    //{
+    //    //    Dispatcher.UIThread.Post(() =>
+    //    //    {
+    //    //        source.OnNext(func());
+    //    //    });
+    //    //};
+    //    return items;
+    //}
 }
