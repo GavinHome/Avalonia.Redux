@@ -9,9 +9,7 @@ using Avalonia.Threading;
 using DynamicData.Binding;
 using ReactiveUI;
 using samples.Pages.Todos.Report;
-using samples.Pages.Todos.Todo;
 using samples.Views;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reactive.Subjects;
 
@@ -24,10 +22,10 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
         initState: initState,
         effect: buildEffect(),
         reducer: buildReducer(),
-        middlewares: new[]
-        {
+        middlewares:
+        [
             Redux.Middlewares.logMiddleware<PageState>(monitor: (state) => state.ToString(), tag: "ToDoListPage")
-        },
+        ],
         dependencies: new Dependencies<PageState>(
             adapter: new NoneConn<PageState>() + new PageAdapter(),
             slots: new Dictionary<String, Dependent<PageState>>
@@ -37,8 +35,9 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
         ),
         view: (state, dispatch, ctx) =>
         {
+            ////var todos = ctx.buildComponents();
             var report = ctx.buildComponent("report");
-            var bodyItemsView = buildItems(state.ToDos!, ctx);
+            var itemsView = buildItemsView(state.ToDos!, ctx);
 
             return new DockPanel
             {
@@ -119,7 +118,7 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
                                             }
                                         },
                                         VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                                        Content = bodyItemsView
+                                        Content = itemsView
                                     }
                                 }
                             },
@@ -131,9 +130,9 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
     {
     }
 
-    private static PageState initState(Dictionary<string, dynamic>? param) => new PageState() { ToDos = new() };
+    private static PageState initState(Dictionary<string, dynamic>? param) => new() { ToDos = [] };
 
-    private static ItemsControl buildItems<T>(ObservableCollection<T> obs, ComponentContext<PageState> ctx)
+    private static ItemsControl buildItemsView<T>(ObservableCollection<T> obs, ComponentContext<PageState> ctx)
     {
         var source = new Subject<List<Control>>();
         var items = new ItemsControl()
@@ -152,35 +151,4 @@ public partial class ToDoListPage : Page<PageState, Dictionary<string, dynamic>>
 
         return items;
     }
-}
-
-public static class ItemControls
-{
-    //private static ItemsControl GetCollectionItems(this ObservableCollection<ToDoState>? list, Func<List<Control>> func)
-    //{
-    //    var source = new Subject<List<Control>>();
-    //    var items = new ItemsControl()
-    //    {
-    //        [!ItemsControl.ItemsSourceProperty] = source.ToBinding()
-    //    };
-
-    //    list!.ToObservableChangeSet().Subscribe(x =>
-    //    {
-    //        Dispatcher.UIThread.Post(() =>
-    //        {
-    //            var todos = func();
-    //            source.OnNext(todos);
-    //        });
-    //    });
-
-    //    //source.OnNext(func());
-    //    //list!.CollectionChanged += (e, a) =>
-    //    //{
-    //    //    Dispatcher.UIThread.Post(() =>
-    //    //    {
-    //    //        source.OnNext(func());
-    //    //    });
-    //    //};
-    //    return items;
-    //}
 }

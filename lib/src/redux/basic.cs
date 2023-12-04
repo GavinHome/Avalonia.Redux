@@ -171,7 +171,7 @@ public static class ReducerConverter
     /// [asReducer]
     /// combine & as
     /// for action.type which override it's == operator
-    public static Reducer<T> asReducers<T>(Dictionary<object, Reducer<T>>? map)
+    public static Reducer<T> AsReducers<T>(Dictionary<object, Reducer<T>>? map)
     {
         if (map == null || !map.Any())
         {

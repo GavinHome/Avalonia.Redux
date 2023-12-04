@@ -4,7 +4,7 @@ using Action = Redux.Action;
 
 internal partial class TodoComponent
 {
-    private static Reducer<ToDoState> buildReducer() => ReducerConverter.asReducers(new Dictionary<object, Reducer<ToDoState>>
+    private static Reducer<ToDoState> buildReducer() => ReducerConverter.AsReducers(new Dictionary<object, Reducer<ToDoState>>
     {
         {
             ToDoAction.edit, _edit

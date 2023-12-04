@@ -7,7 +7,7 @@ using Action = Redux.Action;
 
 public partial class ToDoListPage
 {
-    private static Reducer<PageState> buildReducer() => ReducerConverter.asReducers(new Dictionary<object, Reducer<PageState>>
+    private static Reducer<PageState> buildReducer() => ReducerConverter.AsReducers(new Dictionary<object, Reducer<PageState>>
     {
         { "initToDos", _init },
         { "add", _add },

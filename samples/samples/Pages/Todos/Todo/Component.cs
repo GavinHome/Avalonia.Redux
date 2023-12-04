@@ -35,11 +35,11 @@ internal partial class TodoComponent : Component<ToDoState>
                         },
                         Content = new Grid
                         {
-                            ColumnDefinitions = new ColumnDefinitions
-                            {
+                            ColumnDefinitions =
+                            [
                                 new ColumnDefinition(GridLength.Star),
                                 new ColumnDefinition(GridLength.Auto)
-                            },
+                            ],
                             Children =
                             {
                                 new StackPanel
@@ -89,11 +89,11 @@ internal partial class TodoComponent : Component<ToDoState>
                         Padding = Thickness.Parse("15 15"),
                         Content = new Grid
                         {
-                            ColumnDefinitions = new ColumnDefinitions
-                            {
+                            ColumnDefinitions =
+                            [
                                 new ColumnDefinition(GridLength.Star),
                                 new ColumnDefinition(GridLength.Auto)
-                            },
+                            ],
                             Children =
                             {
                                 new TextBlock
@@ -137,8 +137,7 @@ internal partial class TodoComponent : Component<ToDoState>
             {
                 ItemsSource = new List<MenuItem>
                 {
-                    new MenuItem
-                    {
+                    new() {
                         Header = "Remove", Command = ReactiveCommand.Create(() =>
                             dispatch(ToDoActionCreator.onRemoveAction(state.UniqueId))),
                         Icon = new Path

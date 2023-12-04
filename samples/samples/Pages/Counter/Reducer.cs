@@ -2,7 +2,7 @@
 
 public partial class CounterPage
 {
-    private static Reducer<CounterState> buildReducer() => ReducerConverter.asReducers(new Dictionary<object, Reducer<CounterState>>
+    private static Reducer<CounterState> buildReducer() => ReducerConverter.AsReducers(new Dictionary<object, Reducer<CounterState>>
     {
         {
             CounterAction.add, _add
