@@ -13,10 +13,10 @@ public partial class TodoEditPage : Page<TodoEditState, ToDoState>
     public TodoEditPage() : base(
         initState: initState,
         effect: buildEffect(),
-        middlewares: new[]
-        {
+        middlewares:
+        [
             Redux.Middlewares.logMiddleware<TodoEditState>(tag: "TodoEditPage")
-        },
+        ],
         view: (state, dispatch, ctx) => new StackPanel
         {
             Children =
@@ -49,5 +49,5 @@ public partial class TodoEditPage : Page<TodoEditState, ToDoState>
         })
     { }
     
-    private static TodoEditState initState(ToDoState? arg) => new TodoEditState() { toDo = new() };
+    private static TodoEditState initState(ToDoState? arg) => new() { toDo = new() };
 }
