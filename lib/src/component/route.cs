@@ -88,6 +88,7 @@ class _RouteEntry
 
 public class Navigator : StatefulWidget
 {
+    public static Action? onChange;
     private static NavigatorState navigatorState = new NavigatorState();
 
     public static RouteFactory? onGenerateRoute { get; set; }
