@@ -8,6 +8,13 @@ namespace samples.Views
         {
             InitializeComponent();
             Content = Routes.routes.home;
+
+            Navigator.onGenerateRoute = (RouteSettings settings) =>
+            {
+                var page = Routes.routes.buildPage(settings.name, settings.arguments);
+                Content = page;
+                return page;
+            };
         }
     }
 }

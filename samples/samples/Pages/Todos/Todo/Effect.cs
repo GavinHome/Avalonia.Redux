@@ -17,12 +17,22 @@ internal partial class TodoComponent
     {
         if (action.Payload == ctx.state.UniqueId)
         {
-            ctx.Dispatch(ToDoActionCreator.editAction(new ToDoState()
+            Navigator.of(ctx)
+            .pushNamed("todo_edit", arguments: ctx.state)
+            .then((toDo) =>
             {
-                UniqueId = ctx.state.UniqueId,
-                Title = ctx.state.Title + new Random().Next(65535),
-                Desc = ctx.state.Desc + new Random().Next(65535),
-            }));
+                if (toDo != null)
+                {
+                    //ctx.Dispatch(ToDoActionCreator.editAction(toDo));
+                }
+            });
+
+            ////ctx.Dispatch(ToDoActionCreator.editAction(new ToDoState()
+            ////{
+            ////    UniqueId = ctx.state.UniqueId,
+            ////    Title = ctx.state.Title + new Random().Next(65535),
+            ////    Desc = ctx.state.Desc + new Random().Next(65535),
+            ////}));
         }
 
         await Task.CompletedTask;
