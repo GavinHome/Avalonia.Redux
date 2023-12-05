@@ -20,13 +20,6 @@ public partial class ToDoListPage
                 isDone: true),
             new ToDoState(uniqueId: "2", title: "Hello Avalonia Redux",
                 desc: "Learn how to use Avalonia Redux in an avalonia app."),
-            // new ToDoState(uniqueId: "3", title: "Hello world", desc: "Learn how to program.", isDone: true),
-            // new ToDoState(uniqueId: "4", title: "Hello Avalonia", desc: "Learn how to build an avalonia app.",
-            //     isDone: true),
-            // new ToDoState(uniqueId: "5", title: "Hello Avalonia Redux",
-            //     desc: "Learn how to use Avalonia Redux in an avalonia app."),
-            // new ToDoState(uniqueId: "6", title: "Hello Avalonia Redux",
-            //     desc: "Learn how to use Avalonia Redux in an avalonia app.")
         };
 
         ctx.Dispatch(new Action("initToDos", payload: initToDos));
@@ -36,7 +29,7 @@ public partial class ToDoListPage
     private static async Task _onAdd(Action action, ComponentContext<PageState> ctx)
     {
         await Navigator.of(ctx)
-            .pushNamed("todo_edit", arguments: null, (toDo) =>
+            .pushNamed<ToDoState>("todo_edit", arguments: null, (toDo) =>
             {
                 if (toDo != null)
                 {
@@ -47,12 +40,6 @@ public partial class ToDoListPage
                     }));
                 }
             });
-
-        ////ctx.Dispatch(new Action("add", payload: new ToDoState
-        ////{
-        ////    Title = $"Task{new Random().Next(65535)}",
-        ////    Desc = $"Task{new Random().Next(65535)}Description",
-        ////}));
         await Task.CompletedTask;
     }
 }

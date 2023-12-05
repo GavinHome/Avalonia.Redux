@@ -18,28 +18,13 @@ internal partial class TodoComponent
         if (action.Payload == ctx.state.UniqueId)
         {
             await Navigator.of(ctx)
-            .pushNamed("todo_edit", arguments: ctx.state, (toDo) =>
+            .pushNamed<ToDoState>("todo_edit", arguments: ctx.state, (toDo) =>
             {
                 if (toDo != null)
                 {
                     ctx.Dispatch(ToDoActionCreator.editAction(toDo));
                 }
-
             });
-            ////.then((toDo) =>
-            ////{
-            ////    if (toDo != null)
-            ////    {
-            ////        //ctx.Dispatch(ToDoActionCreator.editAction(toDo));
-            ////    }
-            ////});
-
-            ////ctx.Dispatch(ToDoActionCreator.editAction(new ToDoState()
-            ////{
-            ////    UniqueId = ctx.state.UniqueId,
-            ////    Title = ctx.state.Title + new Random().Next(65535),
-            ////    Desc = ctx.state.Desc + new Random().Next(65535),
-            ////}));
         }
 
         await Task.CompletedTask;
