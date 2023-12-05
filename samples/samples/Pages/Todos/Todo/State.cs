@@ -3,6 +3,7 @@ using ReactiveUI.Fody.Helpers;
 
 namespace samples.Pages.Todos.Todo;
 
+[Serializable]
 public class ToDoState: ReactiveObject
 {
     [Reactive]

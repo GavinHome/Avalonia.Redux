@@ -22,36 +22,6 @@ public partial class TodoEditPage : Page<TodoEditState, ToDoState>
         ],
         view: (state, dispatch, ctx) =>
         {
-            //new StackPanel
-            //{
-            //    Children =
-            //    {
-            //        new TextBlock { Text = "TodoEditPage" },
-            //       new Button()
-            //                        {
-            //                            [Grid.ColumnProperty] = 1,
-            //                            Background = new SolidColorBrush(Colors.Transparent),
-            //                            CornerRadius = new CornerRadius(3),
-            //                            Padding = new Thickness(0),
-            //                            BorderThickness = new Thickness(0),
-            //                            Content = new Border
-            //                            {
-            //                                Background = new SolidColorBrush(Colors.Transparent),
-            //                                Padding = new Thickness(8, 5, 12, 8),
-            //                                Child = new Path
-            //                                {
-            //                                    Data = Geometry.Parse(
-            //                                        "M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"),
-            //                                    Fill = new SolidColorBrush(Colors.Black),
-            //                                    HorizontalAlignment = HorizontalAlignment.Center,
-            //                                    VerticalAlignment = VerticalAlignment.Center,
-            //                                },
-            //                            },
-            //                            Command = ReactiveCommand.Create(() =>
-            //                                dispatch(ToDoEditActionCreator.onDone()))
-            //       }
-            //    }
-            //}
             return new DockPanel
             {
                 [Grid.IsSharedSizeScopeProperty] = true,
@@ -133,10 +103,11 @@ public partial class TodoEditPage : Page<TodoEditState, ToDoState>
                                             {
                                                 new Border
                                                 {
-                                                    Child = new TextBlock { Text = "TodoEdit" },
+                                                    Child = new TextBlock { Text = "Edit Todo" },
                                                 },
                                                 new Border
                                                 {
+                                                    Padding = Thickness.Parse("20 50"),
                                                     Child = new Grid
                                                     {
                                                          ColumnDefinitions =
@@ -155,25 +126,60 @@ public partial class TodoEditPage : Page<TodoEditState, ToDoState>
                                                             {
                                                                 [Grid.RowProperty] = 0,
                                                                 [Grid.ColumnProperty] = 0,
-                                                                Child = new TextBlock { Text = "title: " },
+                                                                Child = new TextBlock {
+                                                                    Text = "title:",
+                                                                    HorizontalAlignment = HorizontalAlignment.Right,
+                                                                    FontSize = 20,
+                                                                    Foreground = new SolidColorBrush(Colors.Black),
+                                                                    VerticalAlignment = VerticalAlignment.Stretch
+                                                                },
                                                             },
                                                             new Border
                                                             {
                                                                 [Grid.RowProperty] = 0,
                                                                 [Grid.ColumnProperty] = 1,
-                                                                Child = new TextBox {  },
+                                                                Padding = Thickness.Parse("8 0"),
+                                                                Child = new TextBox {
+                                                                    [!TextBlock.TextProperty] = new Binding()
+                                                                    {
+                                                                        Source = state.toDo,
+                                                                        Path = "Title",
+                                                                    },
+                                                                    FontSize = 16,
+                                                                    Foreground = new SolidColorBrush(Colors.Black)
+                                                                },
                                                             },
                                                             new Border
                                                             {
                                                                 [Grid.RowProperty] = 1,
                                                                 [Grid.ColumnProperty] = 0,
-                                                                Child = new TextBlock { Text = "desc:" },
+                                                                Padding = Thickness.Parse("0 32"),
+                                                                Child = new TextBlock {
+                                                                    Text = "desc:",
+                                                                    HorizontalAlignment = HorizontalAlignment.Right,
+                                                                    FontSize = 20,
+                                                                    Foreground = new SolidColorBrush(Colors.Black),
+                                                                    VerticalAlignment = VerticalAlignment.Stretch
+                                                                },
                                                             },
                                                             new Border
                                                             {
                                                                 [Grid.RowProperty] = 1,
                                                                 [Grid.ColumnProperty] = 1,
-                                                                Child = new TextBox { Height= 100,AcceptsReturn= true,TextWrapping= TextWrapping.Wrap },
+                                                                Padding = Thickness.Parse("8 32"),
+                                                                Child = new TextBox {
+                                                                    [!TextBlock.TextProperty] = new Binding()
+                                                                    {
+                                                                        Source = state.toDo,
+                                                                        Path = "Desc",
+                                                                    },
+                                                                    Height= 200,
+                                                                    AcceptsReturn= true,
+                                                                    TextWrapping= TextWrapping.Wrap,
+                                                                    MaxLines = 10,
+                                                                    FontSize = 16,
+                                                                    Foreground = new SolidColorBrush(Colors.Black)
+                                                                },
                                                             },
                                                         }
                                                     },
@@ -190,5 +196,5 @@ public partial class TodoEditPage : Page<TodoEditState, ToDoState>
         })
     { }
 
-    private static TodoEditState initState(ToDoState? arg) => new() { toDo = new() };
+    private static TodoEditState initState(ToDoState? arg) => new() { toDo = arg?.Clone() ?? new() };
 }

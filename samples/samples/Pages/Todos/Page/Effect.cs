@@ -35,11 +35,24 @@ public partial class ToDoListPage
 
     private static async Task _onAdd(Action action, ComponentContext<PageState> ctx)
     {
-        ctx.Dispatch(new Action("add", payload: new ToDoState
-        {
-            Title = $"Task{new Random().Next(65535)}",
-            Desc = $"Task{new Random().Next(65535)}Description",
-        }));
+        await Navigator.of(ctx)
+            .pushNamed("todo_edit", arguments: null, (toDo) =>
+            {
+                if (toDo != null)
+                {
+                    ctx.Dispatch(new Action("add", payload: new ToDoState
+                    {
+                        Title = $"{toDo.Title}",
+                        Desc = $"{toDo.Desc}",
+                    }));
+                }
+            });
+
+        ////ctx.Dispatch(new Action("add", payload: new ToDoState
+        ////{
+        ////    Title = $"Task{new Random().Next(65535)}",
+        ////    Desc = $"Task{new Random().Next(65535)}Description",
+        ////}));
         await Task.CompletedTask;
     }
 }
