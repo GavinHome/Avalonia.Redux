@@ -20,6 +20,8 @@ public class StatefulElement : ComponentElement
     public override Widget build() => state.build(this);
 
     State<StatefulWidget> state => _state!;
+
+    #region 
     ////private bool _dirty;
     ////private bool dirty => _dirty;
 
@@ -44,29 +46,26 @@ public class StatefulElement : ComponentElement
 
     ////    _dirty = false;
     ////}
+    #endregion
 }
 
 public abstract class StatefulWidget : Widget
 {
-    ////public abstract State<StatefulWidget> createState();
-    public abstract State createState();
+    public abstract State<StatefulWidget> createState();
     public Widget create() => new StatefulElement(this).build();
 }
 
-public abstract class State : State<StatefulWidget>
-{
-}
-
+/// [VoidCallback]
 public delegate dynamic? VoidCallback();
 
+/// [State<T>]
 public abstract class State<T> where T : StatefulWidget
 {
     public T widget => _widget!;
     public T? _widget;
 
-    // public Widget? _element;
-    //
-    // public bool mounted => _element != null;
+    ////public Widget? _element;
+    ////public bool mounted => _element != null;
 
     public virtual void initState() { }
 
@@ -85,9 +84,9 @@ public abstract class State<T> where T : StatefulWidget
     protected virtual void dispose() { }
 
     public void setState(VoidCallback fn)
-    {    
+    {
         object? _ = fn();
-        //_element!.markNeedsBuild();
+        ////_element!.markNeedsBuild();
     }
 }
 
@@ -400,8 +399,10 @@ public delegate dynamic ViewBuilder<T>(T state, Dispatch dispatch, ComponentCont
 /// According to the return value, determine whether the Action event is consumed.
 public delegate dynamic? Effect<T>(Action action, ComponentContext<T> ctx);
 
+/// [SubEffect]
 public delegate Task SubEffect<T>(Action action, ComponentContext<T> ctx);
 
+/// [EffectConverter]
 public static class EffectConverter
 {
     static readonly object SubEffectReturnNull = new();
@@ -553,6 +554,7 @@ public class BasicAdapter<T> : ComposedComponent<T>
     }
 }
 
+/// [ObjectCopier]
 public static class ObjectCopier
 {
     /// <summary>
