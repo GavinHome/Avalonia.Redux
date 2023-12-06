@@ -24,11 +24,11 @@ public abstract class Page<T, P> : Component<T>
     public InitState<T, P> InitState => _initState;
     public List<Middleware<T>>? Middlewares => _middlewares?.ToList();
 
-    ///  build page
+    /// build page
     public Widget buildPage(P? param) => new _PageWidget<T, P>(param: param, page: this).create();
 }
 
-class _PageWidget<T, P> : StatefulWidget //where T : class, new()
+class _PageWidget<T, P> : StatefulWidget
 {
     readonly P? param;
     readonly Page<T, P> page;
@@ -42,12 +42,10 @@ class _PageWidget<T, P> : StatefulWidget //where T : class, new()
     public Page<T, P> Page => page;
     public P? Param => param;
 
-    public override State createState() => new _PageState<T, P>();
-
-    ////public override State<StatefulWidget> createState() => (new _PageState<T, P>() as State<StatefulWidget>)!;
+    public override _PageState<T, P> createState() => new _PageState<T, P>();
 }
 
-class _PageState<T, P> : State //where T : class, new() //: State<_PageWidget<T, P>>
+class _PageState<T, P> : State<StatefulWidget>
 {
     Store<T>? _store;
     T? state;

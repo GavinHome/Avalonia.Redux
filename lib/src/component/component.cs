@@ -48,7 +48,7 @@ public class _ComponentWidget<T> : StatefulWidget
     public Get<T> GetGetter => getter;
 }
 
-public class _ComponentState<T> : State //: State<_ComponentWidget<T>>
+public class _ComponentState<T> : State<StatefulWidget>
 {
     ComponentContext<T>? _ctx;
     BasicComponent<T> component => widget.Component;
