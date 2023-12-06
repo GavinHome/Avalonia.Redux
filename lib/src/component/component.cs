@@ -1,7 +1,4 @@
-// ReSharper disable CheckNamespace
 namespace Redux.Component;
-
-using Widget = Avalonia.Controls.Control;
 
 public abstract class Component<T> : BasicComponent<T> //where T : class, new()
 {

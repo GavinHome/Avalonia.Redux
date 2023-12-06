@@ -1,13 +1,4 @@
-// ReSharper disable CheckNamespace
-// ReSharper disable UnusedTypeParameter
-// ReSharper disable TypeParameterCanBeVariant
-
-using System.Text.Json;
-using Avalonia.Controls;
-
 namespace Redux.Component;
-
-using Widget = Control;
 
 public abstract class ComponentElement : Control
 {
@@ -99,7 +90,7 @@ public abstract class State<T> where T : StatefulWidget
 
     public void setState(VoidCallback fn)
     {    
-        object? result = fn();
+        object? _ = fn();
         //_element!.markNeedsBuild();
     }
 }
@@ -172,7 +163,7 @@ public class Dependencies<T>
 
     public Reducer<T> createReducer()
     {
-        List<SubReducer<T>> subs = new List<SubReducer<T>>();
+        List<SubReducer<T>> subs = new();
         if (slots != null && slots.Any())
         {
             subs.AddRange(slots.Values.Select(entry => entry.createSubReducer()).ToList());
@@ -223,26 +214,25 @@ public enum Lifecycle
 
 static class LifecycleCreator
 {
-    public static Action initState() => new Action(Lifecycle.initState);
+    public static Action initState() => new(Lifecycle.initState);
 
-    public static Action build(string name) => new Action(Lifecycle.build, payload: name);
+    public static Action build(string name) => new(Lifecycle.build, payload: name);
 
-    public static Action reassemble() => new Action(Lifecycle.reassemble);
+    public static Action reassemble() => new(Lifecycle.reassemble);
 
-    public static Action dispose() => new Action(Lifecycle.dispose);
+    public static Action dispose() => new(Lifecycle.dispose);
 
     // static Action didDisposed() => const Action(Lifecycle.didDisposed);
 
-    public static Action didUpdateWidget() => new Action(Lifecycle.didUpdateWidget);
+    public static Action didUpdateWidget() => new(Lifecycle.didUpdateWidget);
 
-    public static Action didChangeDependencies() => new Action(Lifecycle.didChangeDependencies);
+    public static Action didChangeDependencies() => new(Lifecycle.didChangeDependencies);
 
-    public static Action deactivate() => new Action(Lifecycle.deactivate);
+    public static Action deactivate() => new(Lifecycle.deactivate);
 
-    public static Action appear(int index) => new Action(Lifecycle.appear, payload: index);
+    public static Action appear(int index) => new(Lifecycle.appear, payload: index);
 
-    public static Action disappear(int index) =>
-        new Action(Lifecycle.disappear, payload: index);
+    public static Action disappear(int index) => new(Lifecycle.disappear, payload: index);
 }
 
 /// [ComponentContext]
@@ -386,7 +376,7 @@ public class ComponentContext<T>
     }
 
     Dispatch _createDispatch(
-            Dispatch onEffect, Dispatch next, ComponentContext<T> ctx) =>
+            Dispatch onEffect, Dispatch next, ComponentContext<T> _) =>
         action =>
         {
             object? result = onEffect.Invoke(action);
@@ -418,7 +408,7 @@ public delegate Task SubEffect<T>(Action action, ComponentContext<T> ctx);
 
 public static class EffectConverter
 {
-    static readonly object SubEffectReturnNull = new object();
+    static readonly object SubEffectReturnNull = new();
 
     /// [combineEffects]
     /// for action.type which override it's == operator
@@ -429,7 +419,6 @@ public static class EffectConverter
             SubEffect<T>? subEffect = map.FirstOrDefault(entry => action.Type.Equals(entry.Key)).Value;
             if (subEffect != null)
             {
-                // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
                 return (subEffect.Invoke(action, ctx) ?? SubEffectReturnNull) == null;
             }
 
@@ -526,7 +515,6 @@ public class BasicAdapter<T> : ComposedComponent<T>
         List<Dependent<T>> list = builder.Invoke(state);
         foreach (var dep in list)
         {
-            // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
             SubReducer<T>? subReducer = dep?.createSubReducer();
             if (subReducer != null)
             {
@@ -555,7 +543,7 @@ public class BasicAdapter<T> : ComposedComponent<T>
               Log.doPrint($"{GetType()} do reload");
           });
         List<Dependent<T>> dependentArray = builder(getter());
-        List<Widget> widgets = new List<Widget>();
+        List<Widget> widgets = new();
         foreach (var dependent in dependentArray)
         {
             widgets.AddRange(
@@ -587,13 +575,13 @@ public static class ObjectCopier
 
 #pragma warning disable CS8603 // 可能返回 null 引用。
         // Don't serialize a null object, simply return the default for that object
-        if (ReferenceEquals(source, null))
+        if (source is null) //if (ReferenceEquals(source, null))
         {
             return default;
         }
 
-        var stream = JsonSerializer.Serialize<T>(source);
-        return JsonSerializer.Deserialize<T>(stream);
+        var stream = System.Text.Json.JsonSerializer.Serialize<T>(source);
+        return System.Text.Json.JsonSerializer.Deserialize<T>(stream);
 #pragma warning restore CS8603 // 可能返回 null 引用。
     }
 }

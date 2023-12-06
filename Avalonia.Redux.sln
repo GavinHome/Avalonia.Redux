@@ -32,6 +32,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "samples.iOS", "samples\samp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "samples.Browser", "samples\samples.Browser\samples.Browser.csproj", "{4565CBE8-A443-44BC-8BAA-46A0F0A447F6}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "解决方案项", "解决方案项", "{BAFDF354-A004-4ED9-A524-AE40F7F14E14}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+		README.zh.md = README.zh.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

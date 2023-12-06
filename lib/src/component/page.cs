@@ -1,9 +1,4 @@
-﻿// ReSharper disable CheckNamespace
-// ReSharper disable InconsistentNaming
-// ReSharper disable TypeParameterCanBeVariant
-namespace Redux.Component;
-
-using Widget = Avalonia.Controls.Control;
+﻿namespace Redux.Component;
 
 /// init store's state by route-params
 public delegate T InitState<T, P>(P? param);

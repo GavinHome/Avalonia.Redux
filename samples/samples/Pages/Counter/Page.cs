@@ -14,10 +14,10 @@ public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic
         initState: initState,
         effect: buildEffect(),
         reducer: buildReducer(),
-        middlewares: new[]
-        {
+        middlewares:
+        [
             Redux.Middlewares.logMiddleware<CounterState>(monitor: (state) => state.ToString(), tag: "CounterPage")
-        },
+        ],
         view: (state, dispatch, _) =>
         {
             return new ContentControl
@@ -25,11 +25,11 @@ public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic
                 Content = new Grid
                 {
                     Margin = Thickness.Parse("10"),
-                    RowDefinitions = new RowDefinitions
-                        {
-                            new() { Height = GridLength.Star },
-                            new() { Height = GridLength.Auto }
-                        },
+                    RowDefinitions =
+                    [
+                        new() { Height = GridLength.Star },
+                        new() { Height = GridLength.Auto }
+                    ],
                     Children =
                         {
                             new StackPanel
@@ -92,5 +92,5 @@ public partial class CounterPage : Page<CounterState, Dictionary<string, dynamic
         })
     { }
 
-    private static CounterState initState(Dictionary<string, dynamic>? param) => new CounterState() { Count = 99 };
+    private static CounterState initState(Dictionary<string, dynamic>? param) => new() { Count = 99 };
 }

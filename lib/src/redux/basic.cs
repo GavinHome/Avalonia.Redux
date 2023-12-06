@@ -1,4 +1,3 @@
-// ReSharper disable RedundantDefaultMemberInitializer
 namespace Redux;
 
 /// [Action]
@@ -41,7 +40,6 @@ public class Store<T>
     public ReplaceReducer<T> ReplaceReducer { get; private set; }
 
     bool isDispatching = false;
-    // ReSharper disable once FieldCanBeMadeReadOnly.Local
     bool isDisposed = false;
 
     public Store(T? initState, Reducer<T>? reducer, List<Middleware<T>>? middleware)

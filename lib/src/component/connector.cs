@@ -1,6 +1,4 @@
-﻿// ReSharper disable ConvertClosureToMethodGroup
-namespace Redux.Component;
-using Widget = Avalonia.Controls.Control;
+﻿namespace Redux.Component;
 
 //// Definition of Connector which connects Reducer<S> with Reducer<P>.
 /// 1. How to get an instance of type P from an instance of type S.
@@ -147,7 +145,6 @@ public class _Dependent<T, P> : Dependent<T>
         return _component.buildComponents(store, () => _connector.Get(getter()));
     }
 
-    // ReSharper disable once UnusedParameter.Local
     public override SubReducer<T> createSubReducer() => _subReducer ?? ((T state, Action _, bool __) => state);
 
     public override ComponentBase<object> Component => (_component as BasicComponent<object>)!;

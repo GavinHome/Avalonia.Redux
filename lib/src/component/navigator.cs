@@ -4,7 +4,6 @@
  * 
  */
 namespace Redux.Component;
-using Widget = Avalonia.Controls.Control;
 
 /// [RouteSettings]
 public record RouteSettings(string name = "", dynamic? arguments = null);
@@ -16,14 +15,14 @@ public delegate dynamic RouteFactory(RouteSettings settings);
 /// [Route]
 public class Route<T> where T : class
 {
-    RouteSettings _settings;
-    dynamic? _content;
+    private readonly RouteSettings _settings;
+    private readonly dynamic? _content;
 
     public dynamic Content => _content!;
 
     public Action<T>? Func { get; internal set; }
 
-    public Route(RouteSettings? settings, dynamic content, Action<T?>? call = null)
+    public Route(RouteSettings? settings, dynamic content)
     {
         _settings = settings ?? new RouteSettings();
         _content = content;
@@ -56,12 +55,14 @@ class _RouteEntry
 /// [Navigator]
 public class Navigator : StatefulWidget
 {
+#pragma warning disable CA2211 // 非常量字段应当不可见
     public static System.Action? onChange;
-    private static NavigatorState navigatorState = new NavigatorState();
+#pragma warning restore CA2211 // 非常量字段应当不可见
+    private static readonly NavigatorState navigatorState = new();
 
     public static RouteFactory? onGenerateRoute { get; set; }
 
-    public static NavigatorState of(dynamic? ctx = null)
+    public static NavigatorState of(dynamic? _ = null)
     {
         return navigatorState;
     }
@@ -108,7 +109,7 @@ public class NavigatorState : State
     Route<T>? _routeNamed<T>(string routeName, dynamic? arguments) where T : class
     {
         var content = Navigator.onGenerateRoute?.Invoke(new RouteSettings(routeName, arguments));
-        Route<T>? route = new Route<T>(new RouteSettings(routeName, arguments), content);
+        Route<T>? route = new(new RouteSettings(routeName, arguments), content);
         return route;
     }
 
