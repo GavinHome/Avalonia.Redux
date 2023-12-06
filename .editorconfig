@@ -1,0 +1,8 @@
+﻿[*.cs]
+
+# IDE1006: 命名样式
+dotnet_diagnostic.IDE1006.severity = none
+dotnet_diagnostic.IDE0290.severity = none
+dotnet_diagnostic.IDE0039.severity = none
+dotnet_diagnostic.CA1860.severity = none
+dotnet_diagnostic.CA1822.severity = none
