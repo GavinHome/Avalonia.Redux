@@ -1,6 +1,6 @@
 namespace Redux.Component;
 
-public abstract class ComponentElement : Control
+public abstract class ComponentElement
 {
     public abstract Widget build();
 }
@@ -18,10 +18,7 @@ public class StatefulElement : ComponentElement
     public override Widget build() => state.build(this);
 
     State<StatefulWidget> state => _state!;
-<<<<<<< HEAD
     readonly State<StatefulWidget>? _state;
-=======
->>>>>>> f420529d32c1a14b4975b7a3a729ab1a78b6ccf2
 
     #region 
     ////private bool _dirty;

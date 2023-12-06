@@ -36,23 +36,14 @@ public class _ComponentWidget<T> : StatefulWidget
         this.dependencies = dependencies;
     }
 
-    ////public override State<StatefulWidget> createState()
-    ////{
-    ////    return (new _ComponentState<_ComponentWidget<T>>() as State<StatefulWidget>)!;
-    ////}
-
-    public override _ComponentState<T> createState() => new _ComponentState<T>();
+    public override _ComponentState<T> createState() => new();
 
     public BasicComponent<T> Component => component;
     public Store<object> Store => store;
     public Get<T> GetGetter => getter;
 }
 
-<<<<<<< HEAD
 public class _ComponentState<T> : State<StatefulWidget>
-=======
-public class _ComponentState<T> : State<StatefulWidget> //: State<_ComponentWidget<T>>
->>>>>>> f420529d32c1a14b4975b7a3a729ab1a78b6ccf2
 {
     ComponentContext<T>? _ctx;
     BasicComponent<T> component => widget.Component;

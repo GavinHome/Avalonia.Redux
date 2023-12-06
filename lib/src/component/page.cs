@@ -42,13 +42,7 @@ class _PageWidget<T, P> : StatefulWidget
     public Page<T, P> Page => page;
     public P? Param => param;
 
-<<<<<<< HEAD
-    public override _PageState<T, P> createState() => new _PageState<T, P>();
-=======
-    public override State<StatefulWidget> createState() => new _PageState<T, P>();
-
-    ////public override State<StatefulWidget> createState() => (new _PageState<T, P>() as State<StatefulWidget>)!;
->>>>>>> f420529d32c1a14b4975b7a3a729ab1a78b6ccf2
+    public override _PageState<T, P> createState() => new();
 }
 
 class _PageState<T, P> : State<StatefulWidget>
