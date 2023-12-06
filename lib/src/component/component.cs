@@ -41,7 +41,7 @@ public class _ComponentWidget<T> : StatefulWidget
     ////    return (new _ComponentState<_ComponentWidget<T>>() as State<StatefulWidget>)!;
     ////}
 
-    public override State createState() => new _ComponentState<T>();
+    public override _ComponentState<T> createState() => new _ComponentState<T>();
 
     public BasicComponent<T> Component => component;
     public Store<object> Store => store;

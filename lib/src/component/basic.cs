@@ -7,10 +7,12 @@ public abstract class ComponentElement : Control
 
 public class StatefulElement : ComponentElement
 {
+    readonly State<StatefulWidget>? _state;
+
     public StatefulElement(StatefulWidget widget)
     {
         _state = widget.createState();
-        //state._element = this;
+        ////state._element = this;
         state._widget = widget;
         _state.initState();
     }
@@ -18,39 +20,33 @@ public class StatefulElement : ComponentElement
     public override Widget build() => state.build(this);
 
     State<StatefulWidget> state => _state!;
-    readonly State<StatefulWidget>? _state;
-    private bool _dirty;
-    private bool dirty => _dirty;
+    ////private bool _dirty;
+    ////private bool dirty => _dirty;
 
-    internal void markNeedsBuild()
-    {
-        if (dirty)
-        {
-            return;
-        }
+    ////internal void markNeedsBuild()
+    ////{
+    ////    if (dirty)
+    ////    {
+    ////        return;
+    ////    }
 
-        _dirty = true;
-        ////state.build(this);
-        rebuild();
-    }
+    ////    _dirty = true;
+    ////    ////state.build(this);
+    ////    rebuild();
+    ////}
 
-    void rebuild(bool force = false)
-    {
-        if ((!_dirty && !force))
-        {
-            return;
-        }
+    ////void rebuild(bool force = false)
+    ////{
+    ////    if ((!_dirty && !force))
+    ////    {
+    ////        return;
+    ////    }
 
-        _dirty = false;
-    }
+    ////    _dirty = false;
+    ////}
 }
 
-public interface WidgetBuilder
-{
-    public Widget create();
-}
-
-public abstract class StatefulWidget : Widget, WidgetBuilder
+public abstract class StatefulWidget : Widget
 {
     ////public abstract State<StatefulWidget> createState();
     public abstract State createState();
