@@ -57,7 +57,7 @@ public abstract class StatefulWidget : Widget
 /// [VoidCallback]
 public delegate dynamic? VoidCallback();
 
-/// [State<T>]
+/// [State]
 public abstract class State<T> where T : StatefulWidget
 {
     public T widget => _widget!;

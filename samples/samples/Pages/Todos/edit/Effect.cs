@@ -15,7 +15,7 @@ public partial class TodoEditPage
 
     private static async Task _onDone(Action action, ComponentContext<TodoEditState> ctx)
     {
-        await Navigator.of(ctx).pop<ToDoState>(ctx.state.toDo.Clone());
+        await Navigator.of(ctx).pop(ctx.state.toDo.Clone());
         await Task.CompletedTask;
     }
 }

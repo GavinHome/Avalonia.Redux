@@ -4,12 +4,8 @@ using samples.Pages.Todos.Todo;
 
 namespace samples.Pages.Todos.Page;
 
-internal class PageAdapter : BasicAdapter<PageState>
+internal class PageAdapter() : BasicAdapter<PageState>(builder: dependentBuilder)
 {
-    public PageAdapter() : base(builder: dependentBuilder)
-    {
-    }
-
     static Dependents<PageState> dependentBuilder => (state) => state.ToDos!
         .Select((todo, index) =>
             new TodoConnector(toDos: state.ToDos?.ToList()!, index: index) + new TodoComponent())

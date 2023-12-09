@@ -3,19 +3,13 @@ using ReactiveUI.Fody.Helpers;
 
 namespace samples.Pages.Todos.Report;
 
-internal class ReportState : ReactiveObject
+internal class ReportState(int total, int done) : ReactiveObject
 {
     [Reactive]
-    public int Total { get; set; }
+    public int Total { get; set; } = total;
 
     [Reactive]
-    public int Done { get; set; }
-
-    public ReportState(int total, int done)
-    {
-        Total = total;
-        Done = done;
-    }
+    public int Done { get; set; } = done;
 
     public override string ToString()
     {

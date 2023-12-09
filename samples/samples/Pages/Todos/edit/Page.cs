@@ -11,190 +11,191 @@ using ReactiveUI;
 using samples.Pages.Todos.Todo;
 using samples.Views;
 
-public partial class TodoEditPage : Page<TodoEditState, ToDoState>
-{
-    public TodoEditPage() : base(
-        initState: initState,
-        effect: buildEffect(),
-        middlewares:
-        [
-            Redux.Middlewares.logMiddleware<TodoEditState>(tag: "TodoEditPage")
-        ],
-        view: (state, dispatch, ctx) =>
+public partial class TodoEditPage() : Page<TodoEditState, ToDoState>(initState: initState,
+    effect: buildEffect(),
+    middlewares:
+    [
+        Redux.Middlewares.logMiddleware<TodoEditState>(tag: "TodoEditPage")
+    ],
+    view: (state, dispatch, ctx) =>
+    {
+        return new DockPanel
         {
-            return new DockPanel
+            [Grid.IsSharedSizeScopeProperty] = true,
+            Children =
             {
-                [Grid.IsSharedSizeScopeProperty] = true,
-                Children =
+                new StackPanel
                 {
-                    new StackPanel
+                    [DockPanel.DockProperty] = Dock.Bottom,
+                    [Visual.ZIndexProperty] = 99,
+                    Children =
                     {
-                        [DockPanel.DockProperty] = Dock.Bottom,
-                        [Visual.ZIndexProperty] = 99,
-                        Children =
+                        new Border
                         {
-                            new Border
+                            Padding = Thickness.Parse("8"),
+                            Child = new Grid
                             {
-                                Padding = Thickness.Parse("8"),
-                                Child = new Grid
+                                Children =
                                 {
-                                    Children =
+                                    new Border
                                     {
-                                        new Border
+                                        Margin = Thickness.Parse("0 -20 10 8"),
+                                        HorizontalAlignment = HorizontalAlignment.Center,
+                                        VerticalAlignment = VerticalAlignment.Center,
+                                        Background = SolidColorBrush.Parse("#bbe9d3ff"),
+                                        Padding = new Thickness(0),
+                                        CornerRadius = new CornerRadius(15),
+                                        Child = new Button()
                                         {
-                                            Margin = Thickness.Parse("0 -20 10 8"),
-                                            HorizontalAlignment = HorizontalAlignment.Center,
-                                            VerticalAlignment = VerticalAlignment.Center,
                                             Background = SolidColorBrush.Parse("#bbe9d3ff"),
-                                            Padding = new Thickness(0),
                                             CornerRadius = new CornerRadius(15),
-                                            Child = new Button()
+                                            Padding = new Thickness(0),
+                                            Height = 50,
+                                            Width = 50,
+                                            BorderThickness = new Thickness(0),
+                                            Content = new Border
                                             {
-                                                Background = SolidColorBrush.Parse("#bbe9d3ff"),
-                                                CornerRadius = new CornerRadius(15),
-                                                Padding = new Thickness(0),
-                                                Height = 50,
-                                                Width = 50,
-                                                BorderThickness = new Thickness(0),
-                                                Content = new Border
+                                                Padding = new Thickness(8, 5, 12, 8),
+                                                Child = new Path
                                                 {
-                                                    Padding = new Thickness(8, 5, 12, 8),
-                                                    Child = new Path
-                                                    {
-                                                        Data = Geometry.Parse(
-                                                            "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
-                                                        Fill = new SolidColorBrush(Colors.Black),
-                                                        HorizontalAlignment = HorizontalAlignment.Center,
-                                                        VerticalAlignment = VerticalAlignment.Center,
-                                                    },
+                                                    Data = Geometry.Parse(
+                                                        "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
+                                                    Fill = new SolidColorBrush(Colors.Black),
+                                                    HorizontalAlignment = HorizontalAlignment.Center,
+                                                    VerticalAlignment = VerticalAlignment.Center,
                                                 },
-                                                Command = ReactiveCommand.Create(() => dispatch(ToDoEditActionCreator.onDone()))
-                                            }
+                                            },
+                                            Command = ReactiveCommand.Create(() =>
+                                                dispatch(ToDoEditActionCreator.onDone()))
                                         }
                                     }
                                 }
                             }
                         }
-                    },
-                    new StackPanel
+                    }
+                },
+                new StackPanel
+                {
+                    Children =
                     {
-                        Children =
+                        new Grid
                         {
-                            new Grid
+                            Margin = Thickness.Parse("8"),
+                            Children =
                             {
-                                Margin = Thickness.Parse("8"),
-                                Children =
+                                new ScrollViewer
                                 {
-                                    new ScrollViewer
+                                    [!Layoutable.HeightProperty] = new Binding()
                                     {
-                                        [!Layoutable.HeightProperty] = new Binding()
+                                        Path = "Height",
+                                        RelativeSource = new RelativeSource()
                                         {
-                                            Path = "Height",
-                                            RelativeSource = new RelativeSource()
-                                            {
-                                                Mode = RelativeSourceMode.FindAncestor,
-                                                AncestorType = typeof(MainWindow)
-                                            }
-                                        },
-                                        VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                                        Content = new StackPanel
+                                            Mode = RelativeSourceMode.FindAncestor,
+                                            AncestorType = typeof(MainWindow)
+                                        }
+                                    },
+                                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                                    Content = new StackPanel
+                                    {
+                                        Children =
                                         {
-                                            Children =
+                                            new Border
                                             {
-                                                new Border
+                                                Child = new TextBlock { Text = "Edit Todo" },
+                                            },
+                                            new Border
+                                            {
+                                                Padding = Thickness.Parse("20 50"),
+                                                Child = new Grid
                                                 {
-                                                    Child = new TextBlock { Text = "Edit Todo" },
-                                                },
-                                                new Border
-                                                {
-                                                    Padding = Thickness.Parse("20 50"),
-                                                    Child = new Grid
+                                                    ColumnDefinitions =
+                                                    [
+                                                        new ColumnDefinition(GridLength.Auto),
+                                                        new ColumnDefinition(GridLength.Star)
+                                                    ],
+                                                    RowDefinitions =
+                                                    [
+                                                        new RowDefinition(GridLength.Auto),
+                                                        new RowDefinition(GridLength.Auto),
+                                                    ],
+                                                    Children =
                                                     {
-                                                         ColumnDefinitions =
-                                                        [
-                                                            new ColumnDefinition(GridLength.Auto),
-                                                            new ColumnDefinition(GridLength.Star)
-                                                        ],
-                                                         RowDefinitions =
-                                                        [
-                                                            new RowDefinition(GridLength.Auto),
-                                                            new RowDefinition(GridLength.Auto),
-                                                        ],
-                                                        Children =
+                                                        new Border
                                                         {
-                                                            new Border
+                                                            [Grid.RowProperty] = 0,
+                                                            [Grid.ColumnProperty] = 0,
+                                                            Child = new TextBlock
                                                             {
-                                                                [Grid.RowProperty] = 0,
-                                                                [Grid.ColumnProperty] = 0,
-                                                                Child = new TextBlock {
-                                                                    Text = "title:",
-                                                                    HorizontalAlignment = HorizontalAlignment.Right,
-                                                                    FontSize = 20,
-                                                                    Foreground = new SolidColorBrush(Colors.Black),
-                                                                    VerticalAlignment = VerticalAlignment.Stretch
-                                                                },
+                                                                Text = "title:",
+                                                                HorizontalAlignment = HorizontalAlignment.Right,
+                                                                FontSize = 20,
+                                                                Foreground = new SolidColorBrush(Colors.Black),
+                                                                VerticalAlignment = VerticalAlignment.Stretch
                                                             },
-                                                            new Border
+                                                        },
+                                                        new Border
+                                                        {
+                                                            [Grid.RowProperty] = 0,
+                                                            [Grid.ColumnProperty] = 1,
+                                                            Padding = Thickness.Parse("8 0"),
+                                                            Child = new TextBox
                                                             {
-                                                                [Grid.RowProperty] = 0,
-                                                                [Grid.ColumnProperty] = 1,
-                                                                Padding = Thickness.Parse("8 0"),
-                                                                Child = new TextBox {
-                                                                    [!TextBlock.TextProperty] = new Binding()
-                                                                    {
-                                                                        Source = state.toDo,
-                                                                        Path = "Title",
-                                                                    },
-                                                                    FontSize = 16,
-                                                                    Foreground = new SolidColorBrush(Colors.Black)
+                                                                [!TextBlock.TextProperty] = new Binding()
+                                                                {
+                                                                    Source = state.toDo,
+                                                                    Path = "Title",
                                                                 },
+                                                                FontSize = 16,
+                                                                Foreground = new SolidColorBrush(Colors.Black)
                                                             },
-                                                            new Border
+                                                        },
+                                                        new Border
+                                                        {
+                                                            [Grid.RowProperty] = 1,
+                                                            [Grid.ColumnProperty] = 0,
+                                                            Padding = Thickness.Parse("0 32"),
+                                                            Child = new TextBlock
                                                             {
-                                                                [Grid.RowProperty] = 1,
-                                                                [Grid.ColumnProperty] = 0,
-                                                                Padding = Thickness.Parse("0 32"),
-                                                                Child = new TextBlock {
-                                                                    Text = "desc:",
-                                                                    HorizontalAlignment = HorizontalAlignment.Right,
-                                                                    FontSize = 20,
-                                                                    Foreground = new SolidColorBrush(Colors.Black),
-                                                                    VerticalAlignment = VerticalAlignment.Stretch
-                                                                },
+                                                                Text = "desc:",
+                                                                HorizontalAlignment = HorizontalAlignment.Right,
+                                                                FontSize = 20,
+                                                                Foreground = new SolidColorBrush(Colors.Black),
+                                                                VerticalAlignment = VerticalAlignment.Stretch
                                                             },
-                                                            new Border
+                                                        },
+                                                        new Border
+                                                        {
+                                                            [Grid.RowProperty] = 1,
+                                                            [Grid.ColumnProperty] = 1,
+                                                            Padding = Thickness.Parse("8 32"),
+                                                            Child = new TextBox
                                                             {
-                                                                [Grid.RowProperty] = 1,
-                                                                [Grid.ColumnProperty] = 1,
-                                                                Padding = Thickness.Parse("8 32"),
-                                                                Child = new TextBox {
-                                                                    [!TextBlock.TextProperty] = new Binding()
-                                                                    {
-                                                                        Source = state.toDo,
-                                                                        Path = "Desc",
-                                                                    },
-                                                                    Height= 200,
-                                                                    AcceptsReturn= true,
-                                                                    TextWrapping= TextWrapping.Wrap,
-                                                                    MaxLines = 10,
-                                                                    FontSize = 16,
-                                                                    Foreground = new SolidColorBrush(Colors.Black)
+                                                                [!TextBlock.TextProperty] = new Binding()
+                                                                {
+                                                                    Source = state.toDo,
+                                                                    Path = "Desc",
                                                                 },
+                                                                Height = 200,
+                                                                AcceptsReturn = true,
+                                                                TextWrapping = TextWrapping.Wrap,
+                                                                MaxLines = 10,
+                                                                FontSize = 16,
+                                                                Foreground = new SolidColorBrush(Colors.Black)
                                                             },
-                                                        }
-                                                    },
+                                                        },
+                                                    }
                                                 },
                                             },
-                                        }
+                                        },
                                     }
                                 }
-                            },
-                        }
+                            }
+                        },
                     }
                 }
-            };
-        })
-    { }
-
+            }
+        };
+    })
+{
     private static TodoEditState initState(ToDoState? arg) => new() { toDo = arg?.Clone() ?? new() };
 }

@@ -7,5 +7,5 @@ using samples.Pages.Todos.Todo;
 public class TodoEditState: ReactiveObject
 {
     [Reactive]
-    public ToDoState? toDo { get; set; }
+    public ToDoState? toDo { get; init; }
 }
