@@ -2,7 +2,7 @@
 
 using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using samples.Pages.Todos.Todo;
+using Todo;
 
 public class TodoEditState: ReactiveObject
 {

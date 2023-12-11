@@ -1,4 +1,5 @@
-﻿namespace Redux.Component;
+﻿// ReSharper disable ConvertClosureToMethodGroup
+namespace Redux.Component;
 
 //// Definition of Connector which connects Reducer<S> with Reducer<P>.
 /// 1. How to get an instance of type P from an instance of type S.
@@ -145,9 +146,9 @@ public class _Dependent<T, P> : Dependent<T>
         return _component.buildComponents(store, () => _connector.Get(getter()));
     }
 
-    public override SubReducer<T> createSubReducer() => _subReducer ?? ((T state, Action _, bool __) => state);
+    public override SubReducer<T> createSubReducer() => _subReducer ?? ((state, _, __) => state);
 
-    public override ComponentBase<object> Component => (_component as BasicComponent<object>)!;
+    public override ComponentBase Component => (_component as BasicComponent<object>)!;
 }
 
 static class DependentExtends

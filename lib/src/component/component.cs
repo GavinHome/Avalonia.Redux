@@ -5,7 +5,7 @@ public abstract class Component<T> : BasicComponent<T> //where T : class, new()
     protected Component(ViewBuilder<T>? view, Effect<T>? effect = null, Reducer<T>? reducer = null, Dependencies<T>? dependencies = null, ShouldUpdate<T>? shouldUpdate = null)
         : base(view: view,
                effect: effect,
-               reducer: reducer ?? ((T state, Action _) => state),
+               reducer: reducer ?? ((state, _) => state),
                dependencies: dependencies,
                shouldUpdate: shouldUpdate)
     { }
@@ -41,6 +41,7 @@ public class _ComponentWidget<T> : StatefulWidget
     public BasicComponent<T> Component => component;
     public Store<object> Store => store;
     public Get<T> GetGetter => getter;
+    public Dependencies<T> Dependencies => dependencies!;
 }
 
 public class _ComponentState<T> : State<StatefulWidget>

@@ -2,6 +2,7 @@ using UIKit;
 
 namespace samples.iOS
 {
+    // ReSharper disable once ClassNeverInstantiated.Global
     public class Application
     {
         // This is the main entry point of the application.

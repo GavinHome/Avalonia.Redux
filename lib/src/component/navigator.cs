@@ -1,8 +1,9 @@
 ﻿/* 
  * [ToDo]
- * The navigator is not pefect, but I have to a simple implementation for route.
+ * The navigator is not perfect, but I have to a simple implementation for route.
  * 
  */
+// ReSharper disable ClassNeverInstantiated.Global
 namespace Redux.Component;
 
 /// [RouteSettings]
@@ -19,6 +20,7 @@ public class Route<T> where T : class
     private readonly dynamic? _content;
 
     public dynamic Content => _content!;
+    public RouteSettings Settings => _settings;
 
     public Action<T>? Func { get; internal set; }
 
@@ -39,16 +41,6 @@ class _RouteEntry
     public _RouteEntry(Route<dynamic> route)
     {
         _route = route;
-    }
-
-    public override bool Equals(object? obj)
-    {
-        return base.Equals(obj);
-    }
-
-    public override int GetHashCode()
-    {
-        return base.GetHashCode();
     }
 }
 
@@ -83,7 +75,7 @@ public class NavigatorState : State<StatefulWidget>
         throw new NotImplementedException();
     }
 
-    public async Task<Route<dynamic>> pushNamed<T>(string routeName, dynamic? arguments, Action<T>? call = null) where T : class
+    public async Task<Route<dynamic>> pushNamed<T>(string routeName, dynamic? arguments, Action<T?>? call = null) where T : class
     {
         Route<dynamic> route = _routeNamed<dynamic>(routeName: routeName, arguments: arguments);
         route.Func = (x) => call?.Invoke((T)Convert.ChangeType(x, typeof(T)));
@@ -106,10 +98,10 @@ public class NavigatorState : State<StatefulWidget>
         return Task.Run(() => _history.Pop().Route);
     }
 
-    Route<T>? _routeNamed<T>(string routeName, dynamic? arguments) where T : class
+    Route<T> _routeNamed<T>(string routeName, dynamic? arguments) where T : class
     {
         var content = Navigator.onGenerateRoute?.Invoke(new RouteSettings(routeName, arguments));
-        Route<T>? route = new(new RouteSettings(routeName, arguments), content);
+        Route<T> route = new(new RouteSettings(routeName, arguments), content);
         return route;
     }
 

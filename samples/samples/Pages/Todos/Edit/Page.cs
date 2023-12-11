@@ -8,8 +8,8 @@ using Avalonia.Data;
 using Avalonia.Layout;
 using Avalonia.Media;
 using ReactiveUI;
-using samples.Pages.Todos.Todo;
-using samples.Views;
+using Todo;
+using Views;
 
 public partial class TodoEditPage() : Page<TodoEditState, ToDoState>(initState: initState,
     effect: buildEffect(),

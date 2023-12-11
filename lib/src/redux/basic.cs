@@ -1,3 +1,4 @@
+// ReSharper disable RedundantDefaultMemberInitializer
 namespace Redux;
 
 /// [Action]
@@ -38,6 +39,9 @@ public class Store<T>
     public Subscribe Subscribe { get; init; }
     //public Observable<T> Observable { get; set; }
     public ReplaceReducer<T> ReplaceReducer { get; private set; }
+    
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
+    public System.Action Teardown { get; init; }
 
     bool isDispatching = false;
     bool isDisposed = false;
@@ -48,7 +52,7 @@ public class Store<T>
 
         _state = initState;
         _listeners = new List<System.Action>();
-        _reducer = reducer ?? ((T state, Action _) => state);
+        _reducer = reducer ?? ((state, _) => state);
 
         Dispatch = (action) =>
         {
@@ -88,7 +92,7 @@ public class Store<T>
             .Aggregate(Dispatch, (previousValue, element) => element(previousValue))
           : Dispatch;
 
-        ReplaceReducer = (nextReducer) => reducer = (nextReducer ?? ((T state, Action _) => state));
+        ReplaceReducer = (nextReducer) => reducer = (nextReducer ?? ((state, _) => state));
 
         Subscribe = (listener) =>
         {
@@ -101,6 +105,12 @@ public class Store<T>
                 _listeners.Remove(listener);
                 return true;
             });
+        };
+
+        Teardown = () =>
+        {
+            isDisposed = true;
+            _listeners.Clear();
         };
     }
 

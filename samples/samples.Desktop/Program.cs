@@ -4,6 +4,7 @@ using System;
 
 namespace samples.Desktop
 {
+    // ReSharper disable ClassNeverInstantiated.Global
     internal class Program
     {
         // Initialization code. Don't use any Avalonia, third-party APIs or any
@@ -14,6 +15,7 @@ namespace samples.Desktop
             .StartWithClassicDesktopLifetime(args);
 
         // Avalonia configuration, don't remove; also used by visual designer.
+        // ReSharper disable once MemberCanBePrivate.Global
         public static AppBuilder BuildAvaloniaApp()
             => AppBuilder.Configure<App>()
                 .UsePlatformDetect()

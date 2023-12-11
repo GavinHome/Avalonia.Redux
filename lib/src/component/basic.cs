@@ -103,11 +103,12 @@ static class Log
 }
 
 /// Predicate if a component should be updated when the store is changed.
-public delegate bool ShouldUpdate<T>(T? old, T? now);
+public delegate bool ShouldUpdate<in T>(T? old, T? now);
 
 /// [ComponentBase]
 /// Definition of the component base class.
-public abstract class ComponentBase<T> { }
+public abstract class ComponentBase
+{ }
 
 /// [Dependent]
 /// Definition of the dependent for adapter and slot.
@@ -123,7 +124,7 @@ public abstract class Dependent<T>
     public abstract SubReducer<T> createSubReducer();
 
     /// component getter
-    public abstract ComponentBase<object> Component { get; }
+    public abstract ComponentBase Component { get; }
 }
 
 /// [Dependencies]
@@ -169,7 +170,7 @@ public class Dependencies<T>
         }
 
         var subReduces = ReducerConverter.CombineSubReducers(subs);
-        return ReducerConverter.CombineReducers(new List<Reducer<T>> { subReduces ?? ((T state, Action _) => state) }) ?? ((T state, Action _) => state);
+        return ReducerConverter.CombineReducers(new List<Reducer<T>> { subReduces ?? ((state, _) => state) }) ?? ((state, _) => state);
     }
 
     public Dependent<T>? slot(string type) => slots?[type];
@@ -415,6 +416,7 @@ public static class EffectConverter
             SubEffect<T>? subEffect = map.FirstOrDefault(entry => action.Type.Equals(entry.Key)).Value;
             if (subEffect != null)
             {
+                // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
                 return (subEffect.Invoke(action, ctx) ?? SubEffectReturnNull) == null;
             }
 
@@ -427,7 +429,7 @@ public delegate void MarkNeedsBuild();
 
 /// [AbstractComponent]
 /// Definition of basic component.
-public abstract class BasicComponent<T> : ComponentBase<T>
+public abstract class BasicComponent<T> : ComponentBase
 {
     protected readonly Dependencies<T>? _dependencies;
     private readonly Reducer<T> _reducer;
@@ -446,8 +448,8 @@ public abstract class BasicComponent<T> : ComponentBase<T>
 
     public virtual Reducer<T> createReducer()
     {
-        return ReducerConverter.CombineReducers(new List<Reducer<T>> { _reducer, _dependencies?.createReducer() ?? ((T state, Action _) => state) })
-            ?? ((T state, Action _) => state);
+        return ReducerConverter.CombineReducers(new List<Reducer<T>> { _reducer, _dependencies?.createReducer() ?? ((state, _) => state) })
+            ?? ((state, _) => state);
     }
 
     public ComponentContext<T> createContext(Store<object> store, Get<T> getter, MarkNeedsBuild? markNeedsBuild = null)
@@ -499,7 +501,7 @@ public class BasicAdapter<T> : ComposedComponent<T>
         Reducer<T>? reducer = null,
         ShouldUpdate<T>? shouldUpdate = null
       ) : base(
-            reducer: reducer ?? ((T state, Action _) => state),
+            reducer: reducer ?? ((state, _) => state),
             shouldUpdate: shouldUpdate
           )
     { this.builder = builder; }
@@ -511,6 +513,7 @@ public class BasicAdapter<T> : ComposedComponent<T>
         List<Dependent<T>> list = builder.Invoke(state);
         foreach (var dep in list)
         {
+            // ReSharper disable once ConditionalAccessQualifierIsNonNullableAccordingToAPIContract
             SubReducer<T>? subReducer = dep?.createSubReducer();
             if (subReducer != null)
             {
@@ -526,7 +529,7 @@ public class BasicAdapter<T> : ComposedComponent<T>
         return ReducerConverter.CombineReducers(new List<Reducer<T>>
         {
             base.createReducer(), _createAdapterReducer()
-        }) ?? ((T state, Action _) => state);
+        }) ?? ((state, _) => state);
     }
 
     public override List<Widget> buildComponents(Store<object> store, Get<T> getter)

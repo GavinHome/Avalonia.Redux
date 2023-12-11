@@ -1,20 +1,17 @@
 using Avalonia.Controls;
 using Avalonia.Controls.Templates;
 using samples.ViewModels;
-using System;
 
 namespace samples
 {
     public class ViewLocator : IDataTemplate
     {
-#pragma warning disable CS8767 // ²ÎÊıÀàĞÍÖĞÒıÓÃÀàĞÍµÄÎª Null ĞÔÓëÒşÊ½ÊµÏÖµÄ³ÉÔ±²»Æ¥Åä(¿ÉÄÜÊÇÓÉÓÚÎª Null ĞÔÌØĞÔ)¡£
-        public Control Build(object data)
-#pragma warning restore CS8767 // ²ÎÊıÀàĞÍÖĞÒıÓÃÀàĞÍµÄÎª Null ĞÔÓëÒşÊ½ÊµÏÖµÄ³ÉÔ±²»Æ¥Åä(¿ÉÄÜÊÇÓÉÓÚÎª Null ĞÔÌØĞÔ)¡£
+        public Control Build(object? data)
         {
             if (data is null)
-#pragma warning disable CS8603 // ¿ÉÄÜ·µ»Ø null ÒıÓÃ¡£
+#pragma warning disable CS8603 // å¯èƒ½è¿”å› null å¼•ç”¨ã€‚
                 return null;
-#pragma warning restore CS8603 // ¿ÉÄÜ·µ»Ø null ÒıÓÃ¡£
+#pragma warning restore CS8603 // å¯èƒ½è¿”å› null å¼•ç”¨ã€‚
 
             var name = data.GetType().FullName!.Replace("ViewModel", "View");
             var type = Type.GetType(name);

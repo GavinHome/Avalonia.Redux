@@ -1,5 +1,4 @@
 ﻿namespace samples.Pages.Todos.Todo;
-using Action = Redux.Action;
 
 internal partial class TodoComponent
 {

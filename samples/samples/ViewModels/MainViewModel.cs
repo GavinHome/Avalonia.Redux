@@ -1,6 +1,4 @@
-﻿using ReactiveUI;
-
-namespace samples.ViewModels
+﻿namespace samples.ViewModels
 {
     public class MainViewModel : ViewModelBase
     {

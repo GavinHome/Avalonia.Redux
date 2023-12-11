@@ -9,7 +9,7 @@ namespace samples.Views
             InitializeComponent();
             Content = Routes.routes.home;
 
-            Navigator.onGenerateRoute = (RouteSettings settings) =>
+            Navigator.onGenerateRoute = settings =>
             {
                 var page = Routes.routes.buildPage(settings.name, settings.arguments);
                 return page;

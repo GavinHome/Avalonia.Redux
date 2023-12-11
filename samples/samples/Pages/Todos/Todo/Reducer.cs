@@ -19,8 +19,8 @@ internal partial class TodoComponent
         ToDoState? toDo = action.Payload;
         if (state.UniqueId == toDo?.UniqueId)
         {
-            state.Title = toDo?.Title;
-            state.Desc = toDo?.Desc;
+            state.Title = toDo.Title;
+            state.Desc = toDo.Desc;
         }
 
         return state;

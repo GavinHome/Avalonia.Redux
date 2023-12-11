@@ -1,7 +1,5 @@
 ﻿namespace samples.Pages.Todos.Edit;
 using Redux.Component;
-
-using samples.Pages.Todos.Todo;
 using Action = Redux.Action;
 
 public partial class TodoEditPage
