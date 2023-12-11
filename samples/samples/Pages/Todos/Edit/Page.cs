@@ -59,7 +59,13 @@ public partial class TodoEditPage() : Page<TodoEditState, ToDoState>(initState: 
                                                 Child = new Path
                                                 {
                                                     Data = Geometry.Parse(
-                                                        "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
+                                                        "M23,13 H5V11 H7V5 H5V11 H23 V13Z"),
+                                                    RenderTransform = new RotateTransform()
+                                                    {
+                                                      CenterY = -2,
+                                                      CenterX = -2, 
+                                                      Angle = -40
+                                                    },
                                                     Fill = new SolidColorBrush(Colors.Black),
                                                     HorizontalAlignment = HorizontalAlignment.Center,
                                                     VerticalAlignment = VerticalAlignment.Center,
