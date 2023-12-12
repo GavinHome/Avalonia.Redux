@@ -82,11 +82,11 @@ public abstract class State<T> where T : StatefulWidget
 
     protected virtual void dispose() { }
 
-    public void setState(VoidCallback fn)
-    {
-        object? _ = fn();
-        ////_element!.markNeedsBuild();
-    }
+    //// public void setState(VoidCallback fn)
+    //// {
+    ////     object? _ = fn();
+    ////     ////_element!.markNeedsBuild();
+    //// }
 }
 
 /// Log
@@ -94,7 +94,7 @@ static class Log
 {
     public static void doPrint(object message)
     {
-        Action<Object> print = obj => Console.WriteLine($"[AvaloniaRedux]: {obj}");
+        Action<Object> print = obj => System.Diagnostics.Trace.WriteLine($"[AvaloniaRedux]: {obj}");
         if (Aop.isDebug())
         {
             print(message);

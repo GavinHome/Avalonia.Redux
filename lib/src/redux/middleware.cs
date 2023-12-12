@@ -9,7 +9,7 @@ public static class Middlewares
         return (_, getState) =>
             (next) =>
             {
-                Action<Object> print = (obj) => Console.WriteLine($"[AvaloniaRedux]: {obj}");
+                Action<Object> print = (obj) => System.Diagnostics.Trace.WriteLine($"[AvaloniaRedux]: {obj}");
 
                 Dispatch log = (Action action) =>
                 {
