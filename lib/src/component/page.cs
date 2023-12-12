@@ -43,7 +43,7 @@ class _PageWidget<T, P> : StatefulWidget
     public Page<T, P> Page => page;
     public P? Param => param;
 
-    public override _PageState<T, P> createState() => new _PageState<T, P>();
+    public override _PageState<T, P> createState() => new();
 }
 
 class _PageState<T, P> : State<StatefulWidget>
