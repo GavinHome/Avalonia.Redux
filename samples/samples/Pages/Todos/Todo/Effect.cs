@@ -17,7 +17,7 @@ internal partial class TodoComponent
         if (action.Payload == ctx.state.UniqueId)
         {
             await Navigator.of(ctx)
-            .pushNamed<ToDoState>("todo_edit", arguments: ctx.state, (toDo) =>
+            .push<ToDoState>("todo_edit", arguments: ctx.state, (toDo) =>
             {
                 if (toDo != null)
                 {

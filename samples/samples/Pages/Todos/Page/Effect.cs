@@ -31,7 +31,7 @@ public partial class ToDoListPage
     private static async Task _onAdd(Action action, ComponentContext<PageState> ctx)
     {
         await Navigator.of(ctx)
-            .pushNamed<ToDoState>("todo_edit", arguments: null, (toDo) =>
+            .push<ToDoState>("todo_edit", arguments: null, (toDo) =>
             {
                 if (toDo != null)
                 {

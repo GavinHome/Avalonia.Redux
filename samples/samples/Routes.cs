@@ -10,7 +10,7 @@ public static class Routes
         initialRoute: "todo_list",
         pages: new Dictionary<String, dynamic>
         {
-            //// Register TodoList main page
+            //// Register TodoList page
             { "todo_list", new ToDoListPage()},
 
             //// Register TodoEdit page

@@ -7,18 +7,10 @@ namespace samples.Views
         public MainView()
         {
             InitializeComponent();
-            Content = Routes.routes.home;
 
-            Navigator.onGenerateRoute = settings =>
-            {
-                var page = Routes.routes.buildPage(settings.name, settings.arguments);
-                return page;
-            };
-
-            Navigator.onChange += () =>
-            {
-                Content = Navigator.of().current;
-            };
+            Navigator.onGenerateRoute = settings => Routes.routes.buildPage(settings.name, settings.arguments);
+            Navigator.onRouteChanged = route => Content = route!.Content;
+            Routes.routes.buildHome();
         }
     }
 }
