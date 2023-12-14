@@ -3,8 +3,10 @@
 internal class ReportComponent() : Component<ReportState>(
     view: (state, dispatch, _) => new View() { DataContext = state });
 
-////internal class ReportComponent() : Component<ReportState>(
 
+////You can write view using C# code
+#region
+////internal class ReportComponent() : Component<ReportState>(
 ////view: (state, dispatch, _) => new ContentControl
 ////{
 ////    Background = new SolidColorBrush(Colors.DodgerBlue),
@@ -65,3 +67,4 @@ internal class ReportComponent() : Component<ReportState>(
 ////    }
 ////    }
 ////});
+#endregion

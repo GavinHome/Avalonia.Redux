@@ -1,8 +1,9 @@
 ﻿namespace samples.Pages.Todos.Todo;
+using Redux.Component;
 
 internal partial class TodoComponent
 {
-    private static Effect<ToDoState>? buildEffect() => Redux.Component.EffectConverter.CombineEffects(new Dictionary<object, SubEffect<ToDoState>>
+    private static Effect<ToDoState>? buildEffect() => EffectConverter.CombineEffects(new Dictionary<object, SubEffect<ToDoState>>
     {
         {
             ToDoAction.onEdit, _onEdit

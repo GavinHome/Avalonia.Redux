@@ -1,11 +1,12 @@
 ﻿using samples.Pages.Todos.Todo;
 
 namespace samples.Pages.Todos.Page;
+using Redux.Component;
 using Action = Redux.Action;
 
 public partial class ToDoListPage
 {
-    private static Effect<PageState>? buildEffect() => Redux.Component.EffectConverter.CombineEffects(new Dictionary<object, SubEffect<PageState>>
+    private static Effect<PageState>? buildEffect() => EffectConverter.CombineEffects(new Dictionary<object, SubEffect<PageState>>
     {
         { Lifecycle.initState, _onInit },
         { "onAdd", _onAdd }

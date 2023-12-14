@@ -11,9 +11,8 @@ internal partial class TodoComponent() : Component<ToDoState>(effect: buildEffec
     }
 );
 
-
-////namespace samples.Pages.Todos.Todo;
-
+////You can write view using C# code
+#region 
 ////internal partial class TodoComponent() : Component<ToDoState>(effect: buildEffect(),
 ////    reducer: buildReducer(),
 ////    view: (state, dispatch, _) => new ContentControl
@@ -154,3 +153,4 @@ internal partial class TodoComponent() : Component<ToDoState>(effect: buildEffec
 ////        }
 ////    }
 ////);
+#endregion
