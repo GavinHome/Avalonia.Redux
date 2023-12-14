@@ -38,8 +38,6 @@ public class NavigatorState : State<StatefulWidget>
     readonly Stack<_RouteEntry> _history = new();
     private _RouteEntry? _current;
 
-    public NavigatorState() { }
-
     public override Widget build(dynamic context)
     {
         throw new NotImplementedException();
@@ -47,7 +45,7 @@ public class NavigatorState : State<StatefulWidget>
 
     public async Task<Route<dynamic>> push<T>(string routeName, dynamic? arguments = null, Action<T?>? call = null) where T : class
     {
-        Action<dynamic?>? func = (x) => call?.Invoke((T?)Convert.ChangeType(x, typeof(T)));
+        Action<dynamic?> func = (x) => call?.Invoke((T?)Convert.ChangeType(x, typeof(T)));
         Route<dynamic> route = _routeNamed<dynamic>(routeName: routeName, arguments: arguments, func: func);
         return await push(route);
     }

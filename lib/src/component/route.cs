@@ -15,7 +15,7 @@ public class PageRoutes : AbstractRoutes
 
     public PageRoutes(Map? pages, string? initialRoute = null)
     {
-        ArgumentNullException.ThrowIfNullOrEmpty(nameof(pages));
+        ArgumentException.ThrowIfNullOrEmpty(nameof(pages));
         this.pages = pages ?? new Map();
         this.initialRoute = initialRoute;
     }
