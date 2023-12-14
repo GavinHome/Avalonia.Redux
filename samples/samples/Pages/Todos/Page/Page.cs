@@ -124,8 +124,6 @@ public partial class ToDoListPage() : Page<PageState, Dictionary<string, dynamic
         };
     })
 {
-    ////var todos = ctx.buildComponents();
-
     private static PageState initState(Dictionary<string, dynamic>? param) => new() { ToDos = [] };
 
     private static ItemsControl buildItemsView<T>(ObservableCollection<T> obs, ComponentContext<PageState> ctx)
