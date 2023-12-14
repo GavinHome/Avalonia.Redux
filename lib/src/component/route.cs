@@ -3,8 +3,8 @@
 /// Define a basic behavior of routes.
 public interface AbstractRoutes
 {
+    public string home { get; }
     public Widget buildPage(string? path, dynamic? arguments = null);
-    public void buildHome(dynamic? arguments = null);
 }
 
 /// Each page has a unique store.
@@ -23,11 +23,7 @@ public class PageRoutes : AbstractRoutes
     string? initialRoutePath =>
           initialRoute ?? pages.Keys.FirstOrDefault();
 
-    public Widget buildPage(string? path, dynamic? arguments = null) => pages[path!].buildPage(arguments);
+    public string home => initialRoutePath ?? string.Empty;
 
-    public void buildHome(dynamic? arguments = null)
-    {
-        var path = initialRoutePath!;
-        Navigator.of().push<dynamic>(path, arguments);
-    }
+    public Widget buildPage(string? path, dynamic? arguments = null) => pages[path!].buildPage(arguments);
 }

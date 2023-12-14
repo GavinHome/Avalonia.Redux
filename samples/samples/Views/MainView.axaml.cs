@@ -8,9 +8,16 @@ namespace samples.Views
         {
             InitializeComponent();
 
-            Navigator.onGenerateRoute = settings => Routes.routes.buildPage(settings.name, settings.arguments);
-            Navigator.onRouteChanged = route => Content = route!.Content;
-            Routes.routes.buildHome();
+            Navigator.build(
+                routes: Routes.routes,
+                routeChanged: route => Content = route!.Content
+            );
+            
+            // Navigator.build(
+            //     routes: Routes.routes,
+            //     routeChanged: route => Content = route!.Content,
+            //     generateRoute: settings => Routes.routes.buildPage(settings.name, settings.arguments)
+            // );
         }
     }
 }

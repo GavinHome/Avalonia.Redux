@@ -21,15 +21,29 @@ public delegate dynamic RouteChanged(Route<dynamic>? route);
 public class Navigator : StatefulWidget
 {
     private static readonly NavigatorState navigatorState = new();
-    public static RouteChanged? onRouteChanged { get; set; }
-    public static RouteFactory? onGenerateRoute { get; set; }
+    public static RouteChanged? onRouteChanged { get; private set; }
+    public static RouteFactory? onGenerateRoute { get; private set; }
+
+    public override NavigatorState createState() => navigatorState;
 
     public static NavigatorState of(dynamic? _ = null)
     {
         return navigatorState;
     }
 
-    public override NavigatorState createState() => navigatorState;
+    public static void build(AbstractRoutes routes, RouteChanged routeChanged, RouteFactory? generateRoute = null, dynamic? arguments = null)
+    {
+        onRouteChanged = routeChanged;
+        onGenerateRoute ??= generateRoute;
+        buildHome(routes, arguments);
+    }
+
+    private static void buildHome(AbstractRoutes routes, dynamic? arguments = null)
+    {
+        ArgumentNullException.ThrowIfNull(onRouteChanged, nameof(onRouteChanged));
+        onGenerateRoute ??= settings => routes.buildPage(settings.name, settings.arguments);
+        Navigator.of().push<dynamic>(routes.home, arguments);
+    }
 }
 
 /// [NavigatorState]
@@ -55,7 +69,7 @@ public class NavigatorState : State<StatefulWidget>
         return await _pop(result);
     }
 
-    public Task<Route<dynamic>> push(Route<dynamic> route)
+    Task<Route<dynamic>> push(Route<dynamic> route)
     {
         ArgumentNullException.ThrowIfNull(nameof(route));
         _RouteEntry _entry = new(route);
