@@ -4,11 +4,11 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="samples.View"
-             xmlns:state="clr-namespace:samples.Pages.Todos.Report;assembly=samples"
-             x:DataType="state:ReportState"
+             xmlns:report="clr-namespace:samples.Pages.Todos.Report;assembly=samples"
+             x:DataType="report:ReportState"
              Background="DodgerBlue" Foreground="White">
   <Design.DataContext>
-    <state:ReportState Total="3" Done="2"/>
+    <report:ReportState Total="3" Done="2"/>
   </Design.DataContext>
 
   <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
