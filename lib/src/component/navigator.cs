@@ -1,6 +1,6 @@
 ﻿/* 
  *
- * The navigator is not perfect, and it's a simple implementation.
+ * The simple implementation of navigator.
  * 
  */
 // ReSharper disable ClassNeverInstantiated.Global
