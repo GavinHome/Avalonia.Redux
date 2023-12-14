@@ -1,17 +1,5 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Shapes;
-using Avalonia.Data;
-using Avalonia.Layout;
-using Avalonia.Media;
-using Avalonia.Threading;
-using DynamicData.Binding;
-using ReactiveUI;
-using samples.Pages.Todos.Report;
+﻿using samples.Pages.Todos.Report;
 using samples.Views;
-using System.Collections.ObjectModel;
-using System.Reactive.Subjects;
 
 namespace samples.Pages.Todos.Page;
 using Action = Redux.Action;
@@ -34,90 +22,45 @@ public partial class ToDoListPage() : Page<PageState, Dictionary<string, dynamic
     {
         var report = ctx.buildComponent("report");
         var itemsView = buildItemsView(state.ToDos!, ctx);
-
+        var addBtn = buildAddBtnView(dispatch);
         return new DockPanel
         {
             [Grid.IsSharedSizeScopeProperty] = true,
             Children =
             {
-                new StackPanel
+                new Border
                 {
                     [DockPanel.DockProperty] = Dock.Bottom,
                     [Visual.ZIndexProperty] = 99,
-                    Children =
+                    Padding = Thickness.Parse("8"),
+                    Child = new Grid
                     {
-                        new Border
+                        Children =
                         {
-                            Padding = Thickness.Parse("8"),
-                            Child = new Grid
-                            {
-                                Children =
-                                {
-                                    new Border
-                                    {
-                                        Child = report,
-                                    },
-                                    new Border
-                                    {
-                                        Margin = Thickness.Parse("0 -20 10 8"),
-                                        HorizontalAlignment = HorizontalAlignment.Right,
-                                        VerticalAlignment = VerticalAlignment.Center,
-                                        Background = SolidColorBrush.Parse("#bbe9d3ff"),
-                                        Padding = new Thickness(0),
-                                        CornerRadius = new CornerRadius(15),
-                                        Child = new Button()
-                                        {
-                                            Background = SolidColorBrush.Parse("#bbe9d3ff"),
-                                            CornerRadius = new CornerRadius(15),
-                                            Padding = new Thickness(0),
-                                            Height = 50, Width = 50,
-                                            BorderThickness = new Thickness(0),
-                                            Content = new Border
-                                            {
-                                                Padding = new Thickness(8, 5, 12, 8),
-                                                Child = new Path
-                                                {
-                                                    Data = Geometry.Parse(
-                                                        "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
-                                                    Fill = new SolidColorBrush(Colors.Black),
-                                                    HorizontalAlignment = HorizontalAlignment.Center,
-                                                    VerticalAlignment = VerticalAlignment.Center,
-                                                },
-                                            },
-                                            Command = ReactiveCommand.Create(() =>
-                                                dispatch(new Action("onAdd")))
-                                        }
-                                    }
-                                }
-                            }
+                            report,
+                            addBtn
                         }
                     }
                 },
                 new StackPanel
                 {
+                    Margin = Thickness.Parse("8"),
                     Children =
                     {
-                        new Grid
-                        {
-                            Margin = Thickness.Parse("8"),
-                            Children =
-                            {
-                                new ScrollViewer
-                                {
-                                    [!Layoutable.HeightProperty] = new Binding()
-                                    {
-                                        Path = "Height",
-                                        RelativeSource = new RelativeSource()
-                                        {
-                                            Mode = RelativeSourceMode.FindAncestor,
-                                            AncestorType = typeof(MainWindow)
-                                        }
-                                    },
-                                    VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
-                                    Content = itemsView
-                                }
-                            }
-                        },
+                       new ScrollViewer
+                       {
+                           [!Layoutable.HeightProperty] = new Binding()
+                           {
+                               Path = "Height",
+                               RelativeSource = new RelativeSource()
+                               {
+                                   Mode = RelativeSourceMode.FindAncestor,
+                                   AncestorType = typeof(MainWindow)
+                               }
+                           },
+                           VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
+                           Content = itemsView
+                       }
                     }
                 }
             }
@@ -144,5 +87,40 @@ public partial class ToDoListPage() : Page<PageState, Dictionary<string, dynamic
         });
 
         return items;
+    }
+
+    private static Border buildAddBtnView(Dispatch dispatch)
+    {
+        return new Border
+        {
+            Margin = Thickness.Parse("0 -20 10 8"),
+            HorizontalAlignment = HorizontalAlignment.Right,
+            VerticalAlignment = VerticalAlignment.Center,
+            Background = SolidColorBrush.Parse("#bbe9d3ff"),
+            Padding = new Thickness(0),
+            CornerRadius = new CornerRadius(15),
+            Child = new Button()
+            {
+                Background = SolidColorBrush.Parse("#bbe9d3ff"),
+                CornerRadius = new CornerRadius(15),
+                Padding = new Thickness(0),
+                Height = 50,
+                Width = 50,
+                BorderThickness = new Thickness(0),
+                Content = new Border
+                {
+                    Padding = new Thickness(8, 5, 12, 8),
+                    Child = new Path
+                    {
+                        Data = Geometry.Parse(
+                                                                "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
+                        Fill = new SolidColorBrush(Colors.Black),
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Center,
+                    },
+                },
+                Command = ReactiveCommand.Create(() => dispatch(new Action("onAdd")))
+            }
+        };
     }
 }

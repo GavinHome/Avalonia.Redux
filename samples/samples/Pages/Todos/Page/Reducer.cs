@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using DynamicData;
-using samples.Pages.Todos.Todo;
+﻿using samples.Pages.Todos.Todo;
 
 namespace samples.Pages.Todos.Page;
 using Action = Redux.Action;

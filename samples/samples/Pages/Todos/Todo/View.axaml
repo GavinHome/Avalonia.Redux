@@ -6,17 +6,11 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="samples.Pages.Todos.Todo.View"
              x:DataType="todo:ToDoState">
-    <!-- <UserControl.Resources> -->
-    <!--     <ResourceDictionary> -->
-    <!--         <todo:BoolToColorConverter x:Key="BoolToColorConverter" /> -->
-    <!--     </ResourceDictionary> -->
-    <!-- </UserControl.Resources> -->
     <Design.DataContext>
         <todo:ToDoState Title="Hello Avalonia" Desc="Learn how to build an avalonia app." IsDone="True" />
     </Design.DataContext>
     <ContentControl Padding="0,0,0,15">
         <StackPanel>
-            <!-- Background="{Binding IsDone, Converter={StaticResource BoolToColorConverter}}" -->
             <ContentControl Padding="5" Classes.IsDone="{Binding IsDone}" Classes.IsNotDone="{Binding !IsDone}">
                 <ContentControl.Styles>
                     <Style Selector="ContentControl.IsDone">

@@ -1,8 +1,6 @@
 ﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
 using samples.Pages.Todos.Todo;
-using System.Collections.ObjectModel;
-using System.Linq;
 
 namespace samples.Pages.Todos.Page;
 

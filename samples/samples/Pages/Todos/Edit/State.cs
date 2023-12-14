@@ -1,8 +1,8 @@
-﻿namespace samples.Pages.Todos.Edit;
-
-using ReactiveUI;
+﻿using ReactiveUI;
 using ReactiveUI.Fody.Helpers;
-using Todo;
+using samples.Pages.Todos.Todo;
+
+namespace samples.Pages.Todos.Edit;
 
 public class TodoEditState: ReactiveObject
 {

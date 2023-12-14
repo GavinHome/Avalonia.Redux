@@ -1,13 +1,5 @@
 ﻿namespace samples.Pages.Todos.Edit;
 
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Shapes;
-using Avalonia.Data;
-using Avalonia.Layout;
-using Avalonia.Media;
-using ReactiveUI;
 using Todo;
 using Views;
 

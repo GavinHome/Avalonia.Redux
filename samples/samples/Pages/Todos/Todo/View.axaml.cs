@@ -1,10 +1,4 @@
-﻿using System.Windows.Input;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Data.Converters;
-using Avalonia.Media;
-
-namespace samples.Pages.Todos.Todo;
+﻿namespace samples.Pages.Todos.Todo;
 
 public partial class View : UserControl
 {
@@ -40,26 +34,4 @@ public partial class View : UserControl
         get => GetValue(OnEditCommandProperty);
         set => SetValue(OnEditCommandProperty!, value);
     }
-
-    public IValueConverter BoolToBrushConverter { get; } =
-        new FuncValueConverter<bool, IBrush>(value => new SolidColorBrush(value ? Colors.Green : Colors.Red));
 }
-
-// public class BoolToColorConverter: IValueConverter
-// {
-//
-//     public object Convert(object? value, Type targetType, object? parameter, CultureInfo culture)
-//     {
-//         if (value is bool and true)
-//         {
-//             return Brushes.Green;
-//         }
-//         
-//         return Brushes.Red;
-//     }
-//
-//     public object? ConvertBack(object? value, Type targetType, object? parameter, CultureInfo culture)
-//     {
-//         return null;
-//     }
-// }
