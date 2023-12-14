@@ -1,0 +1,77 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:todo="clr-namespace:samples.Pages.Todos.Todo;assembly=samples"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="samples.Pages.Todos.Todo.View"
+             x:DataType="todo:ToDoState">
+    <!-- <UserControl.Resources> -->
+    <!--     <ResourceDictionary> -->
+    <!--         <todo:BoolToColorConverter x:Key="BoolToColorConverter" /> -->
+    <!--     </ResourceDictionary> -->
+    <!-- </UserControl.Resources> -->
+    <Design.DataContext>
+        <todo:ToDoState Title="Hello Avalonia" Desc="Learn how to build an avalonia app." IsDone="True" />
+    </Design.DataContext>
+    <ContentControl Padding="0,0,0,15">
+        <StackPanel>
+            <!-- Background="{Binding IsDone, Converter={StaticResource BoolToColorConverter}}" -->
+            <ContentControl Padding="5" Classes.IsDone="{Binding IsDone}" Classes.IsNotDone="{Binding !IsDone}">
+                <ContentControl.Styles>
+                    <Style Selector="ContentControl.IsDone">
+                        <Setter Property="Background" Value="Green"/>
+                    </Style>
+                    <Style Selector="ContentControl.IsNotDone">
+                        <Setter Property="Background" Value="Red"/>
+                    </Style>
+                </ContentControl.Styles>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal">
+                        <Border Background="Transparent" Padding="5,5,8,8">
+                            <Path Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                  Data="M16,17H5V7H16L19.55,12M17.63,5.84C17.27,5.33 16.67,5 16,5H5A2,2 0 0,0 3,7V17A2,2 0 0,0 5,19H16C16.67,19 17.27,18.66 17.63,18.15L22,12L17.63,5.84Z"/>
+                        </Border>
+                        <TextBlock Foreground="White" FontSize="18" VerticalAlignment="Center"
+                                   Text="{Binding Title}" />
+                    </StackPanel>
+                    <CheckBox Grid.Column="1" VerticalAlignment="Center"
+                              IsChecked="{Binding IsDone, Mode=OneWay}" 
+                              Command="{Binding Path=$parent[todo:View].OnDoneCommand}"/>
+                </Grid>
+            </ContentControl>
+            <ContentControl Background="LightGray" Padding="15">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"></ColumnDefinition>
+                        <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Foreground="Black" VerticalAlignment="Center" 
+                               Text="{Binding Desc}" TextWrapping="WrapWithOverflow" />
+                    <Button Grid.Column="1" Background="Transparent" CornerRadius="3"
+                            Padding="0" BorderThickness="0"
+                            Command="{Binding Path=$parent[todo:View].OnEditCommand}">
+                        <Border Background="Transparent" Padding="8,5,12,8">
+                            <Path Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                  Data="M20.71,7.04C21.1,6.65 21.1,6 20.71,5.63L18.37,3.29C18,2.9 17.35,2.9 16.96,3.29L15.12,5.12L18.87,8.87M3,17.25V21H6.75L17.81,9.93L14.06,6.18L3,17.25Z"/>
+                        </Border>
+                    </Button>
+                </Grid>
+            </ContentControl>
+        </StackPanel>
+        <ContentControl.ContextMenu>
+           <ContextMenu>
+               <MenuItem Header="Remove" Command="{Binding Path=$parent[todo:View].OnRemoveCommand}">
+                   <MenuItem.Icon>
+                       <Path Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
+                             Data="M19,4H15.5L14.5,3H9.5L8.5,4H5V6H19M6,19A2,2 0 0,0 8,21H16A2,2 0 0,0 18,19V7H6V19Z" />
+                   </MenuItem.Icon>
+               </MenuItem>
+           </ContextMenu>
+        </ContentControl.ContextMenu>
+    </ContentControl>
+</UserControl>
