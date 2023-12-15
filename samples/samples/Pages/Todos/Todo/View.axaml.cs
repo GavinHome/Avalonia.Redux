@@ -18,20 +18,22 @@ public partial class View : UserControl
     {
         InitializeComponent();
     }
+    
+    public ICommand? OnEditCommand 
+    {
+        get => GetValue(OnEditCommandProperty);
+        set => SetValue(OnEditCommandProperty!, value);
+    }
 
     public ICommand? OnRemoveCommand 
     {
         get => GetValue(OnRemoveCommandProperty);
         set => SetValue(OnRemoveCommandProperty!, value);
     }
+    
     public ICommand? OnDoneCommand 
     {
         get => GetValue(OnDoneCommandProperty);
         set => SetValue(OnDoneCommandProperty!, value);
-    }
-    public ICommand? OnEditCommand 
-    {
-        get => GetValue(OnEditCommandProperty);
-        set => SetValue(OnEditCommandProperty!, value);
     }
 }

@@ -1,5 +1,4 @@
 ﻿using samples.Pages.Todos.Report;
-using samples.Views;
 
 namespace samples.Pages.Todos.Page;
 using Action = Redux.Action;
@@ -55,7 +54,7 @@ public partial class ToDoListPage() : Page<PageState, Dictionary<string, dynamic
                                RelativeSource = new RelativeSource()
                                {
                                    Mode = RelativeSourceMode.FindAncestor,
-                                   AncestorType = typeof(MainWindow)
+                                   AncestorType = typeof(Views.MainWindow)
                                }
                            },
                            VerticalScrollBarVisibility = ScrollBarVisibility.Auto,

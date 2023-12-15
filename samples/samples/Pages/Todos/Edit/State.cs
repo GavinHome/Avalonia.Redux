@@ -1,5 +1,4 @@
 ﻿using samples.Pages.Todos.Todo;
-
 namespace samples.Pages.Todos.Edit;
 
 public class TodoEditState: ReactiveObject

@@ -1,4 +1,5 @@
 ﻿namespace samples.Pages.Counter;
+using Action = Redux.Action;
 
 public partial class CounterPage
 {
@@ -9,7 +10,7 @@ public partial class CounterPage
         }
     });
 
-    private static async Task _onAdd(Redux.Action action, ComponentContext<CounterState> ctx)
+    private static async Task _onAdd(Action action, ComponentContext<CounterState> ctx)
     {
         ctx.Dispatch(CounterActionCreator.addAction(1));
         ////await Task.Delay(TimeSpan.FromSeconds(5));

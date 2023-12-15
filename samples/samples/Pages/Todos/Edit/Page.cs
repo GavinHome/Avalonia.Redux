@@ -1,5 +1,4 @@
 ﻿using samples.Pages.Todos.Todo;
-
 namespace samples.Pages.Todos.Edit;
 
 public partial class TodoEditPage() : Page<TodoEditState, ToDoState>(initState: initState,
@@ -18,12 +17,12 @@ public partial class TodoEditPage() : Page<TodoEditState, ToDoState>(initState: 
 }
 
 
-/// [C# for View]
-/// You can write UI in C#, as the following code, and equivalent to build UI using XAML. 
-/// I found that more verbose when writing UI in C#, and binding properties will be more troublesome. 
-/// However, the most convenient way to build UI using XAML.
-/// Property, it is not very convenient to bind Command.
-/// You need to register StyledProperty in the background C# file of XAML in advance.
+//// [C# for View]
+//// You can write UI in C#, as the following code, and equivalent to build UI using XAML. 
+//// I found that more verbose when writing UI in C#, and binding properties will be more troublesome. 
+//// However, the most convenient way to build UI using XAML.
+//// Property, it is not very convenient to bind Command.
+//// You need to register StyledProperty in the background C# file of XAML in advance.
 #region
 //// public partial class TodoEditPage() : Page<TodoEditState, ToDoState>(initState: initState,
 ////     effect: buildEffect(),

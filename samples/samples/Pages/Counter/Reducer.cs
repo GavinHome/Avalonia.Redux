@@ -1,4 +1,5 @@
 ﻿namespace samples.Pages.Counter;
+using Action = Redux.Action;
 
 public partial class CounterPage
 {
@@ -9,7 +10,7 @@ public partial class CounterPage
         }
     });
 
-    private static CounterState _add(CounterState state, Redux.Action action)
+    private static CounterState _add(CounterState state, Action action)
     {
         state.Count += action.Payload;
         return state;
