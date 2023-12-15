@@ -1,6 +1,3 @@
-using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
-
 namespace samples.Pages.Counter;
 
 public class CounterState : ReactiveObject

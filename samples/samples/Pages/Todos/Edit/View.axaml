@@ -1,0 +1,69 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:todo="clr-namespace:samples.Pages.Todos.Edit;assembly=samples"
+             xmlns:views="clr-namespace:samples.Views"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="samples.Pages.Todos.Edit.View"
+             x:DataType="todo:TodoEditState">
+    <Design.DataContext>
+        <todo:TodoEditState toDo="" />
+    </Design.DataContext>
+    <DockPanel Grid.IsSharedSizeScope="True">
+        <StackPanel DockPanel.Dock="Bottom" ZIndex="99">
+            <Border Margin="0 -20 10 8" HorizontalAlignment="Center" VerticalAlignment="Center"
+                    Background="#bbe9d3ff" Padding="0" CornerRadius="15">
+                <Button Background="#bbe9d3ff" CornerRadius="15" Padding="0"
+                        Height="50" Width="50" BorderThickness="0"
+                        Command="{Binding Path=$parent[todo:View].OnDoneCommand}">
+                    <Border Padding="8 5 12 8">
+                        <Path Fill="Black" HorizontalAlignment="Center" VerticalAlignment="Center"
+                              Data="M23,13 H5V11 H7V5 H5V11 H23 V13Z">
+                            <Path.RenderTransform>
+                                <RotateTransform CenterX="-2" CenterY="-2" Angle="-40"></RotateTransform>
+                            </Path.RenderTransform>
+                        </Path>
+                    </Border>
+                </Button>
+            </Border>
+        </StackPanel>
+        <StackPanel>
+            <Grid Margin="8">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" Height="{Binding $parent[views:MainWindow].Height}">
+                    <StackPanel>
+                        <TextBlock Text="Edit Todo"></TextBlock>
+                        <Border Padding="20 50">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"></RowDefinition>
+                                    <RowDefinition Height="*"></RowDefinition>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                                    <ColumnDefinition Width="*"></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Row="0" Grid.Column="0">
+                                    <TextBlock Text="title:" HorizontalAlignment="Right" FontSize="20" 
+                                               Foreground="Black" VerticalAlignment="Stretch" />
+                                </Border>
+                                <Border Grid.Row="0" Grid.Column="1" Padding="8 0">
+                                    <TextBox Text="{Binding toDo.Title, FallbackValue={}}" FontSize="16" Foreground="Black" />
+                                </Border>
+                                <Border Grid.Row="1" Grid.Column="0" Padding="0 32">
+                                    <TextBlock Text="desc:" HorizontalAlignment="Right" FontSize="20" 
+                                               Foreground="Black" VerticalAlignment="Stretch" />
+                                </Border>
+                                <Border Grid.Row="1" Grid.Column="1" Padding="8 32">
+                                    <TextBox Text="{Binding toDo.Desc, FallbackValue={}}" Height="200" AcceptsReturn="True" TextWrapping="Wrap"
+                                             MaxLines="10" FontSize="16" Foreground="Black"/>
+                                </Border>
+                            </Grid>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </Grid>
+        </StackPanel>
+    </DockPanel>
+    
+</UserControl>

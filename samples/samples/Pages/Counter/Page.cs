@@ -1,12 +1,4 @@
-﻿using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Shapes;
-using Avalonia.Data;
-using Avalonia.Layout;
-using Avalonia.Media;
-using ReactiveUI;
-
-namespace samples.Pages.Counter;
+﻿namespace samples.Pages.Counter;
 
 public partial class CounterPage() : Page<CounterState, Dictionary<string, dynamic>>(initState: initState,
     effect: buildEffect(),

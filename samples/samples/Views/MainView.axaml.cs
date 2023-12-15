@@ -1,5 +1,3 @@
-using Avalonia.Controls;
-
 namespace samples.Views
 {
     public partial class MainView : UserControl

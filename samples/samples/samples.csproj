@@ -24,4 +24,8 @@
   <ItemGroup>
     <ProjectReference Include="..\..\lib\src\component\component.csproj" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Pages\Todos\Edit\View.axaml.cs~" />
+  </ItemGroup>
 </Project>

@@ -1,6 +1,4 @@
-﻿using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
-using samples.Pages.Todos.Todo;
+﻿using samples.Pages.Todos.Todo;
 
 namespace samples.Pages.Todos.Page;
 

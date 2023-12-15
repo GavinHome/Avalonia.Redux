@@ -4,7 +4,12 @@ internal class ReportComponent() : Component<ReportState>(
     view: (state, dispatch, _) => new View() { DataContext = state });
 
 
-////You can write view using C# code
+/// [C# for View]
+/// You can write UI in C#, as the following code, and equivalent to build UI using XAML. 
+/// I found that more verbose when writing UI in C#, and binding properties will be more troublesome. 
+/// However, the most convenient way to build UI using XAML.
+/// Property, it is not very convenient to bind Command.
+/// You need to register StyledProperty in the background C# file of XAML in advance.
 #region
 ////internal class ReportComponent() : Component<ReportState>(
 ////view: (state, dispatch, _) => new ContentControl

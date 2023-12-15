@@ -1,7 +1,4 @@
-﻿using ReactiveUI;
-using ReactiveUI.Fody.Helpers;
-
-namespace samples.Pages.Todos.Todo;
+﻿namespace samples.Pages.Todos.Todo;
 
 public class ToDoState: ReactiveObject
 {
