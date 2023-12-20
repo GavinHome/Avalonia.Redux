@@ -2,7 +2,7 @@
 
 Avalonia Redux is an assembled cross-platform application framework based on Redux state management for MVU pattern,  using C# and AvaloniaUI. It allows you to manage your application state and logic based on Redux implemention of MVU.
 
-MVU is an implementation idea based on one-way data flow, as shown in the figure below£º
+MVU is an implementation idea based on one-way data flow, as shown in the figure below:
 
 <p><img src="./assets/mvu.png" alt="redux-data-flow"></p>
 
