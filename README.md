@@ -18,6 +18,17 @@ Or, you can also add the following dependency in your project file:
 </ItemGroup>
 ```
 
+## Design Principles
+
+<p><img src="./assets/data-flow.png" alt="redux-data-flow"></p>
+
+- **1. Application starts, and state is initialized, and it's current state.**
+- **2. Current state changes will trigger the UI to be rendered.**
+- **3. When interaction occurs, if user clicks button and an action is sent to Reducer.**
+- **4. Reducer creates an instance of updated state.**
+- **5. The new state replaces the current state.**
+- **6. When the event occurs, return to step 2 of the current list.**
+
 ## Usage
 
 To use Avalonia.Redux, you need to define the following parts:

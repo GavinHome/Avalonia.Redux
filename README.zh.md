@@ -18,6 +18,17 @@ dotnet add package Avalonia.Redux
 </ItemGroup>
 ```
 
+## 设计原理
+
+<p><img src="./assets/data-flow.png" alt="redux-data-flow"></p>
+
+- **1.当应用启动时，状态被初始化。该初始状态成为当前状态。**
+- **2.当前状态更改将触发要呈现的 UI。**
+- **3.当发生交互时，如用户点击按钮，则向Reducer发送动作。**
+- **4.Reducer创建更新状态的实例。**
+- **5.新状态取代当前状态。**
+- **6.事件发生时，返回当前列表的步骤2。**
+
 ## 使用方法
 
 要使用 Avalonia.Redux，你需要定义以下几个部分：
