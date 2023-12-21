@@ -234,4 +234,8 @@ cd Avalonia.Redux
 dotnet run --project samples\samples.Desktop
 ```
 
+This example is to divide a large Page into different sub-components (Components), and finally assemble it into a complete application in the Page, as shown below:
+
+<p><img src="./assets/todo-list-page-example.png" alt="avalonia-redux-framework"></p>
+
 You can also check the source code in the [Example] folder to understand the implementation details of the example.

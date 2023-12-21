@@ -235,5 +235,9 @@ cd Avalonia.Redux
 dotnet run --project samples\samples.Desktop
 ```
 
+这个示例是将一个大的Page划分为不同的子组件（Component)，最后在Page中拼装为一个完整的应用，如下图所示各部件组成结构示意图：
+
+<p><img src="./assets/todo-list-page-example.png" alt="avalonia-redux-framework"></p>
+
 你也可以查看 [Example] 文件夹中的源代码，了解示例的具体实现细节。
 
