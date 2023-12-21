@@ -4,7 +4,7 @@ Avalonia Redux ÊÇÒ»¸ö»ùÓÚ MVU Ä£Ê½µÄ Redux ×´Ì¬¹ÜÀíµÄ×é×°Ê½¿çÆ½Ì¨Ó¦ÓÃ³ÌÐò¿ò¼Ü£¬Ê
 
 MVUÊÇ»ùÓÚµ¥ÏòÊý¾ÝÁ÷µÄÊµÏÖË¼Â·£¬ÈçÏÂÍ¼ËùÊ¾£º
 
-<p><img src="./assets/mvu.png" alt="redux-data-flow"></p>
+<p><img src="./assets/mvu.png" alt="redux-data-flow" width="80%"></p>
 
 - **1.µ±Ó¦ÓÃÆô¶¯Ê±£¬×´Ì¬±»³õÊ¼»¯¡£¸Ã³õÊ¼×´Ì¬³ÉÎªµ±Ç°×´Ì¬¡£**
 - **2.µ±Ç°×´Ì¬¸ü¸Ä½«´¥·¢Òª³ÊÏÖµÄ UI¡£**

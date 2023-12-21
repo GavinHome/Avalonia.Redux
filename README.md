@@ -4,7 +4,7 @@ Avalonia Redux is an assembled cross-platform application framework based on Red
 
 MVU is an implementation idea based on one-way data flow, as shown in the figure below:
 
-<p><img src="./assets/mvu.png" alt="redux-data-flow"></p>
+<p><img src="./assets/mvu.png" alt="redux-data-flow" width="80%"></p>
 
 - **1. Application starts, and state is initialized, and it's current state.**
 - **2. Current state changes will trigger the UI to be rendered.**
