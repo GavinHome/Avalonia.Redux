@@ -60,6 +60,170 @@ To use Avalonia.Redux, you need to define the following parts:
    - **Dependencies**: (Optional) If a complex page is composed of multiple sub-components, you can set Adapter Connector and Slot Connector. The former is suitable for dynamic collection components, and the latter is suitable for single components.
 
 
+There are five steps to use the counter as an example:
+
+> 1. Import avalonia redux package
+> 2. Create State
+> 3. Define Action and ActionCreator
+> 4. Create Reducer that modifies state
+> 5. Create Page or Component
+
+```cs
+using Redux;
+using Redux.Component;
+using Action = Redux.Action;
+namespace samples.Pages.Counter;
+
+/// [State]
+public class CounterState : ReactiveObject
+{
+    [Reactive]
+    public int Count { get; set; }
+
+    public override string ToString()
+    {
+        return $"Count: {Count}";
+    }
+}
+
+/// [Action]
+enum CounterAction { add, onAdd }
+
+/// [ActionCreator]
+internal static class CounterActionCreator
+{
+    internal static Action addAction(int payload)
+    {
+        return new Action(CounterAction.add, payload);
+    }
+
+    internal static Action onAddAction()
+    {
+        return new Action(CounterAction.onAdd);
+    }
+}
+
+/// [Reducer]
+public partial class CounterPage
+{
+    private static Reducer<CounterState> buildReducer() => ReducerConverter.AsReducers(new Dictionary<object, Reducer<CounterState>>
+    {
+        {
+            CounterAction.add, _add
+        }
+    });
+
+    private static CounterState _add(CounterState state, Action action)
+    {
+        state.Count += action.Payload;
+        return state;
+    }
+}
+
+/// [Effect]
+public partial class CounterPage
+{
+    private static Effect<CounterState>? buildEffect() => Redux.Component.EffectConverter.CombineEffects(new Dictionary<object, SubEffect<CounterState>>
+    {
+        {
+            CounterAction.onAdd, _onAdd
+        }
+    });
+
+    private static async Task _onAdd(Action action, ComponentContext<CounterState> ctx)
+    {
+        ctx.Dispatch(CounterActionCreator.addAction(1));
+        await Task.CompletedTask;
+    }
+}
+
+/// [Page]
+public partial class CounterPage() : Page<CounterState, Dictionary<string, dynamic>>(initState: initState,
+    effect: buildEffect(),
+    reducer: buildReducer(),
+    middlewares:
+    [
+        Redux.Middlewares.logMiddleware<CounterState>(monitor: (state) => state.ToString(), tag: "CounterPage")
+    ],
+    view: (state, dispatch, _) =>
+    {
+        return new ContentControl
+        {
+            Content = new Grid
+            {
+                Margin = Thickness.Parse("10"),
+                RowDefinitions =
+                [
+                    new() { Height = GridLength.Star },
+                    new() { Height = GridLength.Auto }
+                ],
+                Children =
+                {
+                    new StackPanel
+                    {
+                        [Grid.RowProperty] = 0,
+                        Orientation = Orientation.Vertical,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Children =
+                        {
+                            new TextBlock
+                            {
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                Text = "You have pushed the button this many times:"
+                            },
+                            new TextBlock
+                            {
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                [!TextBlock.TextProperty] = new Binding
+                                    { Source = state, Path = nameof(state.Count) }
+                            }
+                        }
+                    },
+                    new Border
+                    {
+                        [Grid.RowProperty] = 1,
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Background = SolidColorBrush.Parse("#bbe9d3ff"),
+                        Padding = new Thickness(0),
+                        CornerRadius = new CornerRadius(15),
+                        BoxShadow = new BoxShadows(new BoxShadow()
+                            { OffsetX = 1, OffsetY = 5, Spread = 1, Blur = 8, Color = Colors.LightGray }),
+                        Child = new Button()
+                        {
+                            Background = new SolidColorBrush(Colors.Transparent),
+                            CornerRadius = new CornerRadius(15),
+                            Padding = new Thickness(0),
+                            Height = 50, Width = 50,
+                            BorderThickness = new Thickness(0),
+                            Content = new Border
+                            {
+                                Background = new SolidColorBrush(Colors.Transparent),
+                                Padding = new Thickness(8, 5, 12, 8),
+                                Child = new Path
+                                {
+                                    Data = Geometry.Parse("M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
+                                    Fill = new SolidColorBrush(Colors.Black),
+                                    HorizontalAlignment = HorizontalAlignment.Center,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                },
+                            },
+                            Command = ReactiveCommand.Create(() => dispatch(CounterActionCreator.onAddAction()))
+                        }
+                    }
+                }
+            }
+        };
+    })
+{
+    /// [InitState]
+    private static CounterState initState(Dictionary<string, dynamic>? param) => new() { Count = 99 };
+}
+```
+
 ## Example
 
 You can find a simple example in this repository, showing how to use Avalonia.Redux to implement a Todo List application. You can run the following commands to clone this repository and run the example:

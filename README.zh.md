@@ -61,6 +61,169 @@ Avalonia Redux框架主要包含以下几个部分：
   - **Middleware**:（可选）中间件，例如打印日志的监听函数等
   - **Dependencies**:（可选）若由多个子组件共同组成复杂的页面Page, 可设置Adapter Connector和Slot Connector，前者适用于动态集合组件，后者适用于单个组件
 
+以计数器为例，仅需要5步即可使用avalonia redux构建应用：
+
+> 1. 引入 avalonia redux 
+> 2. 创建状态类
+> 3. 定义 Action 和 ActionCreator
+> 4. 创建修改状态的 Reducer
+> 5. 创建组件或页面视图以显示
+
+```cs
+using Redux;
+using Redux.Component;
+using Action = Redux.Action;
+namespace samples.Pages.Counter;
+
+/// [State]
+public class CounterState : ReactiveObject
+{
+    [Reactive]
+    public int Count { get; set; }
+
+    public override string ToString()
+    {
+        return $"Count: {Count}";
+    }
+}
+
+/// [Action]
+enum CounterAction { add, onAdd }
+
+/// [ActionCreator]
+internal static class CounterActionCreator
+{
+    internal static Action addAction(int payload)
+    {
+        return new Action(CounterAction.add, payload);
+    }
+
+    internal static Action onAddAction()
+    {
+        return new Action(CounterAction.onAdd);
+    }
+}
+
+/// [Reducer]
+public partial class CounterPage
+{
+    private static Reducer<CounterState> buildReducer() => ReducerConverter.AsReducers(new Dictionary<object, Reducer<CounterState>>
+    {
+        {
+            CounterAction.add, _add
+        }
+    });
+
+    private static CounterState _add(CounterState state, Action action)
+    {
+        state.Count += action.Payload;
+        return state;
+    }
+}
+
+/// [Effect]
+public partial class CounterPage
+{
+    private static Effect<CounterState>? buildEffect() => Redux.Component.EffectConverter.CombineEffects(new Dictionary<object, SubEffect<CounterState>>
+    {
+        {
+            CounterAction.onAdd, _onAdd
+        }
+    });
+
+    private static async Task _onAdd(Action action, ComponentContext<CounterState> ctx)
+    {
+        ctx.Dispatch(CounterActionCreator.addAction(1));
+        await Task.CompletedTask;
+    }
+}
+
+/// [Page]
+public partial class CounterPage() : Page<CounterState, Dictionary<string, dynamic>>(initState: initState,
+    effect: buildEffect(),
+    reducer: buildReducer(),
+    middlewares:
+    [
+        Redux.Middlewares.logMiddleware<CounterState>(monitor: (state) => state.ToString(), tag: "CounterPage")
+    ],
+    view: (state, dispatch, _) =>
+    {
+        return new ContentControl
+        {
+            Content = new Grid
+            {
+                Margin = Thickness.Parse("10"),
+                RowDefinitions =
+                [
+                    new() { Height = GridLength.Star },
+                    new() { Height = GridLength.Auto }
+                ],
+                Children =
+                {
+                    new StackPanel
+                    {
+                        [Grid.RowProperty] = 0,
+                        Orientation = Orientation.Vertical,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                        Children =
+                        {
+                            new TextBlock
+                            {
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                Text = "You have pushed the button this many times:"
+                            },
+                            new TextBlock
+                            {
+                                HorizontalAlignment = HorizontalAlignment.Center,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                [!TextBlock.TextProperty] = new Binding
+                                    { Source = state, Path = nameof(state.Count) }
+                            }
+                        }
+                    },
+                    new Border
+                    {
+                        [Grid.RowProperty] = 1,
+                        HorizontalAlignment = HorizontalAlignment.Right,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Background = SolidColorBrush.Parse("#bbe9d3ff"),
+                        Padding = new Thickness(0),
+                        CornerRadius = new CornerRadius(15),
+                        BoxShadow = new BoxShadows(new BoxShadow()
+                            { OffsetX = 1, OffsetY = 5, Spread = 1, Blur = 8, Color = Colors.LightGray }),
+                        Child = new Button()
+                        {
+                            Background = new SolidColorBrush(Colors.Transparent),
+                            CornerRadius = new CornerRadius(15),
+                            Padding = new Thickness(0),
+                            Height = 50, Width = 50,
+                            BorderThickness = new Thickness(0),
+                            Content = new Border
+                            {
+                                Background = new SolidColorBrush(Colors.Transparent),
+                                Padding = new Thickness(8, 5, 12, 8),
+                                Child = new Path
+                                {
+                                    Data = Geometry.Parse("M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
+                                    Fill = new SolidColorBrush(Colors.Black),
+                                    HorizontalAlignment = HorizontalAlignment.Center,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                },
+                            },
+                            Command = ReactiveCommand.Create(() => dispatch(CounterActionCreator.onAddAction()))
+                        }
+                    }
+                }
+            }
+        };
+    })
+{
+    /// [InitState]
+    private static CounterState initState(Dictionary<string, dynamic>? param) => new() { Count = 99 };
+}
+```
 
 ## 示例
 

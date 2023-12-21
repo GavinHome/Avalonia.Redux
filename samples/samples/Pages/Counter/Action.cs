@@ -4,9 +4,7 @@ using Action = Redux.Action;
 enum CounterAction
 {
     add,
-    //minus,
     onAdd,
-    //onMinus,
 }
 
 internal static class CounterActionCreator
@@ -16,19 +14,9 @@ internal static class CounterActionCreator
         return new Action(CounterAction.add, payload);
     }
 
-    //internal static Action minusAction(int payload)
-    //{
-    //    return new Action(CounterAction.minus, payload);
-    //}
-
     internal static Action onAddAction()
     {
         return new Action(CounterAction.onAdd);
     }
-
-    //internal static Action onMinusAction()
-    //{
-    //    return new Action(CounterAction.onAdd);
-    //}
 }
 
