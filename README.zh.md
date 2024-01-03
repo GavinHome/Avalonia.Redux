@@ -69,6 +69,9 @@ Avalonia Redux框架主要包含以下几个部分：
 > 4. 创建修改状态的 Reducer
 > 5. 创建组件或页面视图以显示
 
+<p><img src="./assets/code-segment.png" alt="code-segment"></p>
+
+<!--
 ```cs
 using Redux;
 using Redux.Component;
@@ -224,6 +227,7 @@ public partial class CounterPage() : Page<CounterState, Dictionary<string, dynam
     private static CounterState initState(Dictionary<string, dynamic>? param) => new() { Count = 99 };
 }
 ```
+-->
 
 ## 示例
 

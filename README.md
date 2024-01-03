@@ -68,6 +68,9 @@ There are five steps to use the counter as an example:
 > 4. Create Reducer that modifies state
 > 5. Create Page or Component
 
+<p><img src="./assets/code-segment.png" alt="code-segment"></p>
+
+<!--
 ```cs
 using Redux;
 using Redux.Component;
@@ -123,7 +126,8 @@ public partial class CounterPage
 /// [Effect]
 public partial class CounterPage
 {
-    private static Effect<CounterState>? buildEffect() => Redux.Component.EffectConverter.CombineEffects(new Dictionary<object, SubEffect<CounterState>>
+    private static Effect<CounterState>? buildEffect() => 
+        EffectConverter.CombineEffects(new Dictionary<object, SubEffect<CounterState>>
     {
         {
             CounterAction.onAdd, _onAdd
@@ -143,7 +147,8 @@ public partial class CounterPage() : Page<CounterState, Dictionary<string, dynam
     reducer: buildReducer(),
     middlewares:
     [
-        Redux.Middlewares.logMiddleware<CounterState>(monitor: (state) => state.ToString(), tag: "CounterPage")
+        Redux.Middlewares.logMiddleware<CounterState>(monitor: 
+            (state) => state.ToString(), tag: "CounterPage")
     ],
     view: (state, dispatch, _) =>
     {
@@ -191,7 +196,12 @@ public partial class CounterPage() : Page<CounterState, Dictionary<string, dynam
                         Padding = new Thickness(0),
                         CornerRadius = new CornerRadius(15),
                         BoxShadow = new BoxShadows(new BoxShadow()
-                            { OffsetX = 1, OffsetY = 5, Spread = 1, Blur = 8, Color = Colors.LightGray }),
+                            { 
+                                OffsetX = 1, OffsetY = 5, 
+                                Spread = 1, 
+                                Blur = 8, 
+                                Color = Colors.LightGray 
+                            }),
                         Child = new Button()
                         {
                             Background = new SolidColorBrush(Colors.Transparent),
@@ -205,13 +215,15 @@ public partial class CounterPage() : Page<CounterState, Dictionary<string, dynam
                                 Padding = new Thickness(8, 5, 12, 8),
                                 Child = new Path
                                 {
-                                    Data = Geometry.Parse("M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
+                                    Data = Geometry.Parse(
+                                            "M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z"),
                                     Fill = new SolidColorBrush(Colors.Black),
                                     HorizontalAlignment = HorizontalAlignment.Center,
                                     VerticalAlignment = VerticalAlignment.Center,
                                 },
                             },
-                            Command = ReactiveCommand.Create(() => dispatch(CounterActionCreator.onAddAction()))
+                            Command = ReactiveCommand.Create(() =>
+                                dispatch(CounterActionCreator.onAddAction()))
                         }
                     }
                 }
@@ -220,10 +232,11 @@ public partial class CounterPage() : Page<CounterState, Dictionary<string, dynam
     })
 {
     /// [InitState]
-    private static CounterState initState(Dictionary<string, dynamic>? param) => new() { Count = 99 };
+    private static CounterState initState(Dictionary<string, dynamic>? param) => 
+        new() { Count = 99 };
 }
 ```
-
+-->
 ## Example
 
 You can find a simple example in this repository, showing how to use Avalonia.Redux to implement a Todo List application. You can run the following commands to clone this repository and run the example:
